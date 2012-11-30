@@ -16,17 +16,31 @@
  *  limitations under the License.
  */
 
-package photodb.web.command.impl
+package photodb.service;
 
-import photodb.service.ServiceFacade
-import photodb.web.command.Command
+import photodb.data.dto.CommentDto;
+import photodb.data.dto.PhotoDto;
+import photodb.data.entity.Comment;
+import photodb.data.entity.Photo;
 
-class AddComment implements Command {
-    @Override
-    def execute(ServiceFacade serviceFacade, Map<String, String> params) {
-        def commentUid = serviceFacade.createComment(params.photoUid as Long, params.comment)
-        return [
-                commentUid: commentUid
-        ]
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class DtoBuilder {
+
+    public PhotoDto buildPhoto(Photo photo) {
+        final PhotoDto result = new PhotoDto();
+        result.setUid(photo.getUid());
+        result.setPath(photo.getPath());
+        return result;
     }
+
+
+    public CommentDto buildComment(Comment comment) {
+        final CommentDto result = new CommentDto();
+        result.setText(comment.getText());
+        result.setTs(comment.getDate().getTime());
+        return result;
+    }
+
 }

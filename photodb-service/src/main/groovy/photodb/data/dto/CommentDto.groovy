@@ -16,17 +16,9 @@
  *  limitations under the License.
  */
 
-package photodb.web.command.impl
+package photodb.data.dto
 
-import photodb.service.ServiceFacade
-import photodb.web.command.Command
-
-class AddComment implements Command {
-    @Override
-    def execute(ServiceFacade serviceFacade, Map<String, String> params) {
-        def commentUid = serviceFacade.createComment(params.photoUid as Long, params.comment)
-        return [
-                commentUid: commentUid
-        ]
-    }
+class CommentDto implements Serializable {
+    String text
+    Long ts
 }

@@ -24,12 +24,18 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Stateless
 @Local(BaseEAO.class)
 public class BaseEAOImpl implements BaseEAO {
     @PersistenceContext(unitName = "photoPU")
-    private EntityManager entityManager;
+    private EntityManager em;
 
     @Override
     public <E> E execute(DbCommand<E> cmd) {
@@ -38,13 +44,33 @@ public class BaseEAOImpl implements BaseEAO {
 
     @Override
     public <E extends BaseEntity> E create(E entity) {
-        this.entityManager.persist(entity);
-        this.entityManager.flush();
+        this.em.persist(entity);
+        this.em.flush();
         return entity;
     }
 
     @Override
     public <E extends BaseEntity> E find(Class<E> cls, Long uid) {
-        return this.entityManager.find(cls, uid);
+        return this.em.find(cls, uid);
+    }
+
+    @Override
+    public <E extends BaseEntity> List<E> findAll(Class<E> cls) {
+        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        final CriteriaQuery<E> cq = cb.createQuery(cls);
+        final Root<E> root = cq.from(cls);
+        final TypedQuery<E> q = em.createQuery(cq);
+        return q.getResultList();
+    }
+
+    @Override
+    public <E extends BaseEntity> List<Long> findAllUids(Class<E> cls) {
+        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        final Root<E> root = cq.from(cls);
+        final Path path = root.get("uid");
+        cq.select(path);
+        final TypedQuery<Long> q = em.createQuery(cq);
+        return q.getResultList();
     }
 }

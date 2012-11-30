@@ -24,7 +24,7 @@ import photodb.web.command.Command
 class GetPhotoComments implements Command {
     @Override
     def execute(ServiceFacade serviceFacade, Map<String, String> params) {
-        def comments = serviceFacade.getComments((long) params.photoUid)
+        def comments = serviceFacade.getComments(params.photoUid as Long)
         return [
                 comments: comments
         ]

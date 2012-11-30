@@ -18,13 +18,17 @@
 
 package photodb.service;
 
-import java.util.List;
-import java.util.Map;
+import photodb.data.dto.CommentDto;
+import photodb.data.dto.PhotoDto;
+
+import java.util.Set;
 
 public interface ServiceFacade {
     Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y);
 
+    Set<PhotoDto> getAllPhotoDtos();
+
     Long createComment(Long photoUid, String comment);
 
-    List<Map<String, Object>> getComments(Long photoUid);
+    Set<CommentDto> getComments(Long photoUid);
 }

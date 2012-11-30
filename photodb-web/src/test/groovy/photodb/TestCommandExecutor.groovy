@@ -29,7 +29,7 @@ class TestCommandExecutor {
     void testSuccess() {
         //Mocking the ServiceFacade
         def serviceFacade = [createPhoto: {
-            path -> 100l
+            a, b, c, e, f -> 100l
         }] as ServiceFacade
 
         //In your browser, it would be

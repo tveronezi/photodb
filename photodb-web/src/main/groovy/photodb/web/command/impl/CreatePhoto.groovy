@@ -28,8 +28,8 @@ class CreatePhoto implements Command {
                 params.path,
                 params.fileName,
                 params.contentType,
-                params.x,
-                params.y
+                params.x as Integer,
+                params.y as Integer
         )
         return [
                 photoUid: photoUid

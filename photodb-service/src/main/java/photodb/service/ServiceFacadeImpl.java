@@ -19,6 +19,8 @@
 package photodb.service;
 
 
+import photodb.data.dto.CommentDto;
+import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Comment;
 import photodb.data.entity.Photo;
 import photodb.service.bean.PhotoImpl;
@@ -26,6 +28,7 @@ import photodb.service.bean.PhotoImpl;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -43,6 +46,9 @@ public class ServiceFacadeImpl implements ServiceFacade {
     @EJB
     private PhotoImpl photoService;
 
+    @Inject
+    private DtoBuilder dtoBuilder;
+
     @Override
     public Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y) {
         final Photo photo = this.photoService.createPhoto(path, fileName, contentType, x, y);
@@ -50,29 +56,37 @@ public class ServiceFacadeImpl implements ServiceFacade {
     }
 
     @Override
+    public Set<PhotoDto> getAllPhotoDtos() {
+        // TODO: security. No security yet. Just get all the photos
+        final List<Photo> photos = this.photoService.getPhotos();
+        final Set<PhotoDto> result = new HashSet<PhotoDto>();
+        for (Photo photo : photos) {
+            result.add(this.dtoBuilder.buildPhoto(photo));
+        }
+        return result;
+
+    }
+
+    @Override
     public Long createComment(Long photoUid, String text) {
+        // TODO: security.
         final Comment comment = this.photoService.createComment(photoUid, text);
         return comment.getUid();
     }
 
     @Override
-    public List<Map<String, Object>> getComments(Long photoUid) {
-        final List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        final Set<Comment> comments = this.photoService.getComments(photoUid);
-        for (Comment comment : comments) {
-            final Map<String, Object> data = new HashMap<String, Object>();
-            data.put("text", comment.getText());
-            data.put("date", comment.getDate());
-            result.add(data);
-        }
-        Collections.sort(result, new Comparator<Map<String, Object>>() {
+    public Set<CommentDto> getComments(Long photoUid) {
+        // TODO: security.
+        final Set<CommentDto> result = new TreeSet<CommentDto>(new Comparator<CommentDto>() {
             @Override
-            public int compare(Map<String, Object> a, Map<String, Object> b) {
-                final Date dateA = (Date) a.get("date");
-                final Date dateB = (Date) b.get("date");
-                return dateA.compareTo(dateB);
+            public int compare(CommentDto a, CommentDto b) {
+                return a.getTs().compareTo(b.getTs());
             }
         });
+        final Set<Comment> comments = this.photoService.getComments(photoUid);
+        for (Comment comment : comments) {
+            result.add(dtoBuilder.buildComment(comment));
+        }
         return result;
     }
 }

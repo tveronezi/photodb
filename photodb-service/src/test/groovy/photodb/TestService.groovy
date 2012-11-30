@@ -19,58 +19,45 @@
 package photodb
 
 import junit.framework.Assert
+import org.junit.Before
 import org.junit.Test
 import photodb.service.ServiceFacade
 
+import javax.ejb.EJB
 import javax.ejb.EJBException
-import javax.naming.Context
-import javax.naming.InitialContext
+import javax.ejb.embeddable.EJBContainer
 
 class TestService {
 
-    Context getContext() {
-        Properties p = new Properties()
-        p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.core.LocalInitialContextFactory")
-        return new InitialContext(p)
+    private EJBContainer container;
+
+    @EJB
+    private ServiceFacade facade;
+
+    @Before
+    public void startContainer() throws Exception {
+        container = EJBContainer.createEJBContainer();
+        container.getContext().bind("inject", this);
     }
 
     @Test
     void testCreatePhotoEntity() {
-        Context context = getContext()
-        ServiceFacade facade = context.lookup('java:global/classpath.ear/photodb-service/ServiceFacadeImpl')
-
         try {
-            facade.createPhoto(null)
+            this.facade.createPhoto(null, null, null, null, null)
             Assert.fail()
         } catch (EJBException e) {
             // expected
         }
 
-        def photoUid = facade.createPhoto('My path')
+        def photoUid = this.facade.createPhoto('path', 'name', 'mime', 0, 0)
         Assert.assertNotNull(photoUid)
-
-        try {
-            facade.createComment(null, null)
-            Assert.fail()
-        } catch (EJBException e) {
-            // expected
-        }
-
-        try {
-            facade.createComment(photoUid, null)
-            Assert.fail()
-        } catch (EJBException e) {
-            // expected
-        }
-
-        def commentUid = facade.createComment(photoUid, 'My comment')
-        Assert.assertNotNull(commentUid)
-
-        def comments = facade.getComments(photoUid)
-        Assert.assertNotNull(comments)
-        Assert.assertEquals(1, comments.size())
-        comments.each {
-            Assert.assertEquals(it.text, 'My comment')
-        }
     }
+
+    @Test
+    void testGetPhotos() {
+        def dtos = this.facade.getAllPhotoDtos()
+        Assert.assertNotNull(dtos)
+        Assert.assertFalse(dtos.empty)
+    }
+
 }

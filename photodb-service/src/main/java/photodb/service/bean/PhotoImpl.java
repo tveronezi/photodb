@@ -27,6 +27,7 @@ import photodb.data.execution.command.GetPhotoComments;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.List;
 import java.util.Set;
 
 @Stateless
@@ -55,5 +56,10 @@ public class PhotoImpl {
         final GetPhotoComments get = new GetPhotoComments();
         get.photoUid = photoUid;
         return this.baseEAO.execute(get);
+    }
+
+    public List<Photo> getPhotos() {
+        // TODO no security yet. Just get all the photos
+        return this.baseEAO.findAll(Photo.class);
     }
 }

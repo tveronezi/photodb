@@ -20,10 +20,16 @@ package photodb.data.execution;
 
 import photodb.data.entity.BaseEntity;
 
+import java.util.List;
+
 public interface BaseEAO {
     <E> E execute(DbCommand<E> cmd);
 
     <E extends BaseEntity> E create(E entity);
 
     <E extends BaseEntity> E find(Class<E> cls, Long uid);
+
+    <E extends BaseEntity> List<E> findAll(Class<E> cls);
+
+    <E extends BaseEntity> List<Long> findAllUids(Class<E> cls);
 }
