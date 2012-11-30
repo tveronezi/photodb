@@ -15,7 +15,8 @@
 RUNTIME_DIR=../photodb-runtime
 OPENEJB_DIRECTORY=$(RUNTIME_DIR)/openejb
 TOMEE_DIRECTORY=$(RUNTIME_DIR)/tomee
-TOMEEPLUS_ZIP=$(TOMEE_DIRECTORY)/apache-tomee-1.5.0-plus.tar.gz
+TOMEEPLUS_ZIP_NAME=apache-tomee-plus-1.5.1-SNAPSHOT
+TOMEEPLUS_ZIP=$(RUNTIME_DIR)/openejb/source-code/tomee/apache-tomee/target/$(TOMEEPLUS_ZIP_NAME).tar.gz
 
 clean-log:
 	rm -f $(RUNTIME_DIR)/runtime.log
@@ -26,9 +27,11 @@ clean: kill-tomee
 
 openejb: $(OPENEJB_DIRECTORY)
 
-$(TOMEEPLUS_ZIP):
+$(TOMEEPLUS_ZIP_NAME):
+
+$(TOMEEPLUS_ZIP): openejb $(TOMEE_DIRECTORY)
 	mkdir -p $(TOMEE_DIRECTORY)
-	cd $(TOMEE_DIRECTORY) && wget https://dl.dropbox.com/u/1459144/posts/apache-tomee-1.5.0-plus.tar.gz
+	cp $(TOMEEPLUS_ZIP) $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME).tar.gz
 
 gettomee: $(TOMEEPLUS_ZIP)
 
@@ -45,16 +48,16 @@ kill-tomee:
 
 start-tomee: kill-tomee deploy
 	export JPDA_SUSPEND=n && export CATALINA_PID=$(RUNTIME_DIR)/tomee-pid.txt \
-		&& $(TOMEE_DIRECTORY)/apache-tomee-plus-1.5.0/bin/catalina.sh jpda start
+		&& $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/bin/catalina.sh jpda start
 
 build: clean-log openejb
 	mvn clean install -DskipTests=true 
 
 prepare-webapps:
-	cd $(TOMEE_DIRECTORY) && rm -rf apache-tomee-plus-1.5.0 && tar -xvzf apache-tomee-1.5.0-plus.tar.gz
-	cp ./photodb-web/target/photodb-web.war $(TOMEE_DIRECTORY)/apache-tomee-plus-1.5.0/webapps/
-	cp -f ./tomcat-users.xml $(TOMEE_DIRECTORY)/apache-tomee-plus-1.5.0/conf/
-	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/apache-tomee-plus-1.5.0/conf/
+	cd $(TOMEE_DIRECTORY) && rm -rf $(TOMEEPLUS_ZIP_NAME) && tar -xvzf $(TOMEEPLUS_ZIP_NAME).tar.gz
+	cp ./photodb-web/target/photodb-web.war $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/
+	cp -f ./tomcat-users.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
+	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 
 deploy: build gettomee prepare-webapps
 
@@ -62,7 +65,7 @@ run-jasmine:
 	cd ./photodb-web/ && mvn jasmine:bdd
 
 up-static:
-	rm -rf $(TOMEE_DIRECTORY)/apache-tomee-plus-1.5.0/webapps/photodb-web/app
-	cp -r photodb-web/src/main/webapp/app $(TOMEE_DIRECTORY)/apache-tomee-plus-1.5.0/webapps/photodb-web/
+	rm -rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb-web/app
+	cp -r photodb-web/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb-web/
 
 .PHONY: clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
