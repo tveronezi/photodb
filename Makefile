@@ -70,7 +70,7 @@ prepare-webapps:
 deploy: build gettomee prepare-webapps
 
 run-jasmine:
-	cd ./photodb-web/ && mvn jasmine:bdd
+	cd ./photodb-gui/ && mvn jasmine:bdd
 
 up-static:
 	rm -rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb-web/app
