@@ -109,7 +109,10 @@ define(['ApplicationChannel', 'util/Obj', 'lib/jquery'],
         }
 
         return {
-            sendMessage:sendMessage
+            sendMessage:sendMessage,
+            getUrlBase:function () {
+                return  urlBase;
+            }
         }
     }
 );

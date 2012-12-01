@@ -17,12 +17,22 @@
  */
 
 "use strict";
-define(['ApplicationChannel', 'util/Sequence', 'FileManager', 'lib/jquery', 'lib/d3'],
-    function (channel, sequence) {
+define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', 'FileManager', 'lib/jquery', 'lib/d3'],
+    function (channel, sequence, obj, model) {
         var svgId = sequence.next('svg');
 
         channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
-            var a = 0;
+            obj.forEach(data.output, function(value) {
+                var itemData = {
+                    localId:sequence.next('file'),
+                    x:value.x,
+                    y:value.y,
+                    height:200,
+                    width:200,
+                    href:model.getUrlBase() + 'cmd?cmdName=DownloadPhoto&uid=' + value.uid
+                };
+                createFileItem(itemData);
+            });
         });
 
         channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
@@ -59,6 +69,10 @@ define(['ApplicationChannel', 'util/Sequence', 'FileManager', 'lib/jquery', 'lib
                 width:200,
                 href:data.evt.target.result
             };
+            createFileItem(itemData);
+        });
+
+        function createFileItem(itemData) {
             var myImage = new Image();
             myImage.onload = function () {
                 function calculateSize(original, atual, value) {
@@ -94,6 +108,6 @@ define(['ApplicationChannel', 'util/Sequence', 'FileManager', 'lib/jquery', 'lib
                     .call(drag);
             };
             myImage.src = itemData.href;
-        });
+        }
     }
 );
