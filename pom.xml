@@ -25,6 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
+        <module>photodb-gui</module>
         <module>photodb-web</module>
         <module>photodb-service</module>
     </modules>

@@ -21,11 +21,13 @@ TOMEEPLUS_ZIP=$(RUNTIME_DIR)/openejb/source-code/tomee/apache-tomee/target/$(TOM
 clean-log:
 	rm -f $(RUNTIME_DIR)/runtime.log
 
-clean: kill-tomee
-	rm -rf $(RUNTIME_DIR)
+clean: kill-tomee openejb
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn revert -R . && svn up
+	rm -f $(OPENEJB_DIRECTORY)/build.placeholder
+	rm -rf $(TOMEE_DIRECTORY)
 	mvn clean
 
-openejb: $(OPENEJB_DIRECTORY)
+openejb: $(OPENEJB_DIRECTORY)/build.placeholder
 
 $(TOMEEPLUS_ZIP_NAME):
 
@@ -37,10 +39,13 @@ $(TOMEEPLUS_ZIP): openejb $(TOMEE_DIRECTORY)
 
 gettomee: $(TOMEEPLUS_ZIP)
 
+$(OPENEJB_DIRECTORY)/build.placeholder: $(OPENEJB_DIRECTORY)
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean install -DskipTests=true
+	touch $(OPENEJB_DIRECTORY)/build.placeholder
+
 $(OPENEJB_DIRECTORY):
 	mkdir -p $(OPENEJB_DIRECTORY)
 	cd $(OPENEJB_DIRECTORY) && svn co https://svn.apache.org/repos/asf/openejb/trunk/openejb source-code
-	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean install -DskipTests=true 
 
 kill-tomee:
 	@if test -f $(RUNTIME_DIR)/tomee-pid.txt; then \
@@ -57,7 +62,8 @@ build: clean-log openejb
 
 prepare-webapps:
 	cd $(TOMEE_DIRECTORY) && rm -rf $(TOMEEPLUS_ZIP_NAME) && tar -xvzf $(TOMEEPLUS_ZIP_NAME).tar.gz
-	cp ./photodb-web/target/photodb-web.war $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/
+	cp ./photodb-gui/target/photodb-gui.war $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/
+	mv $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb-gui.war $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb.war
 	cp -f ./tomcat-users.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 

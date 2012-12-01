@@ -21,6 +21,10 @@ define(['ApplicationChannel', 'util/Sequence', 'FileManager', 'lib/jquery', 'lib
     function (channel, sequence) {
         var svgId = sequence.next('svg');
 
+        channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
+            var a = 0;
+        });
+
         channel.bind('server-command-callback-success', 'upload-file', function (data) {
             var svg = d3.select('#' + data.localId)
                 .attr('remote-id', data.photoId);

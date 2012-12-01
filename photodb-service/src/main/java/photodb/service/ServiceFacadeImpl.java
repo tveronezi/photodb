@@ -28,7 +28,6 @@ import photodb.service.bean.PhotoImpl;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -46,8 +45,7 @@ public class ServiceFacadeImpl implements ServiceFacade {
     @EJB
     private PhotoImpl photoService;
 
-    @Inject
-    private DtoBuilder dtoBuilder;
+    private DtoBuilder dtoBuilder = new DtoBuilder();
 
     @Override
     public Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y) {

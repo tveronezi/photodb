@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@WebServlet(urlPatterns = ['/upload'])
+@WebServlet(name = "upload servlet", urlPatterns = '/upload')
 class UploadServlet extends HttpServlet {
     @EJB
     ServiceFacade serviceFacade
