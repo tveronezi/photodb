@@ -16,21 +16,27 @@
  *  limitations under the License.
  */
 
-package photodb.data.entity
+package photodb.web.command.impl
 
-import javax.persistence.*
+import photodb.data.dto.PhotoDto
+import photodb.service.ServiceFacade
+import photodb.web.command.Command
 
-@Entity
-class Comment extends BaseEntity {
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
 
-    @ManyToOne
-    @JoinColumn(name = 'photo_uid', nullable = false)
-    Photo photo
+class DownloadPhoto implements Command {
+    @Override
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+        Long uid = req.getParameter('uid') as Long
+        PhotoDto dto = serviceFacade.getPhoto(uid)
+        File file = new File(req.getRealPath('/WEB-INF/images'), dto.path)
 
-    @Column(nullable = false)
-    String text
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    Date date
+        resp.contentType = dto.mime
+        file.withInputStream { is ->
+            resp.outputStream << is
+        }
+        resp.outputStream.flush()
+        return resp
+    }
 }

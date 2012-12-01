@@ -21,12 +21,32 @@ package photodb.web.command.impl
 import photodb.service.ServiceFacade
 import photodb.web.command.Command
 
-class AddComment implements Command {
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+
+class UploadPhoto implements Command {
     @Override
-    def execute(ServiceFacade serviceFacade, Map<String, String> params) {
-        def commentUid = serviceFacade.createComment(params.photoUid as Long, params.comment)
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+        // TODO: For now we are going to use this directory
+        // We will use something else later.
+        File imagesDir = new File(req.getRealPath('/WEB-INF/images'))
+        imagesDir.mkdirs()
+
+        def sessionId = req.session.id
+
+        def data = req.getAttribute('params')
+        String path = sessionId + '-' + System.currentTimeMillis()
+        File uploadedFile = new File(imagesDir, path)
+        data.fileItem.write(uploadedFile)
+        def photoId = serviceFacade.createPhoto(
+                path,
+                data.fileItem.fileName,
+                data.fileItem.contentType,
+                Integer.valueOf(data.x),
+                Integer.valueOf(data.y)
+        )
         return [
-                commentUid: commentUid
+                photoId: photoId
         ]
     }
 }

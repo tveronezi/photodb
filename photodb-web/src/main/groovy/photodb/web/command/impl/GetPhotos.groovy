@@ -21,9 +21,12 @@ package photodb.web.command.impl
 import photodb.service.ServiceFacade
 import photodb.web.command.Command
 
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+
 class GetPhotos implements Command {
     @Override
-    def execute(ServiceFacade serviceFacade, Map<String, String> params) {
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
         def dtos = serviceFacade.getAllPhotoDtos()
         return dtos
     }

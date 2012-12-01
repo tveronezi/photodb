@@ -18,40 +18,68 @@
 
 package photodb.web.command
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import photodb.service.ServiceFacade
+
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import org.apache.commons.fileupload.FileItemFactory
+import org.apache.commons.fileupload.disk.DiskFileItemFactory
+import org.apache.commons.fileupload.servlet.ServletFileUpload
 
 class CommandExecutor {
     private static final String PATH = "photodb.web.command.impl."
 
-    def gson = new Gson()
-    def mapType = new TypeToken<Map<String, Object>>() {
-    }.getType()
-
-    def execute(ServiceFacade serviceFacade, String rawParams) {
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
         def result = [:]
+        result << ['success': Boolean.FALSE]
 
         long start = System.currentTimeMillis()
         result.put("start", start)
 
         try {
-            def params = gson.fromJson(rawParams, mapType)
-            result.put("params", params)
+            String cmdName = req.getParameter("cmdName")
+            def data = [:]
+            if(cmdName) {
+                req.getParameterNames().each { key ->
+                    data[key] = req.getParameter(key)
+                }
 
-            // Remove the cmdName from this list.
-            String cmdName = (String) params.remove("cmdName")
+            } else {
+                // Create a new file upload handler
+                ServletFileUpload parser = new ServletFileUpload(new DiskFileItemFactory())
+                // Parse the request
+                List items = parser.parseRequest(req)
+
+                items.each { item ->
+                    if (item.isFormField()) {
+                        data[item.getFieldName()] = item.getString()
+                    } else {
+                        data['fileItem'] = item
+                    }
+                }
+
+                cmdName = data.cmdName
+            }
+            req.setAttribute('params', data)
+
             Class<?> cls = Class.forName(PATH + cmdName)
 
             def cmd = cls.newInstance()
+            def output = cmd.execute(serviceFacade, req, resp)
 
-            result << ['cmdName': cmdName]
-            result << ['output': cmd.execute(serviceFacade, params)]
-            result << ['success': Boolean.TRUE]
+            // If the command returns the resp object, if means
+            // the command manages what it wants to return
+            if (output == resp) {
+                return output
+            } else {
+                // Otherwise we return a JSON object
+                result << ['cmdName': cmdName]
+                result << ['output': output]
+                result << ['params': data]
+                result << ['success': Boolean.TRUE]
+            }
 
         } catch (Throwable e) {
-            result << ['success': Boolean.FALSE]
-
             Writer writer = new StringWriter()
             PrintWriter printWriter = new PrintWriter(writer)
             e.printStackTrace(printWriter)

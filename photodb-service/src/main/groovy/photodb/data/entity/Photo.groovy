@@ -18,7 +18,10 @@
 
 package photodb.data.entity
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = ['file_path']))
@@ -39,6 +42,4 @@ class Photo extends BaseEntity {
     @Column(nullable = false)
     Integer y
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = 'photo')
-    Set<Comment> comments
 }

@@ -22,6 +22,8 @@ import com.google.gson.GsonBuilder
 import photodb.service.ServiceFacade
 
 import javax.ejb.EJB
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
 import javax.servlet.annotation.WebServlet
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -39,8 +41,7 @@ class CommandServlet extends HttpServlet {
     /**
      * This method is mostly used for testing purposes. It allows the user to call the "cmd" servlet from the
      * browsers address bar with a simple get. For example: you could call...
-     * http://localhost:8080/photodb-web/cmd?strParam={cmdName:'CreatePhoto',path:'my path'}
-     * @param req
+     * http://localhost:8080/photodb-web/cmd?strParam={cmdName:'CreatePhoto',path:'my path'}* @param req
      * @param resp
      */
     @Override
@@ -58,9 +59,13 @@ class CommandServlet extends HttpServlet {
         execute(req, resp)
     }
 
-    private void execute(final HttpServletRequest req, final HttpServletResponse resp) {
-        def result = executor.execute(serviceFacade, req.getParameter("strParam"))
-        def gson = new GsonBuilder().setPrettyPrinting().create()
-        resp.getWriter().write(gson.toJson(result))
+    private void execute(final ServletRequest req, final ServletResponse resp) {
+        def result = executor.execute(serviceFacade, req, resp)
+        // If the command returns the resp object, if means
+        // the command manages what it wants to return
+        if (result != resp) {
+            def gson = new GsonBuilder().setPrettyPrinting().create()
+            resp.getWriter().write(gson.toJson(result))
+        }
     }
 }

@@ -23,6 +23,9 @@ import org.junit.Test
 import photodb.service.ServiceFacade
 import photodb.web.command.CommandExecutor
 
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+
 class TestCommandExecutor {
 
     @Test
@@ -33,12 +36,23 @@ class TestCommandExecutor {
         }] as ServiceFacade
 
         //In your browser, it would be
-        //http://localhost:8080/photodb-web/cmd?strParam={cmdName:'CreatePhoto', path: 'b'}
-        def rawParams = '{cmdName:"CreatePhoto",path:"b"}'
+        //http://localhost:8080/photodb-web/cmd?cmdName=CreatePhoto&path=b
+        def req = [getParameter: {
+            key ->
+            if (key == 'cmdName') {
+                return 'CreatePhoto'
+            }
+            if (key == 'path') {
+                return 'b'
+            }
+            return null
+        }] as ServletRequest
+
+        def resp = [] as ServletResponse
 
         //Creating an executor instance
         def executor = new CommandExecutor()
-        def result = executor.execute(serviceFacade, rawParams)
+        def result = executor.execute(serviceFacade, req, resp)
         Assert.assertEquals(100l, result.output.photoUid)
     }
 
@@ -47,10 +61,20 @@ class TestCommandExecutor {
         def serviceFacade = [createPhoto: {
             path -> throw new RuntimeException('Expected exception!')
         }] as ServiceFacade
-        def rawParams = '{cmdName:"CreatePhoto",path:"b"}'
+        def req = [getParameter: {
+            key ->
+            if (key == 'cmdName') {
+                return 'CreatePhoto'
+            }
+            if (key == 'path') {
+                return 'b'
+            }
+            return null
+        }] as ServletRequest
+        def resp = [] as ServletResponse
 
         def executor = new CommandExecutor()
-        def result = executor.execute(serviceFacade, rawParams)
+        def result = executor.execute(serviceFacade, req, resp)
         Assert.assertEquals(false, result.success)
     }
 }

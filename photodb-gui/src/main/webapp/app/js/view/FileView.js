@@ -25,9 +25,9 @@ define(['ApplicationChannel', 'util/Sequence', 'FileManager', 'lib/jquery', 'lib
             var a = 0;
         });
 
-        channel.bind('server-command-callback-success', 'upload-file', function (data) {
-            var svg = d3.select('#' + data.localId)
-                .attr('remote-id', data.photoId);
+        channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
+            var svg = d3.select('#' + data.params.localId)
+                .attr('remote-id', data.output.photoId);
         });
 
         channel.bind('ui-actions', 'container-rendered', function (data) {

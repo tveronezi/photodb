@@ -21,15 +21,18 @@ package photodb.web.command.impl
 import photodb.service.ServiceFacade
 import photodb.web.command.Command
 
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+
 class CreatePhoto implements Command {
     @Override
-    def execute(ServiceFacade serviceFacade, Map<String, String> params) {
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
         def photoUid = serviceFacade.createPhoto(
-                params.path,
-                params.fileName,
-                params.contentType,
-                params.x as Integer,
-                params.y as Integer
+                req.getParameter('path'),
+                req.getParameter('fileName'),
+                req.getParameter('contentType'),
+                req.getParameter('x') as Integer,
+                req.getParameter('y') as Integer
         )
         return [
                 photoUid: photoUid

@@ -18,17 +18,13 @@
 
 package photodb.service.bean;
 
-import photodb.data.entity.Comment;
 import photodb.data.entity.Photo;
 import photodb.data.execution.BaseEAO;
-import photodb.data.execution.command.CreateComment;
 import photodb.data.execution.command.CreatePhoto;
-import photodb.data.execution.command.GetPhotoComments;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.List;
-import java.util.Set;
 
 @Stateless
 public class PhotoImpl {
@@ -45,21 +41,13 @@ public class PhotoImpl {
         return this.baseEAO.execute(create);
     }
 
-    public Comment createComment(Long photoUid, String comment) {
-        final CreateComment create = new CreateComment();
-        create.photoUid = photoUid;
-        create.comment = comment;
-        return this.baseEAO.execute(create);
-    }
-
-    public Set<Comment> getComments(Long photoUid) {
-        final GetPhotoComments get = new GetPhotoComments();
-        get.photoUid = photoUid;
-        return this.baseEAO.execute(get);
-    }
-
     public List<Photo> getPhotos() {
         // TODO no security yet. Just get all the photos
         return this.baseEAO.findAll(Photo.class);
+    }
+
+    public Photo getPhoto(Long uid) {
+        // TODO no security yet. Just get the photo
+        return this.baseEAO.find(Photo.class, uid);
     }
 }

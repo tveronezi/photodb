@@ -19,16 +19,16 @@
 package photodb.service;
 
 
-import photodb.data.dto.CommentDto;
 import photodb.data.dto.PhotoDto;
-import photodb.data.entity.Comment;
 import photodb.data.entity.Photo;
 import photodb.service.bean.PhotoImpl;
 
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is the access point to the service layer. We will never return a JPA bean from any of the methods defined here.
@@ -55,7 +55,6 @@ public class ServiceFacadeImpl implements ServiceFacade {
 
     @Override
     public Set<PhotoDto> getAllPhotoDtos() {
-        // TODO: security. No security yet. Just get all the photos
         final List<Photo> photos = this.photoService.getPhotos();
         final Set<PhotoDto> result = new HashSet<PhotoDto>();
         for (Photo photo : photos) {
@@ -66,25 +65,8 @@ public class ServiceFacadeImpl implements ServiceFacade {
     }
 
     @Override
-    public Long createComment(Long photoUid, String text) {
-        // TODO: security.
-        final Comment comment = this.photoService.createComment(photoUid, text);
-        return comment.getUid();
-    }
-
-    @Override
-    public Set<CommentDto> getComments(Long photoUid) {
-        // TODO: security.
-        final Set<CommentDto> result = new TreeSet<CommentDto>(new Comparator<CommentDto>() {
-            @Override
-            public int compare(CommentDto a, CommentDto b) {
-                return a.getTs().compareTo(b.getTs());
-            }
-        });
-        final Set<Comment> comments = this.photoService.getComments(photoUid);
-        for (Comment comment : comments) {
-            result.add(dtoBuilder.buildComment(comment));
-        }
-        return result;
+    public PhotoDto getPhoto(Long uid) {
+        final Photo photo = this.photoService.getPhoto(uid);
+        return this.dtoBuilder.buildPhoto(photo);
     }
 }

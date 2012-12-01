@@ -20,6 +20,9 @@ package photodb.web.command
 
 import photodb.service.ServiceFacade
 
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+
 interface Command {
-    def execute(ServiceFacade serviceFacade, Map<String, String> params)
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp)
 }

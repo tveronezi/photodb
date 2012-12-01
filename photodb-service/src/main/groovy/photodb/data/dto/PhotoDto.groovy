@@ -20,5 +20,9 @@ package photodb.data.dto
 
 class PhotoDto implements Serializable {
     Long uid
+    String name
+    Integer x
+    Integer y
     String path
+    String mime
 }

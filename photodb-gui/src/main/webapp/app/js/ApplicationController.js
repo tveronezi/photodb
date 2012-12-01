@@ -24,9 +24,16 @@
 define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView'],
     function (channel, model, ApplicationView) {
         return function () {
+
             channel.bind('file-manager', 'new-local-file', function (data) {
-                // data.evt, data.x, data.y, data.file
-                model.uploadFile(data.file, data.x, data.y, data.localId);
+                var bean = {
+                    cmdName:'UploadPhoto',
+                    x:data.x,
+                    y:data.y,
+                    localId:data.localId
+                };
+                bean[data.file.name] = data.file;
+                model.sendMessage(bean);
             });
 
             channel.bind('ui-actions', 'container-rendered', function (data) {

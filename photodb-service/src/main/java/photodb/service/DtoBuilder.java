@@ -18,9 +18,7 @@
 
 package photodb.service;
 
-import photodb.data.dto.CommentDto;
 import photodb.data.dto.PhotoDto;
-import photodb.data.entity.Comment;
 import photodb.data.entity.Photo;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,15 +29,11 @@ public class DtoBuilder {
     public PhotoDto buildPhoto(Photo photo) {
         final PhotoDto result = new PhotoDto();
         result.setUid(photo.getUid());
+        result.setX(photo.getX());
+        result.setY(photo.getY());
         result.setPath(photo.getPath());
-        return result;
-    }
-
-
-    public CommentDto buildComment(Comment comment) {
-        final CommentDto result = new CommentDto();
-        result.setText(comment.getText());
-        result.setTs(comment.getDate().getTime());
+        result.setMime(photo.getContentType());
+        result.setName(photo.getFileName());
         return result;
     }
 

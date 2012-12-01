@@ -147,7 +147,10 @@ define([],
                 }
                 for (var key in obj) {
                     if (obj.hasOwnProperty(key)) {
-                        callback(key, obj[key]);
+                        if(callback(key, obj[key]) === false) {
+                            // return false if you want to break the loop
+                            break;
+                        }
                     }
                 }
             }

@@ -33,7 +33,7 @@ class TestCommandServlet {
         //Mocking the ServiceFacade
         def executor = [
                 execute: {
-                    facade, params -> return 'command executed'
+                    facade, req, resp -> return 'command executed'
                 }
         ] as CommandExecutor
 
@@ -54,7 +54,7 @@ class TestCommandServlet {
         def servlet = new CommandServlet(
                 executor: executor
         )
-        servlet.doGet(req, resp)
+        servlet.execute(req, resp)
         Assert.assertEquals('"command executed"', result.toString())
     }
 }

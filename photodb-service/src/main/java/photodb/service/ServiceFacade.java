@@ -18,7 +18,6 @@
 
 package photodb.service;
 
-import photodb.data.dto.CommentDto;
 import photodb.data.dto.PhotoDto;
 
 import java.util.Set;
@@ -28,7 +27,5 @@ public interface ServiceFacade {
 
     Set<PhotoDto> getAllPhotoDtos();
 
-    Long createComment(Long photoUid, String comment);
-
-    Set<CommentDto> getComments(Long photoUid);
+    PhotoDto getPhoto(Long uid);
 }

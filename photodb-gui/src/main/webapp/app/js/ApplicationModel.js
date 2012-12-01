@@ -17,8 +17,8 @@
  */
 
 "use strict";
-define(['ApplicationChannel', 'lib/jquery'],
-    function (channel) {
+define(['ApplicationChannel', 'util/Obj', 'lib/jquery'],
+    function (channel, obj) {
         var appSocket = null;
         var urlBase = window.document.URL;
 
@@ -26,15 +26,46 @@ define(['ApplicationChannel', 'lib/jquery'],
         urlBase = urlBase.replace(new RegExp('^' + window.document.location.host), '');
         urlBase = urlBase.replace('#', '');
 
-        function sendMessage(bean) {
-            var str = JSON.stringify(bean);
+        function sendMultipart(bean) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', urlBase + 'cmd', true);
+            xhr.onload = function (e) {
+                var data = JSON.parse(this.response);
+                if (data.cmdName) {
+                    // Commands callback calls
+                    channel.send('server-command-callback', data.cmdName, data);
+
+                    if (data.success) {
+                        channel.send('server-command-callback-success', data.cmdName, data);
+                    } else {
+                        channel.send('server-command-callback-error', data.cmdName, data);
+                    }
+
+                } else {
+                    channel.send('server-callback', 'socket-message-received', {
+                        data:data
+                    });
+                }
+            };
+            xhr.onerror = function (e) {
+                channel.send('server-connection', 'socket-connection-error', {
+                    message:data
+                });
+            };
+
+            var formData = new FormData();
+            obj.forEachKey(bean, function (key, value) {
+                formData.append(key, value);
+            });
+
+            xhr.send(formData);
+        }
+
+        function sendNormal(bean) {
             $.ajax({
                     url:urlBase + 'cmd',
                     type:'POST',
-                    dataType:'text',
-                    data:{
-                        strParam:str
-                    },
+                    data:bean,
                     error:function (data) {
                         channel.send('server-connection', 'socket-connection-error', {
                             message:data
@@ -62,30 +93,23 @@ define(['ApplicationChannel', 'lib/jquery'],
             );
         }
 
-        function uploadFile(file, x, y, localId) {
-            var formData = new FormData();
-            formData.append(file.name, file);
-            formData.append('x', x);
-            formData.append('y', y);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', urlBase + 'upload', true);
-            xhr.onload = function (e) {
-                var result = JSON.parse(this.response);
-                result.localId = localId;
-                channel.send('server-command-callback-success', 'upload-file', result);
-            };
-            xhr.onerror = function (e) {
-                channel.send('server-command-callback-error', 'upload-file', {
-                    event:e
-                });
-            };
-            xhr.send(formData);
+        function sendMessage(bean) {
+            var multipart = false;
+            obj.forEachKey(bean, function (key, value) {
+                if (value instanceof File) {
+                    multipart = true;
+                    return false;
+                }
+            });
+            if (multipart) {
+                sendMultipart(bean);
+            } else {
+                sendNormal(bean);
+            }
         }
 
         return {
-            sendMessage:sendMessage,
-            uploadFile:uploadFile
+            sendMessage:sendMessage
         }
     }
 );
