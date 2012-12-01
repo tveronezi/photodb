@@ -69,4 +69,9 @@ public class ServiceFacadeImpl implements ServiceFacade {
         final Photo photo = this.photoService.getPhoto(uid);
         return this.dtoBuilder.buildPhoto(photo);
     }
+
+    @Override
+    public void updatePhotoPosition(Long uid, Integer x, Integer y) {
+        this.photoService.updatePhotoPosition(uid, x, y);
+    }
 }

@@ -50,4 +50,11 @@ public class PhotoImpl {
         // TODO no security yet. Just get the photo
         return this.baseEAO.find(Photo.class, uid);
     }
+
+    public void updatePhotoPosition(Long uid, Integer x, Integer y) {
+        // TODO no security yet. Just get the photo
+        final Photo photo = this.baseEAO.find(Photo.class, uid);
+        photo.setX(x);
+        photo.setY(y);
+    }
 }

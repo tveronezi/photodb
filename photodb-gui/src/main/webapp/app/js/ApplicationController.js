@@ -42,6 +42,16 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView'],
                 });
             });
 
+            channel.bind('file-manager', 'update-photo-position', function (data) {
+                // data.photoId, data.nx, data.ny
+                model.sendMessage({
+                    cmdName:'UpdatePhotoPosition',
+                    photoId:data.photoId,
+                    x:data.nx,
+                    y:data.ny
+                });
+            });
+
             var view = ApplicationView();
             view.render();
         };

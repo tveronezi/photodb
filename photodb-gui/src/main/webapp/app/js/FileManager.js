@@ -21,10 +21,24 @@
  * DO NOT add any logic here. All business logic should be implemented in the ApplicationController object.
  */
 "use strict";
-define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'lib/jquery'],
-    function (channel, obj, sequence) {
-        function handleFileSelect(files, x, y) {
+define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', 'lib/jquery'],
+    function (channel, obj, sequence, delayedTask) {
+        var updatePos = {};
 
+        channel.bind('ui-actions', 'drag-photo', function (data) {
+            // data.photoId, data.nx, data.ny
+            var task = updatePos[data.photoId];
+            if (!task) {
+                task = delayedTask();
+                updatePos[data.photoId] = task;
+            }
+            task.delay(function () {
+                channel.send('file-manager', 'update-photo-position', data);
+                delete updatePos[data.photoId];
+            }, 1000); // Wait 1s before sending this request
+        });
+
+        function handleFileSelect(files, x, y) {
             obj.forEach(files, function (f) {
                 // Only process image files.
                 if (!f.type.match('image.*')) {

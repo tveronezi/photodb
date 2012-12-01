@@ -21,14 +21,34 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
     function (channel, sequence, obj, model) {
         var svgId = sequence.next('svg');
 
+        function setDragBehaviour(imgEl) {
+            var drag = d3.behavior.drag()
+                .origin(Object)
+                .on("drag", function () {
+                    var d3Event = d3.event;
+                    var nx = Number(imgEl.attr('x')) + d3Event.dx;
+                    var ny = Number(imgEl.attr('y')) + d3Event.dy;
+                    imgEl.attr('x', nx);
+                    imgEl.attr('y', ny);
+
+                    channel.send('ui-actions', 'drag-photo', {
+                        photoId:imgEl.attr('remote-id'),
+                        nx:nx,
+                        ny:ny
+                    });
+                });
+            imgEl.call(drag);
+        }
+
         channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
-            obj.forEach(data.output, function(value) {
+            obj.forEach(data.output, function (value) {
                 var itemData = {
                     localId:sequence.next('file'),
                     x:value.x,
                     y:value.y,
                     height:200,
                     width:200,
+                    photoId:value.uid,
                     href:model.getUrlBase() + 'cmd?cmdName=DownloadPhoto&uid=' + value.uid
                 };
                 createFileItem(itemData);
@@ -36,8 +56,9 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
         });
 
         channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
-            var svg = d3.select('#' + data.params.localId)
+            var imgEl = d3.select('#' + data.params.localId)
                 .attr('remote-id', data.output.photoId);
+            setDragBehaviour(imgEl);
         });
 
         channel.bind('ui-actions', 'container-rendered', function (data) {
@@ -88,24 +109,17 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                     itemData.height = calculateSize(this.width, itemData.width, this.height);
                 }
 
-                var drag = d3.behavior.drag()
-                    .origin(Object)
-                    .on("drag", function () {
-                        var d3Event = d3.event;
-                        var imgEl = d3.select(this);
-                        imgEl.attr('x', Number(imgEl.attr('x')) + d3Event.dx);
-                        imgEl.attr('y', Number(imgEl.attr('y')) + d3Event.dy);
-                    });
-
-                d3.select('#' + svgId)
-                    .append('image')
-                    .attr('id', itemData.localId)
+                var imgEl = d3.select('#' + svgId).append('image')
+                imgEl.attr('id', itemData.localId)
                     .attr('x', itemData.x)
                     .attr('y', itemData.y)
                     .attr('height', itemData.height + 'px')
                     .attr('width', itemData.width + 'px')
-                    .attr('xlink:href', itemData.href)
-                    .call(drag);
+                    .attr('xlink:href', itemData.href);
+                if (itemData.photoId) {
+                    imgEl.attr('remote-id', itemData.photoId);
+                    setDragBehaviour(imgEl);
+                }
             };
             myImage.src = itemData.href;
         }

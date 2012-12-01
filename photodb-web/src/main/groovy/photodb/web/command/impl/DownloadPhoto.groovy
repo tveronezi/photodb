@@ -28,6 +28,7 @@ import javax.servlet.ServletResponse
 class DownloadPhoto implements Command {
     @Override
     def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+        // TODO: we should be able to return a thumb instead of the whole picture
         Long uid = req.getParameter('uid') as Long
         PhotoDto dto = serviceFacade.getPhoto(uid)
         File file = new File(req.getRealPath('/WEB-INF/images'), dto.path)

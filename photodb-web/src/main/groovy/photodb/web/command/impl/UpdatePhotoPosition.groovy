@@ -16,18 +16,23 @@
  *  limitations under the License.
  */
 
-package photodb.service;
+package photodb.web.command.impl
 
-import photodb.data.dto.PhotoDto;
+import photodb.service.ServiceFacade
+import photodb.web.command.Command
 
-import java.util.Set;
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
 
-public interface ServiceFacade {
-    Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y);
-
-    Set<PhotoDto> getAllPhotoDtos();
-
-    PhotoDto getPhoto(Long uid);
-
-    void updatePhotoPosition(Long uid, Integer x, Integer y);
+class UpdatePhotoPosition implements Command {
+    @Override
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+        def data = req.getAttribute('params')
+        serviceFacade.updatePhotoPosition(
+                data.photoId as Long,
+                data.x as Integer,
+                data.y as Integer
+        )
+        return null
+    }
 }

@@ -17,7 +17,7 @@
  */
 
 "use strict";
-define(['ApplicationChannel', 'util/Obj', 'lib/jquery'],
+define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
     function (channel, obj) {
         var appSocket = null;
         var urlBase = window.document.URL;
@@ -38,16 +38,26 @@ define(['ApplicationChannel', 'util/Obj', 'lib/jquery'],
                     if (data.success) {
                         channel.send('server-command-callback-success', data.cmdName, data);
                     } else {
+                        console.error(data);
                         channel.send('server-command-callback-error', data.cmdName, data);
                     }
 
                 } else {
-                    channel.send('server-callback', 'socket-message-received', {
-                        data:data
-                    });
+
+                    if (data.success) {
+                        channel.send('server-callback', 'socket-message-received', {
+                            data:data
+                        });
+                    } else {
+                        console.error(data);
+                        channel.send('server-callback', 'socket-error-message-received', {
+                            data:data
+                        });
+                    }
                 }
             };
             xhr.onerror = function (e) {
+                console.error(e);
                 channel.send('server-connection', 'socket-connection-error', {
                     message:data
                 });
@@ -84,9 +94,16 @@ define(['ApplicationChannel', 'util/Obj', 'lib/jquery'],
                             }
 
                         } else {
-                            channel.send('server-callback', 'socket-message-received', {
-                                data:data
-                            });
+                            if (data.success) {
+                                channel.send('server-callback', 'socket-message-received', {
+                                    data:data
+                                });
+                            } else {
+                                console.error(data);
+                                channel.send('server-callback', 'socket-error-message-received', {
+                                    data:data
+                                });
+                            }
                         }
                     }
                 }
