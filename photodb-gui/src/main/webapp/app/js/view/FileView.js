@@ -30,11 +30,12 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                     var ny = Number(imgEl.attr('y')) + d3Event.dy;
                     imgEl.attr('x', nx);
                     imgEl.attr('y', ny);
-
+                })
+                .on("dragend", function () {
                     channel.send('ui-actions', 'drag-photo', {
                         photoId:imgEl.attr('remote-id'),
-                        nx:nx,
-                        ny:ny
+                        nx:imgEl.attr('x'),
+                        ny:imgEl.attr('y')
                     });
                 });
             imgEl.call(drag);
