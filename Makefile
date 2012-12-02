@@ -22,7 +22,7 @@ clean-log:
 	rm -f $(RUNTIME_DIR)/runtime.log
 
 clean: kill-tomee openejb
-	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn revert -R . && svn up
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn revert -R .
 	rm -f $(OPENEJB_DIRECTORY)/build.placeholder
 	rm -rf $(TOMEE_DIRECTORY)
 	mvn clean
@@ -40,7 +40,8 @@ $(TOMEEPLUS_ZIP): openejb $(TOMEE_DIRECTORY)
 gettomee: $(TOMEEPLUS_ZIP)
 
 $(OPENEJB_DIRECTORY)/build.placeholder: $(OPENEJB_DIRECTORY)
-	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean install -DskipTests=true
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn revert -R . && svn up
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn install -DskipTests=true
 	touch $(OPENEJB_DIRECTORY)/build.placeholder
 
 $(OPENEJB_DIRECTORY):

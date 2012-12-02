@@ -19,31 +19,41 @@
 "use strict";
 define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
     'util/DelayedTask', 'lib/jquery'],
-    function (ApplicationChannel, ApplicationTemplates, Sequence, DelayedTask) {
-        return  function () {
-            "use strict";
+    function (channel, templates, sequence, delayedTask) {
+        var container = $(templates.getValue('application-growl', {}));
+        var myBody = $('body');
+        var active = false;
+        var timeout = {};
 
-            var channel = ApplicationChannel;
-            var container = $(ApplicationTemplates.getValue('application-growl', {}));
-            var myBody = $('body');
-            var active = false;
-            var timeout = {};
+        function showNotification(params) {
+            var messageType = params.messageType || 'success';
+            var message = params.message;
+            var autohide = (params.autohide !== false);
+            var waitTime = params.timeout || 5000;
 
-            function showNotification(message, messageType) {
-                if (!active) {
-                    active = true;
-                    myBody.append(container);
+            if (!active) {
+                active = true;
+                myBody.append(container);
+            }
+            var alertId = sequence.next('alert');
+            var alert = $(templates.getValue('application-growl-message', {
+                alertId:alertId,
+                messageType:'alert-' + messageType,
+                message:message
+            }));
+
+            container.append(alert);
+            alert.fadeIn();
+
+            if (autohide === false) {
+                // no-op
+            } else {
+                if (autohide === true) {
+                    // no-op
+                } else {
+                    timeout = autohide;
                 }
-                var alertId = Sequence.next('alert');
-                var alert = $(ApplicationTemplates.getValue('application-growl-message', {
-                    alertId:alertId,
-                    messageType:'alert-' + messageType,
-                    message:message
-                }));
-                container.append(alert);
-                alert.fadeIn();
-
-                timeout[alertId] = DelayedTask();
+                timeout[alertId] = delayedTask();
                 timeout[alertId].delay(function () {
                     try {
                         alert.fadeOut(null, function () {
@@ -55,12 +65,12 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
                     } catch (e) { /* noop */
                     }
                     delete timeout[alertId];
-                }, 5000);
+                }, waitTime);
             }
+        }
 
-            return {
-                showNotification:showNotification
-            };
+        return {
+            showNotification:showNotification
         };
     }
 );

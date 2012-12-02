@@ -76,6 +76,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                     url:urlBase + 'cmd',
                     type:'POST',
                     data:bean,
+                    dataType:'text',
                     error:function (data) {
                         channel.send('server-connection', 'socket-connection-error', {
                             message:data

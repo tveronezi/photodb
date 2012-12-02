@@ -21,8 +21,8 @@
  * It contains all the views and model instances.
  */
 "use strict";
-define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView'],
-    function (channel, model, ApplicationView) {
+define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/GrowlNotification', 'util/I18N'],
+    function (channel, model, ApplicationView, growl, I18N) {
         return function () {
 
             channel.bind('file-manager', 'new-local-file', function (data) {
@@ -37,9 +37,31 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView'],
             });
 
             channel.bind('ui-actions', 'container-rendered', function (data) {
-                model.sendMessage({
-                    cmdName:'GetPhotos'
+
+                growl.showNotification({
+                    message:I18N.get('application.welcome', {
+                        appName:I18N.get('application.name')
+                    }),
+                    autohide:false
                 });
+
+                if (window.File) {
+                    growl.showNotification({
+                        message:I18N.get('drag.photos.hint'),
+                        timeout:10000,
+                        messageType:'info'
+                    });
+
+                    model.sendMessage({
+                        cmdName:'GetPhotos'
+                    });
+                } else {
+                    growl.showNotification({
+                        message:I18N.get('html.support.error'),
+                        autohide:false,
+                        messageType:'error'
+                    });
+                }
             });
 
             channel.bind('file-manager', 'update-photo-position', function (data) {

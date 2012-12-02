@@ -20,15 +20,14 @@
 "use strict";
 define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
     'view/GrowlNotification', 'util/Obj', 'util/I18N', 'util/Sequence', 'lib/jquery', 'view/FileView'],
-    function (channel, ApplicationTemplates, DelayedTask, GrowlNotification, utils, I18N, sequence) {
+    function (channel, ApplicationTemplates, delayedTask, growl, utils, I18N, sequence) {
         return function () {
             var containerId = sequence.next('app-container');
             var container = $(ApplicationTemplates.getValue('application', {
                 id:containerId
             }));
             var browserWindow = $(window);
-            var delayedContainerResize = DelayedTask();
-            var growl = GrowlNotification();
+            var delayedContainerResize = delayedTask();
 
             browserWindow.on('resize', function () {
                 delayedContainerResize.delay(updateContainerSize, 500);
@@ -96,12 +95,6 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                     containerWidth:containerWidth
                 });
             }
-
-            channel.bind('ui-actions', 'container-rendered', function () {
-                growl.showNotification(I18N.get('application.welcome', {
-                    appName:I18N.get('application.name')
-                }));
-            });
 
             return {
                 render:function () {

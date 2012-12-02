@@ -20,39 +20,38 @@
 "use strict";
 define(['util/Obj', 'lib/handlebars', 'util/Log'],
     function (utils) {
-        return  (function () {
+        var missing = Handlebars.compile('[!{{key}}!]');
+        var messages = {
+            'application.name':'photodb',
+            'application.welcome':'Welcome to {{appName}}!',
+            'html.support.error':'This browser does not support HTML5.',
+            'drag.photos.hint':'Drag photos to your browser.'
+        };
 
-            var missing = Handlebars.compile('[!{{key}}!]');
-            var messages = {
-                'application.name':'photodb',
-                'application.welcome':'Welcome to {{appName}}!'
-            };
+        utils.forEachKey(messages, function (key, value) {
+            var template = Handlebars.compile(value);
+            messages[key] = template;
+        });
 
-            utils.forEachKey(messages, function (key, value) {
-                var template = Handlebars.compile(value);
-                messages[key] = template;
-            });
+        var get = function (key, values) {
+            var template = messages[key];
+            var cfg = values;
+            if (!template) {
+                template = missing;
+                cfg = {
+                    key:key
+                };
+                console.error('Missing i18n message.', key);
+            }
+            return template(cfg);
+        };
 
-            var get = function (key, values) {
-                var template = messages[key];
-                var cfg = values;
-                if (!template) {
-                    template = missing;
-                    cfg = {
-                        key:key
-                    };
-                    console.error('Missing i18n message.', key);
-                }
-                return template(cfg);
-            };
+        Handlebars.registerHelper('i18n', function (key) {
+            return get(key);
+        });
 
-            Handlebars.registerHelper('i18n', function (key) {
-                return get(key);
-            });
-
-            return {
-                get:get
-            };
-        })();
+        return {
+            get:get
+        };
     }
 );
