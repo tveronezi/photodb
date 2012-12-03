@@ -28,31 +28,43 @@ import javax.servlet.ServletResponse
 
 class TestCommandExecutor {
 
+    ServletRequest getReq(Hashtable params) {
+        def attr = [:]
+        def req = [
+                getParameter: {
+                    key ->
+                    return params[key]
+                },
+                getParameterNames: {
+                    return params.keys()
+                },
+                setAttribute: {
+                    key, value ->
+                    attr << [(key): value]
+                },
+                getAttribute: {
+                    key ->
+                    return attr[key]
+                }
+        ] as ServletRequest
+        return req
+    }
+
     @Test
     void testSuccess() {
         //Mocking the ServiceFacade
         def serviceFacade = [createPhoto: {
-            a, b, c, e, f -> 100l
+            path, fileName, contentType, x, y -> 100l
         }] as ServiceFacade
-
-        //In your browser, it would be
-        //http://localhost:8080/photodb-web/cmd?cmdName=CreatePhoto&path=b
-        def req = [getParameter: {
-            key ->
-            if (key == 'cmdName') {
-                return 'CreatePhoto'
-            }
-            if (key == 'path') {
-                return 'b'
-            }
-            return null
-        }] as ServletRequest
 
         def resp = [] as ServletResponse
 
         //Creating an executor instance
         def executor = new CommandExecutor()
-        def result = executor.execute(serviceFacade, req, resp)
+        def result = executor.execute(serviceFacade, getReq([
+                cmdName: 'CreatePhoto',
+                path: 'b'
+        ] as Hashtable), resp)
         Assert.assertEquals(100l, result.output.photoUid)
     }
 
@@ -61,20 +73,14 @@ class TestCommandExecutor {
         def serviceFacade = [createPhoto: {
             path -> throw new RuntimeException('Expected exception!')
         }] as ServiceFacade
-        def req = [getParameter: {
-            key ->
-            if (key == 'cmdName') {
-                return 'CreatePhoto'
-            }
-            if (key == 'path') {
-                return 'b'
-            }
-            return null
-        }] as ServletRequest
+
         def resp = [] as ServletResponse
 
         def executor = new CommandExecutor()
-        def result = executor.execute(serviceFacade, req, resp)
+        def result = executor.execute(serviceFacade, getReq([
+                cmdName: 'CreatePhoto',
+                path: 'b'
+        ] as Hashtable), resp)
         Assert.assertEquals(false, result.success)
     }
 }

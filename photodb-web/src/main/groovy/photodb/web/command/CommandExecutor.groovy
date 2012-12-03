@@ -40,8 +40,9 @@ class CommandExecutor {
             String cmdName = req.getParameter("cmdName")
             def data = [:]
             if(cmdName) {
-                req.getParameterNames().each { key ->
-                    data[key] = req.getParameter(key)
+                def names = req.getParameterNames()
+                names.each { name ->
+                    data[name] = req.getParameter(name)
                 }
 
             } else {
