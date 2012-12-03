@@ -51,7 +51,7 @@ class TestPhoto {
 
     @Test
     public void testAsManager() throws Exception {
-        def context = getContext("admin", "admin")
+        def context = getContext("paul", "michelle")
 
         try {
             def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
@@ -63,7 +63,7 @@ class TestPhoto {
 
     @Test
     void testCreatePhotoEntity() {
-        def context = getContext("myUser", "myUser")
+        def context = getContext("eddie", "jump")
 
         try {
             def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
@@ -83,7 +83,7 @@ class TestPhoto {
 
     @Test
     void testGetPhotos() {
-        def context = getContext("myUser", "myUser")
+        def context = getContext("eddie", "jump")
         def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
         def dtos = facade.getAllPhotoDtos()
         Assert.assertNotNull(dtos)

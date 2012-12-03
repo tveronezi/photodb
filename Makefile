@@ -12,7 +12,8 @@
 #  limitations under the License.
 #
 
-RUNTIME_DIR=../photodb-runtime
+CURRENT_DIR=$(shell cd .. && pwd)
+RUNTIME_DIR=$(CURRENT_DIR)/photodb-runtime
 OPENEJB_DIRECTORY=$(RUNTIME_DIR)/openejb
 TOMEE_DIRECTORY=$(RUNTIME_DIR)/tomee
 TOMEEPLUS_ZIP_NAME=apache-tomee-plus-1.5.1-SNAPSHOT
@@ -54,8 +55,18 @@ kill-tomee:
 		rm $(RUNTIME_DIR)/tomee-pid.txt; \
 	fi
 
-start-tomee: kill-tomee deploy
+echo-variables:
+	@echo CURRENT_DIR is $(CURRENT_DIR)
+	@echo RUNTIME_DIR is $(RUNTIME_DIR)
+	@echo OPENEJB_DIRECTORY is $(OPENEJB_DIRECTORY)
+	@echo TOMEE_DIRECTORY is $(TOMEE_DIRECTORY)
+	@echo TOMEEPLUS_ZIP_NAME is $(TOMEEPLUS_ZIP_NAME)
+	@echo TOMEEPLUS_ZIP is $(TOMEEPLUS_ZIP)
+
+start-tomee: echo-variables kill-tomee deploy
 	export JPDA_SUSPEND=n && export CATALINA_PID=$(RUNTIME_DIR)/tomee-pid.txt \
+		&& export CATALINA_OPTS="-Djava.security.auth.login.config=$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/login.config \
+			-Dopenejb.ScriptLoginModule.scriptURI=file://$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/loginscript.js" \
 		&& $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/bin/catalina.sh jpda start
 
 build: clean-log openejb
@@ -67,6 +78,9 @@ prepare-webapps:
 	mv $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb-gui.war $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb.war
 	cp -f ./tomcat-users.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
+	cp -f ./login.config $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
+	cp -f ./server.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
+	cp -f ./loginscript.js $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 
 deploy: build gettomee prepare-webapps
 
@@ -77,4 +91,4 @@ up-static:
 	rm -rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/app
 	cp -r photodb-gui/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/
 
-.PHONY: clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
+.PHONY: echo-variables clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine

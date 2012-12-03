@@ -17,9 +17,9 @@ public class LoginImpl {
         // TODO: Add authentication logic here
         final List<String> groups = new ArrayList<String>();
         if ("paul".equals(user) && "michelle".equals(password)) {
-            groups.addAll(Arrays.asList("Manager", "rockstar", "beatle"));
+            groups.addAll(Arrays.asList("photo-admin", "photo-user"));
         } else if ("eddie".equals(user) && "jump".equals(password)) {
-            groups.addAll(Arrays.asList("Manager", "rockstar", "beatle"));
+            groups.addAll(Arrays.asList("photo-user"));
         } else {
             throw new FailedLoginException("Bad user or password!");
         }

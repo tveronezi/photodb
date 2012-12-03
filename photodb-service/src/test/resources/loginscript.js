@@ -27,7 +27,7 @@ with (myImports) {
     p.put("java.naming.factory.initial", "org.apache.openejb.client.LocalInitialContextFactory");
 
     var ctx = new InitialContext(p);
-    var myBean =  ctx.lookup("java:global/testing-security-4/LoginImpl");
+    var myBean = ctx.lookup("java:global/photodb-service/LoginImpl");
     result = myBean.authenticate(user, password);
 }
 

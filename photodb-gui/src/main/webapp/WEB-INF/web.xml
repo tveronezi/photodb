@@ -13,4 +13,26 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+
+    <!-- ... -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure Content</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>photo-admin</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <!-- ... -->
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+    <!-- ... -->
+    <security-role>
+        <role-name>photo-admin</role-name>
+    </security-role>
 </web-app>
