@@ -16,33 +16,25 @@
  *  limitations under the License.
  */
 
-package photodb.data.execution.command;
+package photodb.service.bean;
 
-import photodb.data.entity.User;
+import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
-import photodb.data.execution.BaseEAO;
-import photodb.data.execution.DbCommand;
 
-public class CreatePhoto implements DbCommand<Photo> {
+import javax.ejb.Singleton;
 
-    public User user;
-    public String path;
-    public String fileName;
-    public String contentType;
-    public Integer x;
-    public Integer y;
+@Singleton
+public class DtoBuilderImpl {
 
-    @Override
-    public Photo execute(BaseEAO eao) {
-        Photo photo = new Photo();
-        photo.setPath(this.path);
-        photo.setFileName(this.fileName);
-        photo.setContentType(this.contentType);
-        photo.setX(this.x);
-        photo.setY(this.y);
-        photo.setUser(this.user);
-        photo.setPublicData(Boolean.FALSE);
-        photo = eao.create(photo);
-        return photo;
+    public PhotoDto buildPhoto(Photo photo) {
+        final PhotoDto result = new PhotoDto();
+        result.setUid(photo.getUid());
+        result.setX(photo.getX());
+        result.setY(photo.getY());
+        result.setPath(photo.getPath());
+        result.setMime(photo.getContentType());
+        result.setName(photo.getFileName());
+        return result;
     }
+
 }

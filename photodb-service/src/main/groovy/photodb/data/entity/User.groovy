@@ -16,25 +16,18 @@
  *  limitations under the License.
  */
 
-package photodb.service;
+package photodb.data.entity
 
-import photodb.data.dto.PhotoDto;
-import photodb.data.entity.Photo;
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 
-import javax.enterprise.context.ApplicationScoped;
+@Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = ['usr_name']))
+class User extends BaseEntity {
 
-@ApplicationScoped
-public class DtoBuilder {
-
-    public PhotoDto buildPhoto(Photo photo) {
-        final PhotoDto result = new PhotoDto();
-        result.setUid(photo.getUid());
-        result.setX(photo.getX());
-        result.setY(photo.getY());
-        result.setPath(photo.getPath());
-        result.setMime(photo.getContentType());
-        result.setName(photo.getFileName());
-        return result;
-    }
+    @Column(name = 'usr_name', nullable = false)
+    String name
 
 }

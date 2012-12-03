@@ -19,30 +19,32 @@
 package photodb.data.execution.command;
 
 import photodb.data.entity.User;
-import photodb.data.entity.Photo;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.DbCommand;
 
-public class CreatePhoto implements DbCommand<Photo> {
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 
-    public User user;
-    public String path;
-    public String fileName;
-    public String contentType;
-    public Integer x;
-    public Integer y;
+public class FindUserByName implements DbCommand<User> {
+
+    public String name;
 
     @Override
-    public Photo execute(BaseEAO eao) {
-        Photo photo = new Photo();
-        photo.setPath(this.path);
-        photo.setFileName(this.fileName);
-        photo.setContentType(this.contentType);
-        photo.setX(this.x);
-        photo.setY(this.y);
-        photo.setUser(this.user);
-        photo.setPublicData(Boolean.FALSE);
-        photo = eao.create(photo);
-        return photo;
+    public User execute(BaseEAO eao) {
+        final CriteriaBuilder cb = eao.getCriteriaBuilder();
+        final CriteriaQuery<User> cq = cb.createQuery(User.class);
+        final Root<User> root = cq.from(User.class);
+        cq.select(root);
+        final Path<String> pathName = root.get("name");
+        final Predicate pName = cb.equal(pathName, this.name);
+        cq.where(pName);
+        final TypedQuery<User> q = eao.createQuery(cq);
+
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

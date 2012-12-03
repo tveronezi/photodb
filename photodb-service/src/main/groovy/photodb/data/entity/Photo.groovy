@@ -22,6 +22,8 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.UniqueConstraint
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = ['file_path']))
@@ -41,5 +43,12 @@ class Photo extends BaseEntity {
 
     @Column(nullable = false)
     Integer y
+
+    @Column(nullable = false)
+    Boolean publicData
+
+    @ManyToOne(optional=false)
+    @JoinColumn(name="usr_id", nullable=false, updatable=false)
+    User user
 
 }

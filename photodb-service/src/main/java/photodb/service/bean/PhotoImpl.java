@@ -21,8 +21,11 @@ package photodb.service.bean;
 import photodb.data.entity.Photo;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.command.CreatePhoto;
+import photodb.data.execution.command.FindUserByName;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import java.util.List;
 
@@ -31,6 +34,9 @@ public class PhotoImpl {
     @EJB
     private BaseEAO baseEAO;
 
+    @Resource
+    private SessionContext ctx;
+
     public Photo createPhoto(String path, String fileName, String contentType, Integer x, Integer y) {
         final CreatePhoto create = new CreatePhoto();
         create.path = path;
@@ -38,6 +44,11 @@ public class PhotoImpl {
         create.contentType = contentType;
         create.x = x;
         create.y = y;
+
+        FindUserByName findUserByName = new FindUserByName();
+        findUserByName.name = this.ctx.getCallerPrincipal().getName();
+        create.user = this.baseEAO.execute(findUserByName);
+
         return this.baseEAO.execute(create);
     }
 

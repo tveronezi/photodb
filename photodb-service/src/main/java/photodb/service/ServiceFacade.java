@@ -23,6 +23,8 @@ import photodb.data.dto.PhotoDto;
 import java.util.Set;
 
 public interface ServiceFacade {
+    void createUser(String name);
+
     Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y);
 
     Set<PhotoDto> getAllPhotoDtos();

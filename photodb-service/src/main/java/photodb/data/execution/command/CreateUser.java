@@ -19,30 +19,18 @@
 package photodb.data.execution.command;
 
 import photodb.data.entity.User;
-import photodb.data.entity.Photo;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.DbCommand;
 
-public class CreatePhoto implements DbCommand<Photo> {
+public class CreateUser implements DbCommand<User> {
 
-    public User user;
-    public String path;
-    public String fileName;
-    public String contentType;
-    public Integer x;
-    public Integer y;
+    public String name;
 
     @Override
-    public Photo execute(BaseEAO eao) {
-        Photo photo = new Photo();
-        photo.setPath(this.path);
-        photo.setFileName(this.fileName);
-        photo.setContentType(this.contentType);
-        photo.setX(this.x);
-        photo.setY(this.y);
-        photo.setUser(this.user);
-        photo.setPublicData(Boolean.FALSE);
-        photo = eao.create(photo);
-        return photo;
+    public User execute(BaseEAO eao) {
+        User user = new User();
+        user.setName(this.name);
+        user = eao.create(user);
+        return user;
     }
 }

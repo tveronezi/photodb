@@ -20,9 +20,16 @@ package photodb.data.execution;
 
 import photodb.data.entity.BaseEntity;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 public interface BaseEAO {
+    CriteriaBuilder getCriteriaBuilder();
+
+    <T> TypedQuery<T> createQuery(CriteriaQuery<T> cq);
+
     <E> E execute(DbCommand<E> cmd);
 
     <E extends BaseEntity> E create(E entity);

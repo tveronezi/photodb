@@ -21,8 +21,11 @@ package photodb.service;
 
 import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
+import photodb.service.bean.DtoBuilderImpl;
 import photodb.service.bean.PhotoImpl;
+import photodb.service.bean.UserImpl;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -45,7 +48,17 @@ public class ServiceFacadeImpl implements ServiceFacade {
     @EJB
     private PhotoImpl photoService;
 
-    private DtoBuilder dtoBuilder = new DtoBuilder();
+    @EJB
+    private UserImpl userService;
+
+    @EJB
+    private DtoBuilderImpl dtoBuilder;
+
+    @Override
+    @RolesAllowed({"photo-admin"})
+    public void createUser(String name) {
+        this.userService.createUser(name);
+    }
 
     @Override
     public Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y) {

@@ -38,6 +38,16 @@ public class BaseEAOImpl implements BaseEAO {
     private EntityManager em;
 
     @Override
+    public CriteriaBuilder getCriteriaBuilder() {
+        return this.em.getCriteriaBuilder();
+    }
+
+    @Override
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> cq) {
+        return this.em.createQuery(cq);
+    }
+
+    @Override
     public <E> E execute(DbCommand<E> cmd) {
         return cmd.execute(this);
     }
@@ -56,7 +66,7 @@ public class BaseEAOImpl implements BaseEAO {
 
     @Override
     public <E extends BaseEntity> List<E> findAll(Class<E> cls) {
-        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        final CriteriaBuilder cb = this.getCriteriaBuilder();
         final CriteriaQuery<E> cq = cb.createQuery(cls);
         final Root<E> root = cq.from(cls);
         final TypedQuery<E> q = em.createQuery(cq);
@@ -65,7 +75,7 @@ public class BaseEAOImpl implements BaseEAO {
 
     @Override
     public <E extends BaseEntity> List<Long> findAllUids(Class<E> cls) {
-        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
+        final CriteriaBuilder cb = this.getCriteriaBuilder();
         final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         final Root<E> root = cq.from(cls);
         final Path path = root.get("uid");
