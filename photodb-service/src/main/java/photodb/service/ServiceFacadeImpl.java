@@ -20,7 +20,9 @@ package photodb.service;
 
 
 import photodb.data.dto.PhotoDto;
+import photodb.data.dto.UserDto;
 import photodb.data.entity.Photo;
+import photodb.data.entity.User;
 import photodb.service.bean.DtoBuilderImpl;
 import photodb.service.bean.PhotoImpl;
 import photodb.service.bean.UserImpl;
@@ -53,6 +55,12 @@ public class ServiceFacadeImpl implements ServiceFacade {
 
     @EJB
     private DtoBuilderImpl dtoBuilder;
+
+    @Override
+    public UserDto getUser() {
+        final User user = this.userService.getUser();
+        return dtoBuilder.buildUser(user);
+    }
 
     @Override
     @RolesAllowed({"photo-admin"})

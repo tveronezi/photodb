@@ -36,13 +36,20 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 model.sendMessage(bean);
             });
 
-            channel.bind('ui-actions', 'container-rendered', function (data) {
 
+            channel.bind('server-command-callback-success', 'GetUser', function (data) {
                 growl.showNotification({
                     message:I18N.get('application.welcome', {
-                        appName:I18N.get('application.name')
+                        appName:I18N.get('application.name'),
+                        userName:data.output.name
                     }),
                     autohide:false
+                });
+            });
+
+            channel.bind('ui-actions', 'container-rendered', function (data) {
+                model.sendMessage({
+                    cmdName:'GetUser'
                 });
 
                 if (window.File) {

@@ -19,7 +19,9 @@
 package photodb.service.bean;
 
 import photodb.data.dto.PhotoDto;
+import photodb.data.dto.UserDto;
 import photodb.data.entity.Photo;
+import photodb.data.entity.User;
 
 import javax.ejb.Singleton;
 
@@ -27,6 +29,9 @@ import javax.ejb.Singleton;
 public class DtoBuilderImpl {
 
     public PhotoDto buildPhoto(Photo photo) {
+        if (photo == null) {
+            return null;
+        }
         final PhotoDto result = new PhotoDto();
         result.setUid(photo.getUid());
         result.setX(photo.getX());
@@ -37,4 +42,12 @@ public class DtoBuilderImpl {
         return result;
     }
 
+    public UserDto buildUser(User user) {
+        if (user == null) {
+            return null;
+        }
+        final UserDto result = new UserDto();
+        result.setName(user.getName());
+        return result;
+    }
 }

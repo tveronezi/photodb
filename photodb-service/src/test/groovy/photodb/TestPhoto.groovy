@@ -43,7 +43,7 @@ class TestPhoto {
     @Before
     public void setUp() throws Exception {
         def ctxCl = Thread.currentThread().getContextClassLoader()
-        System.setProperty("openejb.ScriptLoginModule.scriptURI", ctxCl.getResource("loginscript.js").toExternalForm())
+        System.setProperty('openejb.ScriptLoginModule.scriptURI', ctxCl.getResource('loginscript.js').toExternalForm())
 
         def p = [:] as Properties
         EJBContainer.createEJBContainer(p)
@@ -51,7 +51,7 @@ class TestPhoto {
 
     @Test
     public void testAsManager() throws Exception {
-        def context = getContext("paul", "michelle")
+        def context = getContext('paul', 'michelle')
 
         try {
             def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
@@ -63,7 +63,7 @@ class TestPhoto {
 
     @Test
     void testCreatePhotoEntity() {
-        def context = getContext("eddie", "jump")
+        def context = getContext('eddie', 'jump')
 
         try {
             def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
@@ -83,11 +83,20 @@ class TestPhoto {
 
     @Test
     void testGetPhotos() {
-        def context = getContext("eddie", "jump")
+        def context = getContext('eddie', 'jump')
         def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
         def dtos = facade.getAllPhotoDtos()
         Assert.assertNotNull(dtos)
         Assert.assertFalse(dtos.empty)
+    }
+
+    @Test
+    void testGetUser() {
+        def context = getContext('eddie', 'jump')
+        def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
+        def dto = facade.getUser()
+        Assert.assertNotNull(dto)
+        Assert.assertFalse(dto.name == 'edie')
     }
 
 }

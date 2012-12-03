@@ -23,7 +23,7 @@ define(['util/Obj', 'lib/handlebars', 'util/Log'],
         var missing = Handlebars.compile('[!{{key}}!]');
         var messages = {
             'application.name':'photodb',
-            'application.welcome':'Welcome to {{appName}}!',
+            'application.welcome':'Hi {{userName}}! Welcome to {{appName}}!',
             'html.support.error':'This browser does not support HTML5.',
             'drag.photos.hint':'Drag photos to your browser.'
         };

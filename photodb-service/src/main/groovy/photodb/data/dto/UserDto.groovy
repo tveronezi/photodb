@@ -16,23 +16,8 @@
  *  limitations under the License.
  */
 
-package photodb.service;
+package photodb.data.dto
 
-import photodb.data.dto.PhotoDto;
-import photodb.data.dto.UserDto;
-
-import java.util.Set;
-
-public interface ServiceFacade {
-    UserDto getUser();
-
-    void createUser(String name);
-
-    Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y);
-
-    Set<PhotoDto> getAllPhotoDtos();
-
-    PhotoDto getPhoto(Long uid);
-
-    void updatePhotoPosition(Long uid, Integer x, Integer y);
+class UserDto implements Serializable {
+    String name
 }

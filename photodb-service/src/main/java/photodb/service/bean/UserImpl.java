@@ -23,13 +23,18 @@ import photodb.data.execution.BaseEAO;
 import photodb.data.execution.command.CreateUser;
 import photodb.data.execution.command.FindUserByName;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
 @Stateless
 public class UserImpl {
     @EJB
     private BaseEAO baseEAO;
+
+    @Resource
+    private SessionContext ctx;
 
     public User createUser(String name) {
         final CreateUser createUser = new CreateUser();
@@ -41,5 +46,9 @@ public class UserImpl {
         final FindUserByName findUserByName = new FindUserByName();
         findUserByName.name = name;
         return this.baseEAO.execute(findUserByName);
+    }
+
+    public User getUser() {
+        return getUser(this.ctx.getCallerPrincipal().getName());
     }
 }
