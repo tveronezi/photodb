@@ -22,7 +22,7 @@ public class LoginImpl {
 
         userGroups.put("paul", Arrays.asList("photo-admin", "photo-user"));
         userGroups.put("eddie", Arrays.asList("photo-user"));
-        userGroups.put("michael", Arrays.asList("photo-admin", "photo-user"));
+        userGroups.put("michael", Arrays.asList("tomee-admin", "photo-admin", "photo-user"));
         userGroups.put("andreas", Collections.EMPTY_LIST);
 
         final String pass = userPass.get(user);

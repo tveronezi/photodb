@@ -22,14 +22,12 @@ TOMEEPLUS_ZIP=$(RUNTIME_DIR)/openejb/source-code/tomee/apache-tomee/target/$(TOM
 clean-log:
 	rm -f $(RUNTIME_DIR)/runtime.log
 
-clean: kill-tomee openejb
-	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn revert -R .
+clean: kill-tomee $(OPENEJB_DIRECTORY)
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean
 	rm -rf $(TOMEE_DIRECTORY)
 	mvn clean
 
-openejb: openejb-build
-
-openejb-build: $(OPENEJB_DIRECTORY) $(OPENEJB_DIRECTORY)/source-code/tomee/apache-tomee/target
+openejb: $(OPENEJB_DIRECTORY) $(OPENEJB_DIRECTORY)/source-code/tomee/apache-tomee/target
 
 $(TOMEEPLUS_ZIP_NAME):
 
@@ -42,7 +40,7 @@ $(TOMEEPLUS_ZIP): openejb $(TOMEE_DIRECTORY)
 gettomee: $(TOMEEPLUS_ZIP)
 
 $(OPENEJB_DIRECTORY)/source-code/tomee/apache-tomee/target:
-	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn revert -R . && svn up
+	cd $(OPENEJB_DIRECTORY)/source-code && mvn clean && svn up
 	cd $(OPENEJB_DIRECTORY)/source-code && mvn install -DskipTests=true
 
 $(OPENEJB_DIRECTORY):
@@ -91,4 +89,4 @@ up-static:
 	rm -rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/app
 	cp -r photodb-gui/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/
 
-.PHONY: echo-variables clean clean-log openejb openejb-build gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
+.PHONY: echo-variables clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
