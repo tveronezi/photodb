@@ -27,7 +27,6 @@ import photodb.service.bean.DtoBuilderImpl;
 import photodb.service.bean.PhotoImpl;
 import photodb.service.bean.UserImpl;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -60,12 +59,6 @@ public class ServiceFacadeImpl implements ServiceFacade {
     public UserDto getUser() {
         final User user = this.userService.getUser();
         return dtoBuilder.buildUser(user);
-    }
-
-    @Override
-    @RolesAllowed({"photo-admin"})
-    public void createUser(String name) {
-        this.userService.createUser(name);
     }
 
     @Override

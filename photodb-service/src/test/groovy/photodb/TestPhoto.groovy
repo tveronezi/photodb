@@ -50,18 +50,6 @@ class TestPhoto {
     }
 
     @Test
-    public void testAsManager() throws Exception {
-        def context = getContext('paul', 'michelle')
-
-        try {
-            def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
-            facade.createUser('myUser')
-        } finally {
-            context.close()
-        }
-    }
-
-    @Test
     void testCreatePhotoEntity() {
         def context = getContext('eddie', 'jump')
 
