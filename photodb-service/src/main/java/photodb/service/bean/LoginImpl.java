@@ -3,9 +3,7 @@ package photodb.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.security.auth.login.FailedLoginException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Stateless
 public class LoginImpl {
@@ -13,20 +11,29 @@ public class LoginImpl {
     @EJB
     private UserImpl userImpl;
 
+    // TODO: Add authentication logic here
     public List<String> authenticate(String user, String password) throws FailedLoginException {
-        // TODO: Add authentication logic here
-        final List<String> groups = new ArrayList<String>();
-        if ("paul".equals(user) && "michelle".equals(password)) {
-            groups.addAll(Arrays.asList("photo-admin", "photo-user"));
-        } else if ("eddie".equals(user) && "jump".equals(password)) {
-            groups.addAll(Arrays.asList("photo-user"));
-        } else {
-            throw new FailedLoginException("Bad user or password!");
+        final Map<String, String> userPass = new HashMap<String, String>();
+        final Map<String, List<String>> userGroups = new HashMap<String, List<String>>();
+
+        userPass.put("paul", "michelle");
+        userPass.put("eddie", "jump");
+        userPass.put("michael", "bad");
+        userPass.put("andreas", "roots");
+
+        userGroups.put("paul", Arrays.asList("photo-admin", "photo-user"));
+        userGroups.put("eddie", Arrays.asList("photo-user"));
+        userGroups.put("michael", Arrays.asList("photo-admin", "photo-user"));
+        userGroups.put("andreas", Collections.EMPTY_LIST);
+
+        final String pass = userPass.get(user);
+        if (password.equals(pass)) {
+            if (this.userImpl.getUser(user) == null) {
+                this.userImpl.createUser(user);
+            }
+            return userGroups.get(user);
         }
 
-        if (this.userImpl.getUser(user) == null) {
-            this.userImpl.createUser(user);
-        }
-        return groups;
+        throw new FailedLoginException("Bad user or password!");
     }
 }

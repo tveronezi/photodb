@@ -21,7 +21,9 @@ package photodb.service.bean;
 import photodb.data.entity.Photo;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.command.CreatePhoto;
+import photodb.data.execution.command.FindPhotoByUser;
 import photodb.data.execution.command.FindUserByName;
+import photodb.service.ApplicationException;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -53,18 +55,28 @@ public class PhotoImpl {
     }
 
     public List<Photo> getPhotos() {
-        // TODO no security yet. Just get all the photos
-        return this.baseEAO.findAll(Photo.class);
+        FindUserByName findUserByName = new FindUserByName();
+        findUserByName.name = this.ctx.getCallerPrincipal().getName();
+
+        FindPhotoByUser find = new FindPhotoByUser();
+        find.user = this.baseEAO.execute(findUserByName);
+        return this.baseEAO.execute(find);
     }
 
     public Photo getPhoto(Long uid) {
-        // TODO no security yet. Just get the photo
-        return this.baseEAO.find(Photo.class, uid);
+        // TODO No security yet. Just get the photo if that's yours.
+        final Photo photo = this.baseEAO.find(Photo.class, uid);
+        if (photo == null) {
+            return null;
+        }
+        if (!photo.getUser().getName().equals(this.ctx.getCallerPrincipal().getName())) {
+            throw new ApplicationException("No access to photo.");
+        }
+        return photo;
     }
 
     public void updatePhotoPosition(Long uid, Integer x, Integer y) {
-        // TODO no security yet. Just get the photo
-        final Photo photo = this.baseEAO.find(Photo.class, uid);
+        final Photo photo = this.getPhoto(uid);
         photo.setX(x);
         photo.setY(y);
     }

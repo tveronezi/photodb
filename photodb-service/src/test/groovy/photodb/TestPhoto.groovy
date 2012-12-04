@@ -83,11 +83,36 @@ class TestPhoto {
 
     @Test
     void testGetPhotos() {
-        def context = getContext('eddie', 'jump')
-        def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
-        def dtos = facade.getAllPhotoDtos()
+        def createPhoto = {
+            user, pass, path ->
+            def context = getContext(user, pass)
+            def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
+            facade.createPhoto(path, 'name', 'mime', 0, 0)
+        }
+
+        def getPhotos = {
+            user, pass ->
+            def context = getContext(user, pass)
+            def facade = context.lookup('java:global/photodb-service/ServiceFacadeImpl')
+            return facade.getAllPhotoDtos()
+        }
+
+        def dtos = null
+
+        createPhoto('eddie', 'jump', 'path-a')
+        createPhoto('eddie', 'jump', 'path-b')
+
+        dtos = getPhotos('eddie', 'jump')
         Assert.assertNotNull(dtos)
-        Assert.assertFalse(dtos.empty)
+
+        // "3" because this user has already a photo from the previous test
+        Assert.assertEquals(dtos.size(), 3)
+
+        createPhoto('michael', 'bad', 'path-c')
+
+        dtos = getPhotos('michael', 'bad')
+        Assert.assertNotNull(dtos)
+        Assert.assertEquals(dtos.size(), 1)
     }
 
     @Test
