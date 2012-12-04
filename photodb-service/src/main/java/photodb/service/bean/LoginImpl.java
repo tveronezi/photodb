@@ -2,7 +2,6 @@ package photodb.service.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.security.auth.login.FailedLoginException;
 import java.util.*;
 
 @Stateless
@@ -12,7 +11,7 @@ public class LoginImpl {
     private UserImpl userImpl;
 
     // TODO: Add authentication logic here
-    public List<String> authenticate(String user, String password) throws FailedLoginException {
+    public List<String> authenticate(String user, String password) {
         final Map<String, String> userPass = new HashMap<String, String>();
         final Map<String, List<String>> userGroups = new HashMap<String, List<String>>();
 
@@ -34,6 +33,6 @@ public class LoginImpl {
             return userGroups.get(user);
         }
 
-        throw new FailedLoginException("Bad user or password!");
+        throw new RuntimeException("Bad user or password!");
     }
 }
