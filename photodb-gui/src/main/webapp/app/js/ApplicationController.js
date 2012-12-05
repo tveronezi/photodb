@@ -36,7 +36,20 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 model.sendMessage(bean);
             });
 
+            channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
+                triggerPhotoDownload({
+                    photoId:data.output.photoId,
+                    localId:data.params.localId,
+                    x:data.params.x,
+                    y:data.params.y
+                });
+            });
+
             channel.bind('file-manager', 'get-file-bin', function (data) {
+                triggerPhotoDownload(data);
+            });
+
+            function triggerPhotoDownload(data) {
                 model.sendMessage({
                     cmdName:'DownloadPhoto',
                     uid:data.photoId,
@@ -44,7 +57,7 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                     x:data.x,
                     y:data.y
                 });
-            });
+            }
 
             channel.bind('server-command-callback-success', 'GetUser', function (data) {
                 growl.showNotification({

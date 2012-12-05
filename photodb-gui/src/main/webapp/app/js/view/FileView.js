@@ -48,12 +48,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
             g.call(drag);
         }
 
-        channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
-            var imgEl = d3.select('#' + data.params.localId)
-                .attr('remote-id', data.output.photoId);
-            setDragBehaviour(imgEl);
-        });
-
         channel.bind('ui-actions', 'container-rendered', function (data) {
             var svg = d3.select('#' + data.containerId)
                 .append('svg')
