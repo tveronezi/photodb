@@ -21,24 +21,31 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
     function (channel, sequence, obj, model) {
         var svgId = sequence.next('svg');
 
-        function setDragBehaviour(imgEl) {
+        function translate(g, dx, dy) {
+            var nx = Number(g.attr('gx')) + dx;
+            var ny = Number(g.attr('gy')) + dy;
+            var str = 'translate(' + nx + ',' + ny + ')';
+            g.attr('transform', str);
+            g.attr('gx', nx);
+            g.attr('gy', ny);
+        }
+
+        function setDragBehaviour(img) {
+            var g = d3.select('#' + img.attr('id') + '-G');
             var drag = d3.behavior.drag()
                 .origin(Object)
                 .on("drag", function () {
                     var d3Event = d3.event;
-                    var nx = Number(imgEl.attr('x')) + d3Event.dx;
-                    var ny = Number(imgEl.attr('y')) + d3Event.dy;
-                    imgEl.attr('x', nx);
-                    imgEl.attr('y', ny);
+                    translate(g, d3Event.dx, d3Event.dy);
                 })
                 .on("dragend", function () {
                     channel.send('ui-actions', 'drag-photo', {
-                        photoId:imgEl.attr('remote-id'),
-                        nx:imgEl.attr('x'),
-                        ny:imgEl.attr('y')
+                        photoId:img.attr('remote-id'),
+                        nx:g.attr('gx'),
+                        ny:g.attr('gy')
                     });
                 });
-            imgEl.call(drag);
+            g.call(drag);
         }
 
         channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
@@ -65,6 +72,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
         channel.bind('ui-actions', 'container-rendered', function (data) {
             var svg = d3.select('#' + data.containerId)
                 .append('svg')
+                .classed('svg-container', true)
                 .attr('id', svgId)
                 .attr('width', '1px')
                 .attr('height', '1px');
@@ -87,8 +95,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                 localId:data.localId,
                 x:data.x,
                 y:data.y,
-                height:200,
-                width:200,
                 href:data.evt.target.result
             };
             createFileItem(itemData);
@@ -97,30 +103,30 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
         function createFileItem(itemData) {
             var myImage = new Image();
             myImage.onload = function () {
-                function calculateSize(original, atual, value) {
-                    var ratio = atual / original;
-                    return Math.round(ratio * value);
-                }
+                var g = d3.select('#' + svgId).append('g');
+                g.attr('id', itemData.localId + '-G')
+                    .classed('file-item', true);
 
-                // "this" is the img tag.
-                var max = Math.max(this.height, this.width);
-                if (max === this.height && this.height > 200) {
-                    itemData.width = calculateSize(this.height, itemData.height, this.width);
-                } else if (this.width > 200) {
-                    itemData.height = calculateSize(this.width, itemData.width, this.height);
-                }
+                g.append('rect')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('rx', 20)
+                    .attr('ry', 20)
+                    .attr('height', '202px')
+                    .attr('width', '202px');
 
-                var imgEl = d3.select('#' + svgId).append('image')
+                var imgEl = g.append('image');
                 imgEl.attr('id', itemData.localId)
-                    .attr('x', itemData.x)
-                    .attr('y', itemData.y)
-                    .attr('height', itemData.height + 'px')
-                    .attr('width', itemData.width + 'px')
+                    .attr('x', 1)
+                    .attr('y', 1)
+                    .attr('height', '200px')
+                    .attr('width', '200px')
                     .attr('xlink:href', itemData.href);
                 if (itemData.photoId) {
                     imgEl.attr('remote-id', itemData.photoId);
                     setDragBehaviour(imgEl);
                 }
+                translate(g, itemData.x, itemData.y);
             };
             myImage.src = itemData.href;
         }
