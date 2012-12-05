@@ -77,6 +77,13 @@ public class PhotoImpl {
 
     public void updatePhotoPosition(Long uid, Integer x, Integer y) {
         final Photo photo = this.getPhoto(uid);
+        if(photo == null) {
+            return;
+        }
+        final String userName = this.ctx.getCallerPrincipal().getName();
+        if (!photo.getUser().getName().equals(userName)) {
+            return;
+        }
         photo.setX(x);
         photo.setY(y);
     }

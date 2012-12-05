@@ -60,7 +60,14 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                 .attr('width', '1px')
                 .attr('height', '1px');
 
+
+
+            $('#' + svgId).on('dragover', function (evt) {
+                evt.preventDefault();
+            });
+
             $('#' + svgId).on('drop', function (evt) {
+                evt.preventDefault();
                 channel.send('ui-actions', 'file-drop', {
                     evt:evt
                 });

@@ -111,7 +111,8 @@ define([],
                     return [];
                 }
 
-                if (obj instanceof FileList) {
+                // IE9 does not have FileList
+                if (window.FileList && obj instanceof window.FileList) {
                     return obj;
                 }
 
@@ -151,7 +152,7 @@ define([],
                 }
                 for (var key in obj) {
                     if (obj.hasOwnProperty(key)) {
-                        if(callback(key, obj[key]) === false) {
+                        if (callback(key, obj[key]) === false) {
                             // return false if you want to break the loop
                             break;
                         }

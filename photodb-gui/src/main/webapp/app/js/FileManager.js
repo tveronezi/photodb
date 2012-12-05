@@ -154,8 +154,6 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
 
         channel.bind('ui-actions', 'file-drop', function (data) {
             var evt = data.evt;
-            evt.stopPropagation();
-            evt.preventDefault();
             var files = evt.originalEvent.dataTransfer.files;
             handleFileSelect(files, evt.originalEvent.clientX, evt.originalEvent.clientY);
         });

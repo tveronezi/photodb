@@ -116,9 +116,12 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
         function sendMessage(bean) {
             var multipart = false;
             obj.forEachKey(bean, function (key, value) {
-                if (value instanceof File) {
-                    multipart = true;
-                    return false;
+                // IE9 does not have File
+                if (window.File) {
+                    if (value instanceof window.File) {
+                        multipart = true;
+                        return false;
+                    }
                 }
             });
             if (multipart) {

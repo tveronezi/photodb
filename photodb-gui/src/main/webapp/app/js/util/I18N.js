@@ -24,7 +24,7 @@ define(['util/Obj', 'lib/handlebars', 'util/Log'],
         var messages = {
             'application.name':'photodb',
             'application.welcome':'Hi {{userName}}! Welcome to {{appName}}!',
-            'html.support.error':'This browser does not support HTML5.',
+            'html.support.error':'This browser does not fully support HTML5. Try again with another browser.',
             'drag.photos.hint':'Drag photos to your browser.',
             'photo.upload':'Uploading file {{fileName}}'
         };
