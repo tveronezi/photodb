@@ -21,6 +21,8 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
     function (channel, sequence, obj, model) {
         var svgId = sequence.next('svg');
 
+        var selectedPhotos = [];
+
         function translate(g, dx, dy) {
             var nx = Number(g.attr('gx')) + dx;
             var ny = Number(g.attr('gy')) + dy;
@@ -100,6 +102,22 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
             createFileItem(itemData);
         });
 
+        function setSelectBehaviour(img) {
+            var id = img.attr('id');
+            var g = d3.select('#' + id + '-G');
+
+            g.on('click', function () {
+                var index = selectedPhotos.indexOf(id);
+                if (index < 0) {
+                    selectedPhotos.push(id);
+                    g.select('rect').classed('selected', true);
+                } else {
+                    selectedPhotos.splice(index, 1);
+                    g.select('rect').classed('selected', false);
+                }
+            });
+        }
+
         function createFileItem(itemData) {
             var myImage = new Image();
             myImage.onload = function () {
@@ -117,16 +135,18 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
 
                 var imgEl = g.append('image');
                 imgEl.attr('id', itemData.localId)
-                    .attr('x', 1)
-                    .attr('y', 1)
-                    .attr('height', '200px')
-                    .attr('width', '200px')
+                    .attr('x', 10)
+                    .attr('y', 10)
+                    .attr('height', '180px')
+                    .attr('width', '180px')
                     .attr('xlink:href', itemData.href);
                 if (itemData.photoId) {
                     imgEl.attr('remote-id', itemData.photoId);
                     setDragBehaviour(imgEl);
                 }
                 translate(g, itemData.x, itemData.y);
+
+                setSelectBehaviour(imgEl);
             };
             myImage.src = itemData.href;
         }
