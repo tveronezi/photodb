@@ -40,6 +40,10 @@ define([],
                     return 'esc';
                 }
 
+                if (keyCode === 46) {
+                    return 'delete';
+                }
+
                 // Numbers or Letters
                 if (keyCode >= 48 && keyCode <= 57 || //Numbers
                     keyCode >= 65 && keyCode <= 90) { //Letters

@@ -63,7 +63,8 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                     key.push('shift');
                 }
 
-                if (key.length === 0 &&
+                if (ev.keyCode !== 46 && // 'Delete' key
+                    key.length === 0 &&
                     !(ev.keyCode >= 112 && ev.keyCode <= 123 || ev.keyCode === 27)) { // F1...F12 or esc
                     return; //nothing to do
                 }

@@ -34,6 +34,11 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 };
                 bean[data.file.name] = data.file;
                 model.sendMessage(bean);
+                growl.showNotification({
+                    message:I18N.get('photo.upload', {
+                        fileName:data.file.name
+                    })
+                });
             });
 
             channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
@@ -42,6 +47,13 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                     localId:data.params.localId,
                     x:data.params.x,
                     y:data.params.y
+                });
+            });
+
+            channel.bind('file-manager', 'delete-files', function(data) {
+                model.sendMessage({
+                    cmdName:'DeletePhotos',
+                    uids:data.uids.join(',')
                 });
             });
 
@@ -64,8 +76,7 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                     message:I18N.get('application.welcome', {
                         appName:I18N.get('application.name'),
                         userName:data.output.name
-                    }),
-                    autohide:false
+                    })
                 });
             });
 
@@ -77,7 +88,7 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 if (window.File) {
                     growl.showNotification({
                         message:I18N.get('drag.photos.hint'),
-                        timeout:10000,
+                        timeout:2000,
                         messageType:'info'
                     });
 

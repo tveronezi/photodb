@@ -60,6 +60,11 @@ public class BaseEAOImpl implements BaseEAO {
     }
 
     @Override
+    public <E extends BaseEntity> void delete(E entity) {
+        this.em.remove(entity);
+    }
+
+    @Override
     public <E extends BaseEntity> E find(Class<E> cls, Long uid) {
         return this.em.find(cls, uid);
     }

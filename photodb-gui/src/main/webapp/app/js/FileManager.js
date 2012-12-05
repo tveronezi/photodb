@@ -28,6 +28,33 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
         var photos = {};
         var triggerNewRemoteFile = delayedTask();
 
+        channel.bind('ui-actions', 'delete-photos-trigger', function () {
+            var uids = [];
+            obj.forEachKey(photos, function (key, value) {
+                if (value.isSelected) {
+                    uids.push(value.photoId);
+                }
+            });
+
+            channel.send('file-manager', 'delete-files', {
+                uids:uids
+            });
+        });
+
+
+        channel.bind('server-command-callback-success', 'DeletePhotos', function (data) {
+            var uids = data.params.uids.split(',');
+            obj.forEach(uids, function (uid) {
+                delete photos[uid];
+            });
+
+            var photosArray = [];
+            obj.forEachKey(photos, function (key, value) {
+                photosArray.push(value);
+            });
+            channel.send('file-manager', 'files-updated', photosArray);
+        });
+
         channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
             var params = data.params;
             photos[params.uid] = {

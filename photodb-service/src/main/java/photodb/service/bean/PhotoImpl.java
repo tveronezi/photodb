@@ -80,4 +80,18 @@ public class PhotoImpl {
         photo.setX(x);
         photo.setY(y);
     }
+
+    public void deletePhotos(List<Long> uids) {
+        final String userName = this.ctx.getCallerPrincipal().getName();
+        for (Long uid : uids) {
+            final Photo photo = this.baseEAO.find(Photo.class, uid);
+            if (photo == null) {
+                continue;
+            }
+            if (!photo.getUser().getName().equals(userName)) {
+                continue;
+            }
+            this.baseEAO.delete(photo);
+        }
+    }
 }

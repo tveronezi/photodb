@@ -25,7 +25,8 @@ define(['util/Obj', 'lib/handlebars', 'util/Log'],
             'application.name':'photodb',
             'application.welcome':'Hi {{userName}}! Welcome to {{appName}}!',
             'html.support.error':'This browser does not support HTML5.',
-            'drag.photos.hint':'Drag photos to your browser.'
+            'drag.photos.hint':'Drag photos to your browser.',
+            'photo.upload':'Uploading file {{fileName}}'
         };
 
         utils.forEachKey(messages, function (key, value) {

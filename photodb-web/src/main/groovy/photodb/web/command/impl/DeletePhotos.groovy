@@ -16,24 +16,23 @@
  *  limitations under the License.
  */
 
-package photodb.service;
+package photodb.web.command.impl
 
-import photodb.data.dto.PhotoDto;
-import photodb.data.dto.UserDto;
+import photodb.service.ServiceFacade
+import photodb.web.command.Command
 
-import java.util.List;
-import java.util.Set;
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
 
-public interface ServiceFacade {
-    UserDto getUser();
+class DeletePhotos implements Command {
 
-    Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y);
+    @Override
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+        List uids = req.getParameter('uids').split(',').collect {
+            it as Long
+        }
 
-    Set<PhotoDto> getAllPhotoDtos();
-
-    PhotoDto getPhoto(Long uid);
-
-    void deletePhotos(List<Long> uids);
-
-    void updatePhotoPosition(Long uid, Integer x, Integer y);
+        serviceFacade.deletePhotos(uids)
+        return null;
+    }
 }

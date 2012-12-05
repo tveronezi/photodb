@@ -34,6 +34,8 @@ public interface BaseEAO {
 
     <E extends BaseEntity> E create(E entity);
 
+    <E extends BaseEntity> void delete(E entity);
+
     <E extends BaseEntity> E find(Class<E> cls, Long uid);
 
     <E extends BaseEntity> List<E> findAll(Class<E> cls);

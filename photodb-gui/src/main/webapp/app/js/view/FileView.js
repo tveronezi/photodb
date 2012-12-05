@@ -21,6 +21,10 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
     function (channel, sequence, obj, model) {
         var svgId = sequence.next('svg');
 
+        channel.bind('ui-actions', 'window-delete-pressed', function() {
+            channel.send('ui-actions', 'delete-photos-trigger', {});
+        });
+
         function translate(g, dx, dy) {
             var nx = Number(g.attr('gx')) + dx;
             var ny = Number(g.attr('gy')) + dy;

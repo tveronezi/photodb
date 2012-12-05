@@ -85,6 +85,11 @@ public class ServiceFacadeImpl implements ServiceFacade {
     }
 
     @Override
+    public void deletePhotos(List<Long> uids) {
+        this.photoService.deletePhotos(uids);
+    }
+
+    @Override
     public void updatePhotoPosition(Long uid, Integer x, Integer y) {
         this.photoService.updatePhotoPosition(uid, x, y);
     }
