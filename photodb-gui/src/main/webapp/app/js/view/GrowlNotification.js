@@ -30,42 +30,52 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
             var message = params.message;
             var autohide = (params.autohide !== false);
             var waitTime = params.timeout || 5000;
+            var alertId = params.id || sequence.next('alert');
 
             if (!active) {
                 active = true;
                 myBody.append(container);
             }
-            var alertId = sequence.next('alert');
-            var alert = $(templates.getValue('application-growl-message', {
-                alertId:alertId,
-                messageType:'alert-' + messageType,
-                message:message
-            }));
 
-            container.append(alert);
-            alert.fadeIn();
+            function removeAlert() {
+                try {
+                    var alert = $('#' + alertId);
+                    alert.fadeOut(null, function () {
+                        try {
+                            alert.remove();
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+                delete timeout[alertId];
+            }
 
-            if (autohide === false) {
-                // no-op
+
+            if (timeout[alertId]) {
+                timeout[alertId].delay(removeAlert, waitTime);
             } else {
-                if (autohide === true) {
+                var alert = $(templates.getValue('application-growl-message', {
+                    alertId:alertId,
+                    messageType:'alert-' + messageType,
+                    message:message
+                }));
+                container.append(alert);
+                alert.fadeIn();
+
+                if (autohide === false) {
                     // no-op
                 } else {
-                    timeout = autohide;
-                }
-                timeout[alertId] = delayedTask();
-                timeout[alertId].delay(function () {
-                    try {
-                        alert.fadeOut(null, function () {
-                            try {
-                                alert.remove();
-                            } catch (e) { /* noop */
-                            }
-                        });
-                    } catch (e) { /* noop */
+                    if (autohide === true) {
+                        // no-op
+                    } else {
+                        timeout = autohide;
                     }
-                    delete timeout[alertId];
-                }, waitTime);
+                    timeout[alertId] = delayedTask();
+                    timeout[alertId].delay(removeAlert, waitTime);
+                }
             }
         }
 

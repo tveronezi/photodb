@@ -17,11 +17,12 @@
  */
 
 "use strict";
-define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', 'FileManager', 'lib/jquery', 'lib/d3'],
-    function (channel, sequence, obj, model) {
+define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager', 'lib/jquery', 'lib/d3'],
+    function (channel, sequence, obj, growl, I18N) {
         var svgId = sequence.next('svg');
+        var deleteNotificationId = sequence.next('delete-notif');
 
-        channel.bind('ui-actions', 'window-delete-pressed', function() {
+        channel.bind('ui-actions', 'window-delete-pressed', function () {
             channel.send('ui-actions', 'delete-photos-trigger', {});
         });
 
@@ -61,7 +62,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                 .attr('height', '1px');
 
 
-
             $('#' + svgId).on('dragover', function (evt) {
                 evt.preventDefault();
             });
@@ -91,6 +91,10 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
             g.on('click', function () {
                 channel.send('ui-actions', 'file-selection', {
                     photoUid:img.attr('remote-id')
+                });
+                growl.showNotification({
+                    id:deleteNotificationId,
+                    message:I18N.get('photo.delete.tip')
                 });
             });
         }
@@ -145,8 +149,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                 translate(g, d.x, d.y);
                 setSelectBehaviour(i);
             });
-
-
         }
     }
 );

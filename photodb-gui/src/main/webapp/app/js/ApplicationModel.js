@@ -26,6 +26,10 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
         urlBase = urlBase.replace(new RegExp('^' + window.document.location.host), '');
         urlBase = urlBase.replace('#', '');
 
+        channel.bind('server-command-callback-error', 'command-error', function (data) {
+            console.error('Command error', data);
+        });
+
         function getFormData(bean) {
             var formData = new FormData();
             obj.forEachKey(bean, function (key, value) {
@@ -39,35 +43,27 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
             xhr.open('POST', urlBase + 'cmd', true);
             xhr.onload = function (e) {
                 var data = JSON.parse(this.response);
-                if (data.cmdName) {
-                    // Commands callback calls
-                    channel.send('server-command-callback', data.cmdName, data);
 
-                    if (data.success) {
-                        channel.send('server-command-callback-success', data.cmdName, data);
-                    } else {
-                        console.error(data);
-                        channel.send('server-command-callback-error', data.cmdName, data);
-                    }
+                // Commands callback calls
+                channel.send('server-command-callback', bean.cmdName, data);
 
+                if (data.success) {
+                    channel.send('server-command-callback-success', bean.cmdName, data);
                 } else {
-
-                    if (data.success) {
-                        channel.send('server-callback', 'socket-message-received', {
-                            data:data
-                        });
-                    } else {
-                        console.error(data);
-                        channel.send('server-callback', 'socket-error-message-received', {
-                            data:data
-                        });
-                    }
+                    channel.send('server-command-callback-error', bean.cmdName, data);
+                    channel.send('server-command-callback-error', 'command-error', {
+                        data:data,
+                        bean:bean
+                    });
                 }
             };
             xhr.onerror = function (e) {
-                channel.send('server-connection', 'socket-connection-error', {
-                    message:e
-                });
+                var data = {
+                    message:e,
+                    bean:bean
+                };
+                channel.send('server-command-callback-error', bean.cmdName, data);
+                channel.send('server-command-callback-error', 'command-error', data);
             };
 
             xhr.send(getFormData(bean));
@@ -79,34 +75,27 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                     type:'POST',
                     data:bean,
                     dataType:'text',
-                    error:function (data) {
-                        channel.send('server-connection', 'socket-connection-error', {
-                            message:data
-                        });
+                    error:function (e) {
+                        var data = {
+                            message:e,
+                            bean:bean
+                        };
+                        channel.send('server-command-callback-error', bean.cmdName, data);
+                        channel.send('server-command-callback-error', 'command-error', data);
                     },
                     success:function (message) {
                         var data = JSON.parse(message);
-                        if (data.cmdName) {
-                            // Commands callback calls
-                            channel.send('server-command-callback', data.cmdName, data);
 
-                            if (data.success) {
-                                channel.send('server-command-callback-success', data.cmdName, data);
-                            } else {
-                                channel.send('server-command-callback-error', data.cmdName, data);
-                            }
-
+                        // Commands callback calls
+                        channel.send('server-command-callback', bean.cmdName, data);
+                        if (data.success) {
+                            channel.send('server-command-callback-success', bean.cmdName, data);
                         } else {
-                            if (data.success) {
-                                channel.send('server-callback', 'socket-message-received', {
-                                    data:data
-                                });
-                            } else {
-                                console.error(data);
-                                channel.send('server-callback', 'socket-error-message-received', {
-                                    data:data
-                                });
-                            }
+                            channel.send('server-command-callback-error', bean.cmdName, data);
+                            channel.send('server-command-callback-error', 'command-error', {
+                                data:data,
+                                bean:bean
+                            });
                         }
                     }
                 }
