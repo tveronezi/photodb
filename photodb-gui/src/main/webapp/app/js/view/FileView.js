@@ -21,8 +21,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
     function (channel, sequence, obj, model) {
         var svgId = sequence.next('svg');
 
-        var selectedPhotos = [];
-
         function translate(g, dx, dy) {
             var nx = Number(g.attr('gx')) + dx;
             var ny = Number(g.attr('gy')) + dy;
@@ -77,72 +75,73 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
                 .attr('width', data.containerWidth + 'px');
         });
 
-        channel.bind('file-manager', 'new-local-file', function (data) {
-            handleNewFile(data);
+        channel.bind('file-manager', 'files-updated', function (data) {
+            createFileItems(data);
         });
-
-        channel.bind('file-manager', 'new-remote-file', function (data) {
-            handleNewFile(data);
-        });
-
-        function handleNewFile(data) {
-            var href = data.href;
-            if (!href) {
-                href = data.evt.target.result;
-            }
-            var itemData = {
-                localId:data.localId,
-                photoId:data.photoId,
-                x:data.x,
-                y:data.y,
-                href:href
-            };
-            createFileItem(itemData);
-        }
 
         function setSelectBehaviour(img) {
             var id = img.attr('id');
             var g = d3.select('#' + id + '-G');
 
             g.on('click', function () {
-                var index = selectedPhotos.indexOf(id);
-                if (index < 0) {
-                    selectedPhotos.push(id);
-                    g.select('rect').classed('selected', true);
-                } else {
-                    selectedPhotos.splice(index, 1);
-                    g.select('rect').classed('selected', false);
-                }
+                channel.send('ui-actions', 'file-selection', {
+                    photoUid:img.attr('remote-id')
+                });
             });
         }
 
-        function createFileItem(itemData) {
-            var g = d3.select('#' + svgId).append('g');
-            g.attr('id', itemData.localId + '-G')
+        function createFileItems(data) {
+            var svg = d3.select('#' + svgId);
+            svg.selectAll('g').remove();
+
+            var gSelection = svg.selectAll('g')
+                .data(data)
+                .enter()
+                .append('g')
+                .attr('id', function (d) {
+                    return d.localId + '-G';
+                })
                 .classed('file-item', true);
 
-            g.append('rect')
+            gSelection.append('rect')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('rx', 20)
                 .attr('ry', 20)
                 .attr('height', '202px')
-                .attr('width', '202px');
+                .attr('width', '202px')
+                .classed('selected', function (d) {
+                    return !(!d.isSelected);
+                });
 
-            var imgEl = g.append('image');
-            imgEl.attr('id', itemData.localId)
+
+            gSelection.append('image')
+                .attr('id', function (d) {
+                    return d.localId;
+                })
                 .attr('x', 10)
                 .attr('y', 10)
                 .attr('height', '180px')
                 .attr('width', '180px')
-                .attr('xlink:href', itemData.href);
-            if (itemData.photoId) {
-                imgEl.attr('remote-id', itemData.photoId);
-                setDragBehaviour(imgEl);
-            }
-            translate(g, itemData.x, itemData.y);
+                .attr('xlink:href', function (d) {
+                    return d.href;
+                })
+                .attr('remote-id', function (d) {
+                    return d.photoId;
+                });
 
-            setSelectBehaviour(imgEl);
+            obj.forEach(data, function (d) {
+                var g = d3.select('#' + d.localId + '-G');
+                var i = d3.select('#' + d.localId);
+
+                if (i.attr('remote-id')) {
+                    setDragBehaviour(i);
+                }
+                translate(g, d.x, d.y);
+                setSelectBehaviour(i);
+            });
+
+
         }
     }
 );

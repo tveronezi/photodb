@@ -25,14 +25,27 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
     function (channel, obj, sequence, delayedTask) {
         var updatePos = {};
 
+        var photos = {};
+        var triggerNewRemoteFile = delayedTask();
+
         channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
-            channel.send('file-manager', 'new-remote-file', {
+            var params = data.params;
+            photos[params.uid] = {
                 x:data.params.x,
                 y:data.params.y,
                 photoId:data.params.uid,
                 localId:sequence.next('file'),
                 href:'data:image/png;base64,' + data.output.content
-            });
+            };
+
+            triggerNewRemoteFile.delay(function () {
+                var photosArray = [];
+                obj.forEachKey(photos, function (key, value) {
+                    photosArray.push(value);
+                });
+                channel.send('file-manager', 'files-updated', photosArray);
+            }, 1000); // Wait 1s before sending this request
+
         });
 
         channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
@@ -49,6 +62,13 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
 
         channel.bind('ui-actions', 'drag-photo', function (data) {
             // data.photoId, data.nx, data.ny
+            var photoData = photos[data.photoId];
+            if (!photoData) {
+                return;
+            }
+            photoData.x = data.nx;
+            photoData.y = data.ny;
+
             var task = updatePos[data.photoId];
             if (!task) {
                 task = delayedTask();
@@ -58,6 +78,29 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 channel.send('file-manager', 'update-photo-position', data);
                 delete updatePos[data.photoId];
             }, 1000); // Wait 1s before sending this request
+        });
+
+        channel.bind('ui-actions', 'file-selection', function (data) {
+            var photoData = photos[data.photoUid];
+            if (!photoData) {
+                return;
+            }
+            if (photoData.isSelected) {
+                delete photoData.isSelected;
+            } else {
+                photoData.isSelected = true;
+            }
+
+            var photosArray = [];
+            obj.forEachKey(photos, function (key, value) {
+                if (photoData !== value) {
+                    photosArray.push(value);
+                }
+            });
+            // This is the last guy to be plot
+            photosArray.push(photoData);
+
+            channel.send('file-manager', 'files-updated', photosArray);
         });
 
         function handleFileSelect(files, x, y) {
