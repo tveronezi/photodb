@@ -27,13 +27,11 @@
  *
  */
 "use strict";
-define(['lib/jquery', 'util/Log'],
-    function () {
+define(['util/Obj', 'lib/jquery', 'util/Log'],
+    function (obj) {
         var channels = {};
 
         function createChannel(channelName) {
-            "use strict";
-
             var name = channelName;
             var listeners = {};
 
@@ -45,31 +43,16 @@ define(['lib/jquery', 'util/Log'],
              * parameter with all values sent by the sender object
              */
             function bind(messageKey, callback) {
+                var myListeners = listeners[messageKey];
+
                 //avoiding "NullPointerException"
-                if (!listeners[messageKey]) {
-                    listeners[messageKey] = $.Callbacks();
+                if (!myListeners) {
+                    myListeners = [];
+                    listeners[messageKey] = myListeners;
                 }
 
-                var myListeners = listeners[messageKey];
-                if (!myListeners.has(callback)) {
-                    // wrap the callback method in order to avoid the standard
-                    // jquery behaviour for callbacks exceptions
-                    // (http://bugs.jquery.com/ticket/11193)
-                    var callbackWrapper = function (paramsObj) {
-                        try {
-                            return callback(paramsObj);
-
-                        } catch (e) {
-                            console.error(
-                                'Cannot execute listener callback', e,
-                                'Channel', name,
-                                'key', messageKey,
-                                'Parameters', paramsObj
-                            );
-                        }
-                    };
-
-                    myListeners.add(callbackWrapper);
+                if (myListeners.indexOf(callback) < 0) {
+                    myListeners.push(callback);
                 }
             }
 
@@ -83,9 +66,7 @@ define(['lib/jquery', 'util/Log'],
                 if (!listeners[messageKey]) {
                     return;
                 }
-
-                var myListeners = listeners[messageKey];
-                myListeners.remove(callback);
+                delete listeners[messageKey];
             }
 
             /**
@@ -95,15 +76,19 @@ define(['lib/jquery', 'util/Log'],
              * @param paramsObj the parameters to the listeners callback methods
              */
             function send(messageKey, paramsObj) {
+                var hasListeners = false;
+                if (listeners[messageKey] && listeners[messageKey].length > 0) {
+                    hasListeners = true;
+                }
                 console.log(
                     'Channel', name,
                     'key', messageKey,
                     'Parameters', paramsObj,
                     'Listeners available',
-                    !(!listeners[messageKey])
+                    hasListeners
                 );
 
-                if (!listeners[messageKey]) {
+                if (!hasListeners) {
                     return {
                         consumed:false
                     };
@@ -117,7 +102,9 @@ define(['lib/jquery', 'util/Log'],
                     safeParamsObj = {};
                 }
 
-                myListeners.fire(safeParamsObj);
+                obj.forEach(myListeners, function (callback) {
+                    callback(safeParamsObj);
+                });
 
                 return {
                     consumed:true
