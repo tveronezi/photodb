@@ -26,6 +26,7 @@ import java.awt.AlphaComposite
 import java.awt.Graphics2D
 import java.awt.Image
 import java.awt.image.BufferedImage
+import java.util.prefs.Base64
 import javax.imageio.ImageIO
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
@@ -86,21 +87,32 @@ class DownloadPhoto implements Command {
         PhotoDto dto = serviceFacade.getPhoto(uid)
         File file = new File(req.getRealPath('/WEB-INF/images'), dto.path)
 
+        def result
         if (original) {
             resp.contentType = dto.mime
             file.withInputStream { is ->
                 resp.outputStream << is
             }
+            resp.outputStream.flush()
+
+            // We are going to return the original image.
+            result = resp
+
         } else {
-            resp.contentType = 'image/png'
             Integer maxSize = req.getParameter('maxSize') as Integer
-            if(!maxSize) {
+            if (!maxSize) {
                 maxSize = MAX_SIZE
             }
-            ImageIO.write(getThumb(file, maxSize), "png", resp.outputStream)
+            OutputStream os = new ByteArrayOutputStream()
+            ImageIO.write(getThumb(file, maxSize), "png", os)
+            byte[] content = os.toByteArray()
+
+            // We are going to return the string representation of the thumb
+            result = [
+                    content: Base64.byteArrayToBase64(content)
+            ]
         }
 
-        resp.outputStream.flush()
-        return resp
+        return result
     }
 }

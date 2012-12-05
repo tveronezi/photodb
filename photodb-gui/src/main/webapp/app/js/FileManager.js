@@ -25,6 +25,28 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
     function (channel, obj, sequence, delayedTask) {
         var updatePos = {};
 
+        channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
+            channel.send('file-manager', 'new-remote-file', {
+                x:data.params.x,
+                y:data.params.y,
+                photoId:data.params.uid,
+                localId:sequence.next('file'),
+                href:'data:image/png;base64,' + data.output.content
+            });
+        });
+
+        channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
+            obj.forEach(data.output, function (value) {
+                var itemData = {
+                    localId:sequence.next('file'),
+                    x:value.x,
+                    y:value.y,
+                    photoId:value.uid
+                };
+                channel.send('file-manager', 'get-file-bin', itemData);
+            });
+        });
+
         channel.bind('ui-actions', 'drag-photo', function (data) {
             // data.photoId, data.nx, data.ny
             var task = updatePos[data.photoId];

@@ -26,6 +26,14 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
         urlBase = urlBase.replace(new RegExp('^' + window.document.location.host), '');
         urlBase = urlBase.replace('#', '');
 
+        function getFormData(bean) {
+            var formData = new FormData();
+            obj.forEachKey(bean, function (key, value) {
+                formData.append(key, value);
+            });
+            return formData;
+        }
+
         function sendMultipart(bean) {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', urlBase + 'cmd', true);
@@ -57,18 +65,12 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                 }
             };
             xhr.onerror = function (e) {
-                console.error(e);
                 channel.send('server-connection', 'socket-connection-error', {
-                    message:data
+                    message:e
                 });
             };
 
-            var formData = new FormData();
-            obj.forEachKey(bean, function (key, value) {
-                formData.append(key, value);
-            });
-
-            xhr.send(formData);
+            xhr.send(getFormData(bean));
         }
 
         function sendNormal(bean) {
@@ -121,9 +123,10 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
             });
             if (multipart) {
                 sendMultipart(bean);
-            } else {
-                sendNormal(bean);
+                return;
             }
+
+            sendNormal(bean);
         }
 
         return {

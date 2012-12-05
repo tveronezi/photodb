@@ -50,21 +50,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
             g.call(drag);
         }
 
-        channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
-            obj.forEach(data.output, function (value) {
-                var itemData = {
-                    localId:sequence.next('file'),
-                    x:value.x,
-                    y:value.y,
-                    height:200,
-                    width:200,
-                    photoId:value.uid,
-                    href:model.getUrlBase() + 'cmd?cmdName=DownloadPhoto&uid=' + value.uid
-                };
-                createFileItem(itemData);
-            });
-        });
-
         channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
             var imgEl = d3.select('#' + data.params.localId)
                 .attr('remote-id', data.output.photoId);
@@ -93,14 +78,27 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
         });
 
         channel.bind('file-manager', 'new-local-file', function (data) {
+            handleNewFile(data);
+        });
+
+        channel.bind('file-manager', 'new-remote-file', function (data) {
+            handleNewFile(data);
+        });
+
+        function handleNewFile(data) {
+            var href = data.href;
+            if (!href) {
+                href = data.evt.target.result;
+            }
             var itemData = {
                 localId:data.localId,
+                photoId:data.photoId,
                 x:data.x,
                 y:data.y,
-                href:data.evt.target.result
+                href:href
             };
             createFileItem(itemData);
-        });
+        }
 
         function setSelectBehaviour(img) {
             var id = img.attr('id');
@@ -119,36 +117,32 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'ApplicationModel', '
         }
 
         function createFileItem(itemData) {
-            var myImage = new Image();
-            myImage.onload = function () {
-                var g = d3.select('#' + svgId).append('g');
-                g.attr('id', itemData.localId + '-G')
-                    .classed('file-item', true);
+            var g = d3.select('#' + svgId).append('g');
+            g.attr('id', itemData.localId + '-G')
+                .classed('file-item', true);
 
-                g.append('rect')
-                    .attr('x', 0)
-                    .attr('y', 0)
-                    .attr('rx', 20)
-                    .attr('ry', 20)
-                    .attr('height', '202px')
-                    .attr('width', '202px');
+            g.append('rect')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('rx', 20)
+                .attr('ry', 20)
+                .attr('height', '202px')
+                .attr('width', '202px');
 
-                var imgEl = g.append('image');
-                imgEl.attr('id', itemData.localId)
-                    .attr('x', 10)
-                    .attr('y', 10)
-                    .attr('height', '180px')
-                    .attr('width', '180px')
-                    .attr('xlink:href', itemData.href);
-                if (itemData.photoId) {
-                    imgEl.attr('remote-id', itemData.photoId);
-                    setDragBehaviour(imgEl);
-                }
-                translate(g, itemData.x, itemData.y);
+            var imgEl = g.append('image');
+            imgEl.attr('id', itemData.localId)
+                .attr('x', 10)
+                .attr('y', 10)
+                .attr('height', '180px')
+                .attr('width', '180px')
+                .attr('xlink:href', itemData.href);
+            if (itemData.photoId) {
+                imgEl.attr('remote-id', itemData.photoId);
+                setDragBehaviour(imgEl);
+            }
+            translate(g, itemData.x, itemData.y);
 
-                setSelectBehaviour(imgEl);
-            };
-            myImage.src = itemData.href;
+            setSelectBehaviour(imgEl);
         }
     }
 );

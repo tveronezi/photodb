@@ -36,6 +36,15 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 model.sendMessage(bean);
             });
 
+            channel.bind('file-manager', 'get-file-bin', function (data) {
+                model.sendMessage({
+                    cmdName:'DownloadPhoto',
+                    uid:data.photoId,
+                    localId:data.localId,
+                    x:data.x,
+                    y:data.y
+                });
+            });
 
             channel.bind('server-command-callback-success', 'GetUser', function (data) {
                 growl.showNotification({
