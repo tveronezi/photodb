@@ -24,14 +24,14 @@
         'application-growl-message'
     ];
 
-    define((function () {
-        var requirements = [];
-        for (var i = 0; i < files.length; i++) {
-            requirements.push('text!templates/' + files[i] + '.handlebars');
-        }
-        requirements.push('lib/handlebars');
-        return requirements;
-    })(), function () {
+    // Preparing the "requirements" paths.
+    var requirements = [];
+    for (var i = 0; i < files.length; i++) {
+        requirements.push('text!templates/' + files[i] + '.handlebars');
+    }
+    requirements.push('lib/handlebars');
+
+    define(requirements, function () {
             var templates = {};
             for (var i = 0; i < files.length; i++) {
                 templates[files[i]] = Handlebars.compile(arguments[i]);

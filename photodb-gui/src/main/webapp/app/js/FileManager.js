@@ -41,7 +41,6 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
             });
         });
 
-
         channel.bind('server-command-callback-success', 'DeletePhotos', function (data) {
             var uids = data.params.uids.split(',');
             obj.forEach(uids, function (uid) {
