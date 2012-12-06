@@ -23,7 +23,7 @@
 "use strict";
 define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/GrowlNotification', 'util/I18N'],
     function (channel, model, ApplicationView, growl, I18N) {
-        return function () {
+        function newObject() {
 
             channel.bind('file-manager', 'new-local-file', function (data) {
                 var bean = {
@@ -80,7 +80,7 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 });
             });
 
-            channel.bind('ui-actions', 'container-rendered', function (data) {
+            channel.bind('ui-actions', 'container-rendered', function () {
                 model.sendMessage({
                     cmdName: 'GetUser'
                 });
@@ -118,6 +118,10 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
                 browserWindow: $(window)
             });
             view.render();
+        }
+
+        return {
+            newObject: newObject
         };
     }
 );

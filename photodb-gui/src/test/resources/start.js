@@ -50,7 +50,8 @@ require.config({
             'test/DelayedTask',
             'test/Obj',
             'test/Sequence',
-            'test/ApplicationChannel'
+            'test/ApplicationChannel',
+            'test/ApplicationController'
         ];
 
         return app.concat(lib).concat(tests);

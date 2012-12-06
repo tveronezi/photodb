@@ -26,7 +26,7 @@ define(['ApplicationController', 'lib/jquery'],
         return {
             start:function () {
                 $(document).ready(function () {
-                    ApplicationController();
+                    ApplicationController.newObject();
                 });
             }
         };
