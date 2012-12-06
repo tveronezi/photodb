@@ -36,9 +36,11 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 }
             });
 
-            channel.send('file-manager', 'delete-files', {
-                uids:uids
-            });
+            if (uids.length > 0) {
+                channel.send('file-manager', 'delete-files', {
+                    uids: uids
+                });
+            }
         });
 
         channel.bind('server-command-callback-success', 'DeletePhotos', function (data) {
@@ -57,11 +59,11 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
         channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
             var params = data.params;
             photos[params.uid] = {
-                x:data.params.x,
-                y:data.params.y,
-                photoId:data.params.uid,
-                localId:sequence.next('file'),
-                href:'data:image/png;base64,' + data.output.content
+                x: data.params.x,
+                y: data.params.y,
+                photoId: data.params.uid,
+                localId: sequence.next('file'),
+                href: 'data:image/png;base64,' + data.output.content
             };
 
             triggerNewRemoteFile.delay(function () {
@@ -77,10 +79,10 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
         channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
             obj.forEach(data.output, function (value) {
                 var itemData = {
-                    localId:sequence.next('file'),
-                    x:value.x,
-                    y:value.y,
-                    photoId:value.uid
+                    localId: sequence.next('file'),
+                    x: value.x,
+                    y: value.y,
+                    photoId: value.uid
                 };
                 channel.send('file-manager', 'get-file-bin', itemData);
             });
@@ -139,11 +141,11 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     channel.send('file-manager', 'new-local-file', {
-                        evt:e,
-                        x:x,
-                        y:y,
-                        file:f,
-                        localId:sequence.next('file')
+                        evt: e,
+                        x: x,
+                        y: y,
+                        file: f,
+                        localId: sequence.next('file')
                     });
                 };
                 // Read in the image file as a data URL.
