@@ -35,32 +35,20 @@ require.config({
 });
 
 (function () {
-    var REQUIREMENTS = (function () {
-        // We should list all our modules...
-        var app = ['ApplicationChannel', 'ApplicationController', 'ApplicationModel', 'ApplicationTemplates',
-            'util/DelayedTask', 'util/I18N', 'util/Log', 'util/Obj', 'util/Sequence',
-            'view/ApplicationView', 'view/GrowlNotification'];
-
-        // ... and libraries dependencies.
-        var lib = ['lib/less', 'lib/jquery', 'lib/bootstrap', 'lib/handlebars'];
-
-        // These are the test files under the "photodb/photodb-web/src/test/javascript/test" directory.
-        var tests = [
-            'test/I18N',
-            'test/DelayedTask',
-            'test/Obj',
-            'test/Sequence',
-            'test/ApplicationChannel',
-            'test/ApplicationController'
-        ];
-
-        return app.concat(lib).concat(tests);
-    })();
+    var tests = [
+        'test/I18N',
+        'test/DelayedTask',
+        'test/Obj',
+        'test/Sequence',
+        'test/ApplicationChannel',
+        'test/ApplicationController',
+        'test/ApplicationModel'
+    ];
 
     /**
      * Load all the modules before starting.
      */
-    require(REQUIREMENTS, function () {
+    require(tests, function () {
         $(document).ready(function () {
             jasmine.getEnv().addReporter(
                 new jasmine.HtmlReporter()
