@@ -47,7 +47,8 @@ require.config({
         // These are the test files under the "photodb/photodb-web/src/test/javascript/test" directory.
         var tests = [
             'test/I18N',
-            'test/DelayedTask'
+            'test/DelayedTask',
+            'test/Obj'
         ];
 
         return app.concat(lib).concat(tests);
