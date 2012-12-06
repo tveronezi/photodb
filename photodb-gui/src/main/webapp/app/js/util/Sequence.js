@@ -19,30 +19,26 @@
 "use strict";
 define([],
     function () {
-        return (function () {
-            "use strict";
+        var sequenceMap = {};
 
-            var sequenceMap = {};
-
-            function next(prefix) {
-                var myPrefix = prefix;
-                if (!myPrefix || myPrefix === '') {
-                    myPrefix = 'APP';
-                }
-
-                var sequence = sequenceMap[myPrefix];
-                if (!sequence) {
-                    sequence = 0;
-                    sequenceMap[myPrefix] = sequence;
-                }
-
-                sequenceMap[myPrefix] = sequence + 1;
-                return myPrefix + '-' + sequence;
+        function next(prefix) {
+            var myPrefix = prefix;
+            if (!myPrefix || myPrefix === '') {
+                myPrefix = 'APP';
             }
 
-            return {
-                next:next
-            };
-        })();
+            var sequence = sequenceMap[myPrefix];
+            if (!sequence) {
+                sequence = 0;
+                sequenceMap[myPrefix] = sequence;
+            }
+
+            sequenceMap[myPrefix] = sequence + 1;
+            return myPrefix + '-' + sequence;
+        }
+
+        return {
+            next:next
+        };
     }
 );
