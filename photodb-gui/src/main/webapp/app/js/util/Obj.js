@@ -55,55 +55,6 @@ define([],
             return null;
         }
 
-        function isPrimitive(value) {
-            if ('number' === (typeof value)) {
-                return true;
-            }
-
-            if ('string' === (typeof value)) {
-                return true;
-            }
-
-            if ('boolean' === (typeof value)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        function getSafe(obj, defaultValue) {
-            if (obj instanceof Function) {
-                try {
-                    return obj();
-
-                } catch (ex) {
-                    return defaultValue;
-                }
-            }
-
-            if (obj) {
-                return obj;
-            }
-            return defaultValue;
-        }
-
-        function toArray(obj, objBuilder) {
-            if (!obj) {
-                return [];
-            }
-
-            if (obj instanceof Array) {
-                return obj;
-            }
-
-            var result = [];
-            for (var key in obj) {
-                result.push(objBuilder(key, obj[key]));
-            }
-
-            return result;
-        }
-
         function getArray(obj) {
             if (!obj) {
                 return [];
@@ -119,22 +70,6 @@ define([],
             }
 
             return [obj];
-        }
-
-        function getObject(obj) {
-            if (!obj) {
-                return {};
-            }
-            return obj;
-        }
-
-        function stringFormat(str, values) {
-            var result = str;
-            for (var key in values) {
-                var reg = new RegExp("\\{" + key + "\\}", "gm");
-                result = result.replace(reg, values[key]);
-            }
-            return result;
         }
 
         function forEach(value, callback) {
@@ -160,12 +95,7 @@ define([],
 
         return {
             keyCodeToString:keyCodeToString,
-            isPrimitive:isPrimitive,
-            getSafe:getSafe,
-            toArray:toArray,
             getArray:getArray,
-            getObject:getObject,
-            stringFormat:stringFormat,
             forEach:forEach,
             forEachKey:forEachKey
         }
