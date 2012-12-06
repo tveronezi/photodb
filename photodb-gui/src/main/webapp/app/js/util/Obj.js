@@ -20,157 +20,154 @@
 "use strict";
 define([],
     function () {
-        return (function () {
-
-            // http://www.quirksmode.org/js/keys.html
-            function keyCodeToString(keyCode) {
-                if (keyCode === 16) {
-                    return 'shift';
-                }
-
-                if (keyCode === 17) {
-                    return 'control';
-                }
-
-                if (keyCode === 18) {
-                    return 'alt';
-                }
-
-                if (keyCode === 27) {
-                    return 'esc';
-                }
-
-                if (keyCode === 46) {
-                    return 'delete';
-                }
-
-                // Numbers or Letters
-                if (keyCode >= 48 && keyCode <= 57 || //Numbers
-                    keyCode >= 65 && keyCode <= 90) { //Letters
-                    return String.fromCharCode(keyCode);
-                }
-
-                if (keyCode >= 112 && keyCode <= 123) { //F1 -> F12
-                    return 'F' + (keyCode - 111);
-                }
-
-                return null;
+        // http://www.quirksmode.org/js/keys.html
+        function keyCodeToString(keyCode) {
+            if (keyCode === 16) {
+                return 'shift';
             }
 
-            function isPrimitive(value) {
-                if ('number' === (typeof value)) {
-                    return true;
-                }
-
-                if ('string' === (typeof value)) {
-                    return true;
-                }
-
-                if ('boolean' === (typeof value)) {
-                    return true;
-                }
-
-                return false;
+            if (keyCode === 17) {
+                return 'control';
             }
 
-            function getSafe(obj, defaultValue) {
-                if (obj instanceof Function) {
-                    try {
-                        return obj();
-
-                    } catch (ex) {
-                        return defaultValue;
-                    }
-                }
-
-                if (obj) {
-                    return obj;
-                }
-                return defaultValue;
+            if (keyCode === 18) {
+                return 'alt';
             }
 
-            function toArray(obj, objBuilder) {
-                if (!obj) {
-                    return [];
-                }
-
-                if (obj instanceof Array) {
-                    return obj;
-                }
-
-                var result = [];
-                for (var key in obj) {
-                    result.push(objBuilder(key, obj[key]));
-                }
-
-                return result;
+            if (keyCode === 27) {
+                return 'esc';
             }
 
-            function getArray(obj) {
-                if (!obj) {
-                    return [];
-                }
-
-                // IE9 does not have FileList
-                if (window.FileList && obj instanceof window.FileList) {
-                    return obj;
-                }
-
-                if (obj instanceof Array) {
-                    return obj;
-                }
-
-                return [obj];
+            if (keyCode === 46) {
+                return 'delete';
             }
 
-            function getObject(obj) {
-                if (!obj) {
-                    return {};
+            // Numbers or Letters
+            if (keyCode >= 48 && keyCode <= 57 || //Numbers
+                keyCode >= 65 && keyCode <= 90) { //Letters
+                return String.fromCharCode(keyCode);
+            }
+
+            if (keyCode >= 112 && keyCode <= 123) { //F1 -> F12
+                return 'F' + (keyCode - 111);
+            }
+
+            return null;
+        }
+
+        function isPrimitive(value) {
+            if ('number' === (typeof value)) {
+                return true;
+            }
+
+            if ('string' === (typeof value)) {
+                return true;
+            }
+
+            if ('boolean' === (typeof value)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function getSafe(obj, defaultValue) {
+            if (obj instanceof Function) {
+                try {
+                    return obj();
+
+                } catch (ex) {
+                    return defaultValue;
                 }
+            }
+
+            if (obj) {
+                return obj;
+            }
+            return defaultValue;
+        }
+
+        function toArray(obj, objBuilder) {
+            if (!obj) {
+                return [];
+            }
+
+            if (obj instanceof Array) {
                 return obj;
             }
 
-            function stringFormat(str, values) {
-                var result = str;
-                for (var key in values) {
-                    var reg = new RegExp("\\{" + key + "\\}", "gm");
-                    result = result.replace(reg, values[key]);
-                }
-                return result;
+            var result = [];
+            for (var key in obj) {
+                result.push(objBuilder(key, obj[key]));
             }
 
-            function forEach(value, callback) {
-                var arr = getArray(value);
-                for (var i = 0; i < arr.length; i++) {
-                    callback(arr[i], i);
-                }
+            return result;
+        }
+
+        function getArray(obj) {
+            if (!obj) {
+                return [];
             }
 
-            function forEachKey(obj, callback) {
-                if (!obj) {
-                    return;
-                }
-                for (var key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        if (callback(key, obj[key]) === false) {
-                            // return false if you want to break the loop
-                            break;
-                        }
+            // IE9 does not have FileList
+            if (window.FileList && obj instanceof window.FileList) {
+                return obj;
+            }
+
+            if (obj instanceof Array) {
+                return obj;
+            }
+
+            return [obj];
+        }
+
+        function getObject(obj) {
+            if (!obj) {
+                return {};
+            }
+            return obj;
+        }
+
+        function stringFormat(str, values) {
+            var result = str;
+            for (var key in values) {
+                var reg = new RegExp("\\{" + key + "\\}", "gm");
+                result = result.replace(reg, values[key]);
+            }
+            return result;
+        }
+
+        function forEach(value, callback) {
+            var arr = getArray(value);
+            for (var i = 0; i < arr.length; i++) {
+                callback(arr[i], i);
+            }
+        }
+
+        function forEachKey(obj, callback) {
+            if (!obj) {
+                return;
+            }
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    if (callback(key, obj[key]) === false) {
+                        // return false if you want to break the loop
+                        break;
                     }
                 }
             }
+        }
 
-            return {
-                keyCodeToString:keyCodeToString,
-                isPrimitive:isPrimitive,
-                getSafe:getSafe,
-                toArray:toArray,
-                getArray:getArray,
-                getObject:getObject,
-                stringFormat:stringFormat,
-                forEach:forEach,
-                forEachKey:forEachKey
-            }
-        })();
+        return {
+            keyCodeToString:keyCodeToString,
+            isPrimitive:isPrimitive,
+            getSafe:getSafe,
+            toArray:toArray,
+            getArray:getArray,
+            getObject:getObject,
+            stringFormat:stringFormat,
+            forEach:forEach,
+            forEachKey:forEachKey
+        }
     }
 );
