@@ -209,6 +209,19 @@ define(['ApplicationController', 'ApplicationChannel', 'ApplicationModel', 'util
                 expect(myBean.x).toEqual(1);
                 expect(myBean.y).toEqual(2);
             });
+
+            it('should call "ApplicationView.render()"', function () {
+                var rendered = false;
+                ApplicationView.newObject = function () {
+                    return {
+                        render: function () {
+                            rendered = true;
+                        }
+                    };
+                }
+                ApplicationController.newObject();
+                expect(rendered).toBe(true);
+            });
         });
     }
 );
