@@ -20,9 +20,10 @@ define(['util/I18N'], function (I18N) {
     describe('I18N test', function () {
         it('should show the welcome message', function () {
             var str = I18N.get('application.welcome', {
-                appName:I18N.get('application.name')
+                appName:I18N.get('application.name'),
+                userName:'my Master'
             });
-            expect(str).toEqual('Welcome to photodb!');
+            expect(str).toEqual('Hi my Master! Welcome to photodb!');
         });
 
         it('should alert a missing key', function () {
