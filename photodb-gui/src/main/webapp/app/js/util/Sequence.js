@@ -22,7 +22,7 @@ define([],
         var sequenceMap = {};
 
         function next(prefix) {
-            var myPrefix = prefix;
+            var myPrefix = (prefix ? prefix.trim() : null);
             if (!myPrefix || myPrefix === '') {
                 myPrefix = 'APP';
             }

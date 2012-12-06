@@ -48,7 +48,8 @@ require.config({
         var tests = [
             'test/I18N',
             'test/DelayedTask',
-            'test/Obj'
+            'test/Obj',
+            'test/Sequence'
         ];
 
         return app.concat(lib).concat(tests);
