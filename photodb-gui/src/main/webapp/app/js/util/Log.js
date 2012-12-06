@@ -20,21 +20,19 @@
 "use strict";
 define([],
     function () {
-        (function () {
-            var noOp = function () {
-            };
+        var noOp = function () {
+        };
 
-            if (!window.console) {
-                window.console = {};
-            }
+        if (!window.console) {
+            window.console = {};
+        }
 
-            if (!window.console.error) {
-                window.console.error = noOp;
-            }
+        if (!window.console.error) {
+            window.console.error = noOp;
+        }
 
-            if (!window.console.log) {
-                window.console.log = noOp;
-            }
-        })();
+        if (!window.console.log) {
+            window.console.log = noOp;
+        }
     }
 );
