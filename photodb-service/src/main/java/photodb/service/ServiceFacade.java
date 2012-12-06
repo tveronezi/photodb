@@ -33,7 +33,7 @@ public interface ServiceFacade {
 
     PhotoDto getPhoto(Long uid);
 
-    void deletePhotos(List<Long> uids);
+    List<String> deletePhotos(List<Long> uids);
 
     void updatePhotoPosition(Long uid, Integer x, Integer y);
 }

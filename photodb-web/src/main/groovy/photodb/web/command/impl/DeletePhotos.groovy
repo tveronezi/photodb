@@ -32,7 +32,15 @@ class DeletePhotos implements Command {
             it as Long
         }
 
-        serviceFacade.deletePhotos(uids)
+        List paths = serviceFacade.deletePhotos(uids)
+        File dir = UploadPhoto.getImagesDir(req)
+        paths.each { path ->
+            File file = new File(dir, path)
+            if (file.exists()) {
+                file.delete()
+            }
+        }
+
         return null;
     }
 }

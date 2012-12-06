@@ -60,13 +60,18 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
              * Unbind a listener to a given message
              *
              * @param messageKey this is the messageKey sent by another object
-             * @param callback the "function" object you used in the "bind" method
              */
-            function unbind(messageKey, callback) {
+            function unbind(messageKey) {
                 if (!listeners[messageKey]) {
                     return;
                 }
                 delete listeners[messageKey];
+            }
+
+            function unbindAll() {
+                obj.forEachKey(listeners, function (key) {
+                    unbind(key);
+                });
             }
 
             /**
@@ -90,7 +95,7 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
 
                 if (!hasListeners) {
                     return {
-                        consumed:false
+                        consumed: false
                     };
                 }
 
@@ -107,14 +112,15 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
                 });
 
                 return {
-                    consumed:true
+                    consumed: true
                 };
             }
 
             return {
-                bind:bind,
-                unbind:unbind,
-                send:send
+                bind: bind,
+                unbind: unbind,
+                unbindAll: unbindAll,
+                send: send
             };
         }
 
@@ -125,14 +131,27 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
             return channels[name];
         }
 
+        function unbindAll(name) {
+            if(name) {
+                console.log('Unbinding all the listeners of "' + name + '"');
+                getChannel(name).unbindAll();
+            } else {
+                console.warn('You are zapping all the channels and listeners!');
+                obj.forEachKey(channels, function(key) {
+                    getChannel(key).unbindAll();
+                });
+            }
+        }
+
         return {
-            bind:function (name, key, callback) {
+            bind: function (name, key, callback) {
                 getChannel(name).bind(key, callback);
             },
-            unbind:function (name, key, callback) {
-                getChannel(name).unbind(key, callback);
+            unbind: function (name, key) {
+                getChannel(name).unbind(key);
             },
-            send:function (name, key, data) {
+            unbindAll: unbindAll,
+            send: function (name, key, data) {
                 return getChannel(name).send(key, data);
             }
         };

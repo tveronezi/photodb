@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -77,7 +78,7 @@ public class PhotoImpl {
 
     public void updatePhotoPosition(Long uid, Integer x, Integer y) {
         final Photo photo = this.getPhoto(uid);
-        if(photo == null) {
+        if (photo == null) {
             return;
         }
         final String userName = this.ctx.getCallerPrincipal().getName();
@@ -88,8 +89,9 @@ public class PhotoImpl {
         photo.setY(y);
     }
 
-    public void deletePhotos(List<Long> uids) {
+    public List<String> deletePhotos(List<Long> uids) {
         final String userName = this.ctx.getCallerPrincipal().getName();
+        final List<String> paths = new ArrayList<String>();
         for (Long uid : uids) {
             final Photo photo = this.baseEAO.find(Photo.class, uid);
             if (photo == null) {
@@ -98,7 +100,9 @@ public class PhotoImpl {
             if (!photo.getUser().getName().equals(userName)) {
                 continue;
             }
+            paths.add(photo.getPath());
             this.baseEAO.delete(photo);
         }
+        return paths;
     }
 }

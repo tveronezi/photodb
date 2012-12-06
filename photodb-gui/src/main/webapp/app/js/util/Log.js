@@ -31,6 +31,10 @@ define([],
             window.console.error = noOp;
         }
 
+        if (!window.console.warn) {
+            window.console.warn = noOp;
+        }
+
         if (!window.console.log) {
             window.console.log = noOp;
         }

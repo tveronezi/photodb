@@ -27,33 +27,33 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
 
             channel.bind('file-manager', 'new-local-file', function (data) {
                 var bean = {
-                    cmdName:'UploadPhoto',
-                    x:data.x,
-                    y:data.y,
-                    localId:data.localId
+                    cmdName: 'UploadPhoto',
+                    x: data.x,
+                    y: data.y,
+                    localId: data.localId
                 };
                 bean[data.file.name] = data.file;
                 model.sendMessage(bean);
                 growl.showNotification({
-                    message:I18N.get('photo.upload', {
-                        fileName:data.file.name
+                    message: I18N.get('photo.upload', {
+                        fileName: data.file.name
                     })
                 });
             });
 
             channel.bind('server-command-callback-success', 'UploadPhoto', function (data) {
                 triggerPhotoDownload({
-                    photoId:data.output.photoId,
-                    localId:data.params.localId,
-                    x:data.params.x,
-                    y:data.params.y
+                    photoId: data.output.photoId,
+                    localId: data.params.localId,
+                    x: data.params.x,
+                    y: data.params.y
                 });
             });
 
-            channel.bind('file-manager', 'delete-files', function(data) {
+            channel.bind('file-manager', 'delete-files', function (data) {
                 model.sendMessage({
-                    cmdName:'DeletePhotos',
-                    uids:data.uids.join(',')
+                    cmdName: 'DeletePhotos',
+                    uids: data.uids.join(',')
                 });
             });
 
@@ -63,43 +63,43 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
 
             function triggerPhotoDownload(data) {
                 model.sendMessage({
-                    cmdName:'DownloadPhoto',
-                    uid:data.photoId,
-                    localId:data.localId,
-                    x:data.x,
-                    y:data.y
+                    cmdName: 'DownloadPhoto',
+                    uid: data.photoId,
+                    localId: data.localId,
+                    x: data.x,
+                    y: data.y
                 });
             }
 
             channel.bind('server-command-callback-success', 'GetUser', function (data) {
                 growl.showNotification({
-                    message:I18N.get('application.welcome', {
-                        appName:I18N.get('application.name'),
-                        userName:data.output.name
+                    message: I18N.get('application.welcome', {
+                        appName: I18N.get('application.name'),
+                        userName: data.output.name
                     })
                 });
             });
 
             channel.bind('ui-actions', 'container-rendered', function (data) {
                 model.sendMessage({
-                    cmdName:'GetUser'
+                    cmdName: 'GetUser'
                 });
 
                 if (window.File) {
                     growl.showNotification({
-                        message:I18N.get('drag.photos.hint'),
-                        timeout:2000,
-                        messageType:'info'
+                        message: I18N.get('drag.photos.hint'),
+                        timeout: 2000,
+                        messageType: 'info'
                     });
 
                     model.sendMessage({
-                        cmdName:'GetPhotos'
+                        cmdName: 'GetPhotos'
                     });
                 } else {
                     growl.showNotification({
-                        message:I18N.get('html.support.error'),
-                        autohide:false,
-                        messageType:'error'
+                        message: I18N.get('html.support.error'),
+                        autohide: false,
+                        messageType: 'error'
                     });
                 }
             });
@@ -107,14 +107,16 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
             channel.bind('file-manager', 'update-photo-position', function (data) {
                 // data.photoId, data.nx, data.ny
                 model.sendMessage({
-                    cmdName:'UpdatePhotoPosition',
-                    photoId:data.photoId,
-                    x:data.nx,
-                    y:data.ny
+                    cmdName: 'UpdatePhotoPosition',
+                    photoId: data.photoId,
+                    x: data.nx,
+                    y: data.ny
                 });
             });
 
-            var view = ApplicationView();
+            var view = ApplicationView.newObject({
+                browserWindow: $(window)
+            });
             view.render();
         };
     }

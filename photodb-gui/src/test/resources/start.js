@@ -17,19 +17,19 @@
  */
 
 require.config({
-    baseUrl:'/src/main/webapp/app/js/',
-    paths:{
-        'test':'/src/test/javascript/test/',
-        'text':'../lib/require/text',
-        'lib/d3':'../lib/d3/d3.v2.min',
-        'lib/less':'../lib/less/less-1.3.0.min',
-        'lib/jquery':'../lib/jquery/jquery-1.7.2.min',
-        'lib/bootstrap':'../lib/bootstrap/2.1.1/js/bootstrap.min',
-        'lib/handlebars':'../lib/handlebars/handlebars-1.0.rc.1'
+    baseUrl: '/src/main/webapp/app/js/',
+    paths: {
+        'test': '/src/test/javascript/test/',
+        'text': '../lib/require/text',
+        'lib/d3': '../lib/d3/d3.v2.min',
+        'lib/less': '../lib/less/less-1.3.0.min',
+        'lib/jquery': '../lib/jquery/jquery-1.7.2.min',
+        'lib/bootstrap': '../lib/bootstrap/2.1.1/js/bootstrap.min',
+        'lib/handlebars': '../lib/handlebars/handlebars-1.0.rc.1'
     },
-    shim:{
-        'lib/bootstrap':{
-            deps:['lib/jquery']
+    shim: {
+        'lib/bootstrap': {
+            deps: ['lib/jquery']
         }
     }
 });
@@ -49,7 +49,8 @@ require.config({
             'test/I18N',
             'test/DelayedTask',
             'test/Obj',
-            'test/Sequence'
+            'test/Sequence',
+            'test/ApplicationChannel'
         ];
 
         return app.concat(lib).concat(tests);
@@ -58,15 +59,12 @@ require.config({
     /**
      * Load all the modules before starting.
      */
-    require(REQUIREMENTS,
-        function () {
-            $(document).ready(function () {
-                jasmine.getEnv().addReporter(
-                    new jasmine.HtmlReporter()
-                );
-                jasmine.getEnv().execute();
-            })
-
-        }
-    );
+    require(REQUIREMENTS, function () {
+        $(document).ready(function () {
+            jasmine.getEnv().addReporter(
+                new jasmine.HtmlReporter()
+            );
+            jasmine.getEnv().execute();
+        });
+    });
 })();

@@ -20,13 +20,13 @@
 "use strict";
 define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
     'view/GrowlNotification', 'util/Obj', 'util/I18N', 'util/Sequence', 'lib/jquery', 'view/FileView'],
-    function (channel, ApplicationTemplates, delayedTask, growl, utils, I18N, sequence) {
-        return function () {
+    function (channel, templates, delayedTask, growl, utils, I18N, sequence) {
+        function newObject(cfg) {
+            var browserWindow = cfg.browserWindow;
             var containerId = sequence.next('app-container');
-            var container = $(ApplicationTemplates.getValue('application', {
-                id:containerId
+            var container = $(templates.getValue('application', {
+                id: containerId
             }));
-            var browserWindow = $(window);
             var delayedContainerResize = delayedTask.newObject();
 
             browserWindow.on('resize', function () {
@@ -35,7 +35,7 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
 
             browserWindow.on('keyup', function (ev) {
                 var result = {
-                    consumed:false
+                    consumed: false
                 };
 
                 if (ev.keyCode === 18) { //ALT
@@ -64,8 +64,7 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 }
 
                 if (ev.keyCode !== 46 && // 'Delete' key
-                    key.length === 0 &&
-                    !(ev.keyCode >= 112 && ev.keyCode <= 123 || ev.keyCode === 27)) { // F1...F12 or esc
+                    key.length === 0 && !(ev.keyCode >= 112 && ev.keyCode <= 123 || ev.keyCode === 27)) { // F1...F12 or esc
                     return; //nothing to do
                 }
 
@@ -92,22 +91,29 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 container.css('width', containerWidth + 'px');
 
                 channel.send('ui-actions', 'container-resized', {
-                    containerHeight:containerHeight,
-                    containerWidth:containerWidth
+                    containerHeight: containerHeight,
+                    containerWidth: containerWidth
                 });
             }
 
             return {
-                render:function () {
+                getContainerId: function () {
+                    return containerId;
+                },
+                render: function () {
                     var body = $('body');
                     body.append(container);
                     delayedContainerResize.delay(updateContainerSize, 500);
 
                     channel.send('ui-actions', 'container-rendered', {
-                        containerId:containerId
+                        containerId: containerId
                     });
                 }
             };
+        };
+
+        return {
+            newObject: newObject
         };
     }
 );

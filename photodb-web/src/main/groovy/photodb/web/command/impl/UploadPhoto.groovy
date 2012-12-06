@@ -25,25 +25,29 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 
 class UploadPhoto implements Command {
-    @Override
-    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+
+    public static File getImagesDir(ServletRequest req) {
         // TODO: For now we are going to use this directory
         // We will use something else later.
-        File imagesDir = new File(req.getRealPath('/WEB-INF/images'))
+        File imagesDir = new File(req.servletContext.getRealPath('/WEB-INF/images'))
         imagesDir.mkdirs()
+        return imagesDir
+    }
 
+    @Override
+    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
+        File imagesDir = getImagesDir(req)
         def sessionId = req.session.id
-
         def data = req.getAttribute('params')
         String path = sessionId + '-' + System.currentTimeMillis()
         File uploadedFile = new File(imagesDir, path)
         data.fileItem.write(uploadedFile)
         def photoId = serviceFacade.createPhoto(
                 path,
-                data.fileItem.fileName,
-                data.fileItem.contentType,
-                Integer.valueOf(data.x),
-                Integer.valueOf(data.y)
+                data.fileItem.fileName as String,
+                data.fileItem.contentType as String,
+                data.x as Integer,
+                data.y as Integer
         )
         return [
                 photoId: photoId
