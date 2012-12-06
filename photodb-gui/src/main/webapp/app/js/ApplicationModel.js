@@ -20,11 +20,7 @@
 define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
     function (channel, obj) {
         var appSocket = null;
-        var urlBase = window.document.URL;
-
-        urlBase = urlBase.replace(new RegExp('^' + window.location.protocol + '//'), '');
-        urlBase = urlBase.replace(new RegExp('^' + window.document.location.host), '');
-        urlBase = urlBase.replace('#', '');
+        var urlBase = window.document.location.pathname;
 
         channel.bind('server-command-callback-error', 'command-error', function (data) {
             console.error('Command error', data);
@@ -39,7 +35,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
         }
 
         function sendMultipart(bean) {
-            var xhr = new XMLHttpRequest();
+            var xhr = new window.XMLHttpRequest();
             xhr.open('POST', urlBase + 'cmd', true);
             xhr.onload = function (e) {
                 var data = JSON.parse(this.response);
@@ -52,15 +48,15 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                 } else {
                     channel.send('server-command-callback-error', bean.cmdName, data);
                     channel.send('server-command-callback-error', 'command-error', {
-                        data:data,
-                        bean:bean
+                        data: data,
+                        bean: bean
                     });
                 }
             };
             xhr.onerror = function (e) {
                 var data = {
-                    message:e,
-                    bean:bean
+                    message: e,
+                    bean: bean
                 };
                 channel.send('server-command-callback-error', bean.cmdName, data);
                 channel.send('server-command-callback-error', 'command-error', data);
@@ -71,19 +67,19 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
 
         function sendNormal(bean) {
             $.ajax({
-                    url:urlBase + 'cmd',
-                    type:'POST',
-                    data:bean,
-                    dataType:'text',
-                    error:function (e) {
+                    url: urlBase + 'cmd',
+                    type: 'POST',
+                    data: bean,
+                    dataType: 'text',
+                    error: function (e) {
                         var data = {
-                            message:e,
-                            bean:bean
+                            message: e,
+                            bean: bean
                         };
                         channel.send('server-command-callback-error', bean.cmdName, data);
                         channel.send('server-command-callback-error', 'command-error', data);
                     },
-                    success:function (message) {
+                    success: function (message) {
                         var data = JSON.parse(message);
 
                         // Commands callback calls
@@ -93,8 +89,8 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                         } else {
                             channel.send('server-command-callback-error', bean.cmdName, data);
                             channel.send('server-command-callback-error', 'command-error', {
-                                data:data,
-                                bean:bean
+                                data: data,
+                                bean: bean
                             });
                         }
                     }
@@ -122,10 +118,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
         }
 
         return {
-            sendMessage:sendMessage,
-            getUrlBase:function () {
-                return  urlBase;
-            }
+            sendMessage: sendMessage
         }
     }
 );

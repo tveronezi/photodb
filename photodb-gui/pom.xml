@@ -54,6 +54,7 @@
                 <configuration>
                     <preloadSources>
                         <source>http://localhost:8234/src/main/webapp/app/lib/require/require.js</source>
+                        <source>http://localhost:8234/src/main/webapp/app/config.js</source>
                         <source>http://localhost:8234/src/test/resources/start.js</source>
                     </preloadSources>
                     <jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>

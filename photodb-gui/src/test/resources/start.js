@@ -16,25 +16,17 @@
  *  limitations under the License.
  */
 
-require.config({
-    baseUrl: '/src/main/webapp/app/js/',
-    paths: {
-        'test': '/src/test/javascript/test/',
-        'text': '../lib/require/text',
-        'lib/d3': '../lib/d3/d3.v2.min',
-        'lib/less': '../lib/less/less-1.3.0.min',
-        'lib/jquery': '../lib/jquery/jquery-1.7.2.min',
-        'lib/bootstrap': '../lib/bootstrap/2.1.1/js/bootstrap.min',
-        'lib/handlebars': '../lib/handlebars/handlebars-1.0.rc.1'
-    },
-    shim: {
-        'lib/bootstrap': {
-            deps: ['lib/jquery']
-        }
-    }
-});
+// Set the paths needed for our tests
+APP_CONFIG.paths.test = '/src/test/javascript/test/';
+APP_CONFIG.baseUrl = '/src/main/webapp/app/js/';
 
+// APP_CONFIG is the same object used by the official application "start.js" file
+require.config(APP_CONFIG);
+
+// Wrapping it because we don't the "tests" variable available outside this file.
 (function () {
+
+    // Don't forget to put a new entry here whenever you add a new test file.
     var tests = [
         'test/I18N',
         'test/DelayedTask',
@@ -45,14 +37,13 @@ require.config({
         'test/ApplicationModel'
     ];
 
-    /**
-     * Load all the test modules before starting.
-     */
+    // Load all the test modules before starting.
     require(tests, function () {
         $(document).ready(function () {
             jasmine.getEnv().addReporter(
                 new jasmine.HtmlReporter()
             );
+            // Run tests!
             jasmine.getEnv().execute();
         });
     });
