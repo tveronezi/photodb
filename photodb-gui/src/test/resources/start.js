@@ -46,7 +46,7 @@ require.config({
     ];
 
     /**
-     * Load all the modules before starting.
+     * Load all the test modules before starting.
      */
     require(tests, function () {
         $(document).ready(function () {
