@@ -26,7 +26,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
         var updatePos = {};
 
         var photos = {};
-        var triggerNewRemoteFile = delayedTask();
+        var triggerNewRemoteFile = delayedTask.newObject();
 
         channel.bind('ui-actions', 'delete-photos-trigger', function () {
             var uids = [];
@@ -98,7 +98,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
 
             var task = updatePos[data.photoId];
             if (!task) {
-                task = delayedTask();
+                task = delayedTask.newObject();
                 updatePos[data.photoId] = task;
             }
             task.delay(function () {

@@ -45,7 +45,10 @@ require.config({
         var lib = ['lib/less', 'lib/jquery', 'lib/bootstrap', 'lib/handlebars'];
 
         // These are the test files under the "photodb/photodb-web/src/test/javascript/test" directory.
-        var tests = ['test/I18N'];
+        var tests = [
+            'test/I18N',
+            'test/DelayedTask'
+        ];
 
         return app.concat(lib).concat(tests);
     })();

@@ -73,7 +73,7 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
                     } else {
                         timeout = autohide;
                     }
-                    timeout[alertId] = delayedTask();
+                    timeout[alertId] = delayedTask.newObject();
                     timeout[alertId].delay(removeAlert, waitTime);
                 }
             }

@@ -19,25 +19,34 @@
 "use strict";
 define([],
     function () {
-        return function () {
-            "use strict";
-
+        function newObject() {
             var currentTimer = null;
 
             function delay(callback, millis) {
                 if (!callback) {
-                    throw "You should give me a callback method to execute";
+                    throw 'You should give me a callback method to execute';
                 }
 
+                // Cancel previous execution
                 if (currentTimer !== null) {
                     clearTimeout(currentTimer);
                 }
-                currentTimer = setTimeout(callback, millis);
+
+                if (millis) {
+                    currentTimer = setTimeout(callback, millis);
+                } else {
+                    // No timeout set.
+                    callback();
+                }
             }
 
             return {
                 delay:delay
             };
+        }
+
+        return {
+            newObject:newObject
         }
     }
 );

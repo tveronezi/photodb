@@ -27,7 +27,7 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 id:containerId
             }));
             var browserWindow = $(window);
-            var delayedContainerResize = delayedTask();
+            var delayedContainerResize = delayedTask.newObject();
 
             browserWindow.on('resize', function () {
                 delayedContainerResize.delay(updateContainerSize, 500);
