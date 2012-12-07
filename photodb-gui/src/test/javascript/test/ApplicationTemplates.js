@@ -26,7 +26,6 @@ define(['ApplicationTemplates', 'lib/jquery'], function (templates) {
             } catch (e) {
                 expect(e).toEqual('Template not registered. "UNKNOWN-TEMPLATE"');
             }
-
         });
 
         it('should get simple template', function () {
