@@ -23,140 +23,150 @@
 "use strict";
 define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', 'lib/jquery'],
     function (channel, obj, sequence, delayedTask) {
-        var updatePos = {};
 
-        var photos = {};
-        var triggerNewRemoteFile = delayedTask.newObject();
+        function newObject() {
+            var updatePos = {};
 
-        channel.bind('ui-actions', 'delete-photos-trigger', function () {
-            var uids = [];
-            obj.forEachKey(photos, function (key, value) {
-                if (value.isSelected) {
-                    uids.push(value.photoId);
+            var photos = {};
+            var triggerNewRemoteFile = delayedTask.newObject();
+
+            channel.bind('ui-actions', 'delete-photos-trigger', function () {
+                var uids = [];
+                obj.forEachKey(photos, function (key, value) {
+                    if (value.isSelected) {
+                        uids.push(value.photoId);
+                    }
+                });
+
+                if (uids.length > 0) {
+                    channel.send('file-manager', 'delete-files', {
+                        uids: uids
+                    });
                 }
             });
 
-            if (uids.length > 0) {
-                channel.send('file-manager', 'delete-files', {
-                    uids: uids
+            channel.bind('server-command-callback-success', 'DeletePhotos', function (data) {
+                var uids = data.params.uids.split(',');
+                obj.forEach(uids, function (uid) {
+                    delete photos[uid];
                 });
-            }
-        });
 
-        channel.bind('server-command-callback-success', 'DeletePhotos', function (data) {
-            var uids = data.params.uids.split(',');
-            obj.forEach(uids, function (uid) {
-                delete photos[uid];
-            });
-
-            var photosArray = [];
-            obj.forEachKey(photos, function (key, value) {
-                photosArray.push(value);
-            });
-            channel.send('file-manager', 'files-updated', photosArray);
-        });
-
-        channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
-            var params = data.params;
-            photos[params.uid] = {
-                x: Number(data.params.x),
-                y: Number(data.params.y),
-                photoId: data.params.uid,
-                localId: sequence.next('file'),
-                href: 'data:image/png;base64,' + data.output.content
-            };
-
-            triggerNewRemoteFile.delay(function () {
                 var photosArray = [];
                 obj.forEachKey(photos, function (key, value) {
                     photosArray.push(value);
                 });
                 channel.send('file-manager', 'files-updated', photosArray);
-            }, 1000); // Wait 1s before sending this request
+            });
 
-        });
-
-        channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
-            obj.forEach(data.output, function (value) {
-                var itemData = {
+            channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
+                var params = data.params;
+                photos[params.uid] = {
+                    x: Number(data.params.x),
+                    y: Number(data.params.y),
+                    photoId: data.params.uid,
                     localId: sequence.next('file'),
-                    x: value.x,
-                    y: value.y,
-                    photoId: value.uid
+                    href: 'data:image/png;base64,' + data.output.content
                 };
-                channel.send('file-manager', 'get-file-bin', itemData);
+
+                triggerNewRemoteFile.delay(function () {
+                    var photosArray = [];
+                    obj.forEachKey(photos, function (key, value) {
+                        photosArray.push(value);
+                    });
+                    channel.send('file-manager', 'files-updated', photosArray);
+                }, 1000); // Wait 1s before sending this request
+
             });
-        });
 
-        channel.bind('ui-actions', 'drag-photo', function (data) {
-            // data.photoId, data.nx, data.ny
-            var photoData = photos[data.photoId];
-            if (!photoData) {
-                return;
-            }
-            photoData.x = data.nx;
-            photoData.y = data.ny;
-
-            var task = updatePos[data.photoId];
-            if (!task) {
-                task = delayedTask.newObject();
-                updatePos[data.photoId] = task;
-            }
-            task.delay(function () {
-                channel.send('file-manager', 'update-photo-position', data);
-                delete updatePos[data.photoId];
-            }, 1000); // Wait 1s before sending this request
-        });
-
-        channel.bind('ui-actions', 'file-selection', function (data) {
-            var photoData = photos[data.photoUid];
-            if (!photoData) {
-                return;
-            }
-            if (photoData.isSelected) {
-                delete photoData.isSelected;
-            } else {
-                photoData.isSelected = true;
-            }
-
-            var photosArray = [];
-            obj.forEachKey(photos, function (key, value) {
-                if (photoData !== value) {
-                    photosArray.push(value);
-                }
+            channel.bind('server-command-callback-success', 'GetPhotos', function (data) {
+                obj.forEach(data.output, function (value) {
+                    var itemData = {
+                        localId: sequence.next('file'),
+                        x: value.x,
+                        y: value.y,
+                        photoId: value.uid
+                    };
+                    channel.send('file-manager', 'get-file-bin', itemData);
+                });
             });
-            // This is the last guy to be plot
-            photosArray.push(photoData);
 
-            channel.send('file-manager', 'files-updated', photosArray);
-        });
-
-        function handleFileSelect(files, x, y) {
-            obj.forEach(files, function (f) {
-                // Only process image files.
-                if (!f.type.match('image.*')) {
+            channel.bind('ui-actions', 'drag-photo', function (data) {
+                // data.photoId, data.nx, data.ny
+                var photoData = photos[data.photoId];
+                if (!photoData) {
                     return;
                 }
+                photoData.x = data.nx;
+                photoData.y = data.ny;
 
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    channel.send('file-manager', 'new-local-file', {
-                        evt: e,
-                        x: x,
-                        y: y,
-                        file: f,
-                        localId: sequence.next('file')
-                    });
-                };
-                // Read in the image file as a data URL.
-                reader.readAsDataURL(f);
+                var task = updatePos[data.photoId];
+                if (!task) {
+                    task = delayedTask.newObject();
+                    updatePos[data.photoId] = task;
+                }
+                task.delay(function () {
+                    channel.send('file-manager', 'update-photo-position', data);
+                    delete updatePos[data.photoId];
+                }, 1000); // Wait 1s before sending this request
+            });
+
+            channel.bind('ui-actions', 'file-selection', function (data) {
+                var photoData = photos[data.photoUid];
+                if (!photoData) {
+                    return;
+                }
+                if (photoData.isSelected) {
+                    delete photoData.isSelected;
+                } else {
+                    photoData.isSelected = true;
+                }
+
+                var photosArray = [];
+                obj.forEachKey(photos, function (key, value) {
+                    if (photoData !== value) {
+                        photosArray.push(value);
+                    }
+                });
+                // This is the last guy to be plot
+                photosArray.push(photoData);
+
+                channel.send('file-manager', 'files-updated', photosArray);
+            });
+
+            function handleFileSelect(files, x, y) {
+                obj.forEach(files, function (f) {
+                    // Only process image files.
+                    if (!f.type.match('image.*')) {
+                        return;
+                    }
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        channel.send('file-manager', 'new-local-file', {
+                            evt: e,
+                            x: x,
+                            y: y,
+                            file: f,
+                            localId: sequence.next('file')
+                        });
+                    };
+                    // Read in the image file as a data URL.
+                    reader.readAsDataURL(f);
+                });
+            }
+
+            channel.bind('ui-actions', 'file-drop', function (data) {
+                var evt = data.evt;
+                var files = evt.originalEvent.dataTransfer.files;
+                handleFileSelect(files, evt.originalEvent.clientX, evt.originalEvent.clientY);
             });
         }
 
-        channel.bind('ui-actions', 'file-drop', function (data) {
-            var evt = data.evt;
-            var files = evt.originalEvent.dataTransfer.files;
-            handleFileSelect(files, evt.originalEvent.clientX, evt.originalEvent.clientY);
-        });
+        // Creating our singleton instance.
+        newObject();
+
+        return {
+            newObject: newObject
+        };
     }
 );

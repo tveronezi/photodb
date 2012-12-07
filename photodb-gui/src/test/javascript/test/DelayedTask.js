@@ -18,6 +18,16 @@
 
 define(['util/DelayedTask'], function (delayedTask) {
     describe('DelayedTask test', function () {
+        // Saving the 'window.setTimeout' function
+        var originalSetTimeout = window.setTimeout;
+        var originalClearTimeout = window.clearTimeout;
+
+        afterEach(function () {
+            // Set the original setTimeout back
+            window.setTimeout = originalSetTimeout;
+            window.clearTimeout = originalClearTimeout;
+        });
+
         it('should throw exception if we give no callback method', function () {
             var task = delayedTask.newObject();
             try {
@@ -29,9 +39,6 @@ define(['util/DelayedTask'], function (delayedTask) {
         });
 
         it('should not use setTimeout if we give no timeout value', function () {
-            // Saving the 'window.setTimeout' function
-            var originalSetTimeout = window.setTimeout;
-
             // Mocking 'window.setTimeout'
             var executed = false;
             window.setTimeout = function () {
@@ -45,15 +52,9 @@ define(['util/DelayedTask'], function (delayedTask) {
             });
             expect(executed).toBe(false);
             expect(calbackExecuted).toBe(true);
-
-            // Set the original setTimeout back
-            window.setTimeout = originalSetTimeout;
         });
 
         it('should use setTimeout if we give a timeout value', function () {
-            // Saving the 'window.setTimeout' function
-            var originalSetTimeout = window.setTimeout;
-
             // Mocking 'window.setTimeout'
             var setTimeoutExecuted = false;
             var callbackValue = null;
@@ -76,16 +77,9 @@ define(['util/DelayedTask'], function (delayedTask) {
             expect(calbackExecuted).toBe(true);
             expect(callbackValue).toEqual(myCallback);
             expect(timeoutValue).toEqual(1000);
-
-            // Set the original setTimeout back
-            window.setTimeout = originalSetTimeout;
         });
 
         it('should clear previous timeout execution', function () {
-            // Saving the original 'timeout' functions
-            var originalSetTimeout = window.setTimeout;
-            var originalClearTimeout = window.clearTimeout;
-
             var counterT = 0;
             var counterC = 0;
 
@@ -109,10 +103,6 @@ define(['util/DelayedTask'], function (delayedTask) {
             task.delay(noop, 1000);
 
             expect(counterT - 1).toEqual(counterC);
-
-            // Set the original setTimeout back
-            window.setTimeout = originalSetTimeout;
-            window.clearTimeout = originalClearTimeout;
         });
     });
 });
