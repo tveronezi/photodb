@@ -34,7 +34,8 @@ require.config(APP_CONFIG);
         'test/Sequence',
         'test/ApplicationChannel',
         'test/ApplicationController',
-        'test/ApplicationModel'
+        'test/ApplicationModel',
+        'test/ApplicationTemplates'
     ];
 
     // Load all the test modules before starting.
