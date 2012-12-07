@@ -67,12 +67,14 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                     .on('dragover', function () {
                         d3.event.preventDefault();
                     })
-                    .on('drop', function () {
+                    .on('drop', obj.bindScope({
+                        channel: channel
+                    }, function () {
                         d3.event.preventDefault();
-                        channel.send('ui-actions', 'file-drop', {
+                        this.channel.send('ui-actions', 'file-drop', {
                             evt: d3.event
                         });
-                    });
+                    }));
             });
 
             channel.bind('ui-actions', 'container-resized', function (data) {

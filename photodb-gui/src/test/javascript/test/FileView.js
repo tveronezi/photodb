@@ -16,15 +16,17 @@
  *  limitations under the License.
  */
 
-define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery'],
+define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery', 'lib/d3'],
     function (FileView, channel, sequence) {
         describe('FileView test', function () {
 
             var testContainerId = sequence.next('TEST-CONTAINER');
 
-            // Saving the 'window.setTimeout' function
+            // Saving the original stuff
             var originalSetTimeout = window.setTimeout;
             var originalClearTimeout = window.clearTimeout;
+
+            var oSelectionPrototypeOnFunction = d3.selection.prototype.on;
 
             beforeEach(function () {
                 channel.unbindAll();
@@ -38,6 +40,7 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery'],
                 // Set the original setTimeout back
                 window.setTimeout = originalSetTimeout;
                 window.clearTimeout = originalClearTimeout;
+                d3.selection.prototype.on = oSelectionPrototypeOnFunction;
                 channel.unbindAll();
                 $('#' + testContainerId).remove();
             });
@@ -51,7 +54,16 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery'],
                 expect(executed).toBe(executed);
             });
 
-            it('should listen for "container-rendered" events', function () {
+            it('should listen for "container-rendered" and "drop" events', function () {
+                var dropCallback = null;
+                var onWrapper = function (type, listener, capture) {
+                    if (type === 'drop') {
+                        dropCallback = listener;
+                    }
+                    return oSelectionPrototypeOnFunction.call(this, type, listener, capture);
+                }
+                d3.selection.prototype.on = onWrapper;
+
                 channel.send('ui-actions', 'container-rendered', {
                     containerId: testContainerId
                 });
@@ -59,8 +71,27 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery'],
                 var counter = 0;
                 var selection = $('#' + testContainerId).find('.svg-container')
                 expect(selection.length).toBe(1);
-            });
+                expect(dropCallback).not.toBe(null);
 
+
+                var preventDefaultExecuted = false;
+                var myEvt = {
+                    preventDefault: function () {
+                        preventDefaultExecuted = true;
+                    }
+                };
+                d3.event = myEvt;
+
+                var fileDropExecuted = false;
+                channel.bind('ui-actions', 'file-drop', function (myData) {
+                    expect(myData.evt).toBe(myEvt);
+                    fileDropExecuted = true;
+                });
+                dropCallback();
+
+                expect(preventDefaultExecuted).toBe(true);
+                expect(fileDropExecuted).toBe(true);
+            });
         });
     }
 );
