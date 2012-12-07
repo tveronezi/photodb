@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-define(['view/ApplicationView', 'ApplicationChannel'], function (ApplicationView, channel) {
+define(['view/ApplicationView', 'ApplicationChannel', 'util/Obj'], function (ApplicationView, channel, obj) {
 
     describe('ApplicationView test', function () {
 
@@ -54,17 +54,15 @@ define(['view/ApplicationView', 'ApplicationChannel'], function (ApplicationView
                 browserWindow: windowMock
             });
 
-            var executed = false;
-
+            var containerResizedExecuted = false;
             channel.bind('ui-actions', 'container-resized', function (data) {
                 expect(data.containerHeight).toBe(10);
                 expect(data.containerWidth).toBe(20);
-                executed = true;
+                containerResizedExecuted = true;
             });
-
             // Triggering the window "onresize" event
             callbacks.resize();
-            expect(executed).toBe(true);
+            expect(containerResizedExecuted).toBe(true);
 
             var eventName = null;
             channel.bind('ui-actions', 'window-alt-released', function () {
@@ -82,20 +80,27 @@ define(['view/ApplicationView', 'ApplicationChannel'], function (ApplicationView
                 preventDefaultExecuted = true;
             };
 
-            var testMe = function (key, code) {
+            var testOnEvent = function (expectedEventName, eventCallbackName, code, extra) {
                 preventDefaultExecuted = false;
-                // Triggering the window "onkeyup" event
-                callbacks.keyup({
+                eventName = null;
+                var myEvent = {
                     preventDefault: preventDefault,
                     keyCode: code
-                });
-                expect(eventName).toEqual('window-' + key + '-released');
+                };
+                if (extra) {
+                    obj.forEachKey(extra, function (key, value) {
+                        myEvent[key] = value;
+                    });
+                }
+                // Triggering the window "onkeyup" event
+                callbacks[eventCallbackName](myEvent);
+                expect(eventName).toEqual(expectedEventName);
                 expect(preventDefaultExecuted).toBe(true);
             };
 
-            testMe('alt', 18);
-            testMe('ctrl', 17);
-            testMe('shift', 16);
+            testOnEvent('window-alt-released', 'keyup', 18, {});
+            testOnEvent('window-ctrl-released', 'keyup', 17, {});
+            testOnEvent('window-shift-released', 'keyup', 16, {});
 
             channel.unbind('ui-actions', 'window-shift-released');
 
@@ -105,6 +110,26 @@ define(['view/ApplicationView', 'ApplicationChannel'], function (ApplicationView
                 keyCode: 16
             });
             expect(preventDefaultExecuted).toBe(false);
+
+            channel.unbindAll();
+
+
+            channel.bind('ui-actions', 'window-alt-1-pressed', function () {
+                eventName = 'window-alt-1-pressed';
+            });
+            channel.bind('ui-actions', 'window-alt-ctrl-2-pressed', function () {
+                eventName = 'window-alt-ctrl-2-pressed';
+            });
+
+
+            testOnEvent('window-alt-1-pressed', 'keydown', 1, {
+                altKey: true
+            });
+            testOnEvent('window-alt-ctrl-2-pressed', 'keydown', 2, {
+                altKey: true,
+                ctrlKey: true
+            });
+
         });
     });
 });

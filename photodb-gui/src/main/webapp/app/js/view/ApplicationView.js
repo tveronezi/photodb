@@ -55,14 +55,18 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
             });
 
             browserWindow.on('keydown', function (ev) {
-                var key = [],
-                    keyStr = null;
+                var key = [];
+                var keyStr = null;
 
                 if (ev.altKey) {
                     key.push('alt');
-                } else if (ev.ctrlKey) {
+                }
+
+                if (ev.ctrlKey) {
                     key.push('ctrl');
-                } else if (ev.shiftKey) {
+                }
+
+                if (ev.shiftKey) {
                     key.push('shift');
                 }
 
