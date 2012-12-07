@@ -26,7 +26,7 @@ define(['util/Obj', 'lib/jquery'], function (obj) {
 
             var myArr = [
                 {
-                    a:0
+                    a: 0
                 }
             ];
             expect(obj.getArray(myArr)).toEqual(myArr);
@@ -42,7 +42,7 @@ define(['util/Obj', 'lib/jquery'], function (obj) {
 
             var myValue = null;
             obj.forEach({
-                value:'a'
+                value: 'a'
             }, function (bean) {
                 myValue = bean.value;
             });
@@ -54,5 +54,14 @@ define(['util/Obj', 'lib/jquery'], function (obj) {
             });
             expect(lastIndex).toEqual(3);
         });
+
+        it('should be able to bind a new scope to a method', function () {
+            obj.bindScope({
+                myNewScope: true
+            }, function () {
+                expect(this.myNewScope).toBe(true);
+            });
+        });
+
     });
 });

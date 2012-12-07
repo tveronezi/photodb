@@ -93,11 +93,19 @@ define([],
             }
         }
 
+        // http://stackoverflow.com/a/193853 -> Really nice trick to get rid of the javascript 'this' nightmare!
+        function bindScope(scope, fn) {
+            return function () {
+                fn.apply(scope, arguments);
+            };
+        }
+
         return {
             keyCodeToString:keyCodeToString,
             getArray:getArray,
             forEach:forEach,
-            forEachKey:forEachKey
+            forEachKey:forEachKey,
+            bindScope:bindScope
         }
     }
 );

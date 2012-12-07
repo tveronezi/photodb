@@ -37,30 +37,36 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
         function sendMultipart(bean) {
             var xhr = new window.XMLHttpRequest();
             xhr.open('POST', urlBase + 'cmd', true);
-            xhr.onload = function (e) {
-                var data = JSON.parse(this.response);
+
+            xhr.addEventListener('load', obj.bindScope({
+                bean: bean
+            }, function (e) {
+                var data = JSON.parse(e.currentTarget.response);
 
                 // Commands callback calls
-                channel.send('server-command-callback', bean.cmdName, data);
+                channel.send('server-command-callback', this.bean.cmdName, data);
 
                 if (data.success) {
-                    channel.send('server-command-callback-success', bean.cmdName, data);
+                    channel.send('server-command-callback-success', this.bean.cmdName, data);
                 } else {
-                    channel.send('server-command-callback-error', bean.cmdName, data);
+                    channel.send('server-command-callback-error', this.bean.cmdName, data);
                     channel.send('server-command-callback-error', 'command-error', {
                         data: data,
-                        bean: bean
+                        bean: this.bean
                     });
                 }
-            };
-            xhr.onerror = function (e) {
+            }));
+
+            xhr.addEventListener('error', obj.bindScope({
+                bean: bean
+            }, function (e) {
                 var data = {
                     message: e,
-                    bean: bean
+                    bean: this.bean
                 };
-                channel.send('server-command-callback-error', bean.cmdName, data);
+                channel.send('server-command-callback-error', this.bean.cmdName, data);
                 channel.send('server-command-callback-error', 'command-error', data);
-            };
+            }));
 
             xhr.send(getFormData(bean));
         }
