@@ -30,7 +30,10 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
             var delayedContainerResize = delayedTask.newObject();
 
             browserWindow.on('resize', function () {
-                delayedContainerResize.delay(updateContainerSize, 500);
+                delayedContainerResize.delay(utils.bindScope({
+                    browserWindow: browserWindow,
+                    channel: channel
+                }, updateContainerSize), 500);
             });
 
             browserWindow.on('keyup', function (ev) {
@@ -80,17 +83,19 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 }
             });
 
+            // You need to create a new scope for this method.
+            // The "this" object should have the "browserWindow" and the "channel" objects.
             function updateContainerSize() {
                 var containerHeight;
                 var containerWidth;
 
-                containerHeight = browserWindow.outerHeight();
-                containerWidth = browserWindow.outerWidth();
+                containerHeight = this.browserWindow.outerHeight();
+                containerWidth = this.browserWindow.outerWidth();
 
                 container.css('height', containerHeight + 'px');
                 container.css('width', containerWidth + 'px');
 
-                channel.send('ui-actions', 'container-resized', {
+                this.channel.send('ui-actions', 'container-resized', {
                     containerHeight: containerHeight,
                     containerWidth: containerWidth
                 });
@@ -103,7 +108,10 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 render: function () {
                     var body = $('body');
                     body.append(container);
-                    delayedContainerResize.delay(updateContainerSize, 500);
+                    delayedContainerResize.delay(utils.bindScope({
+                        browserWindow: browserWindow,
+                        channel: channel
+                    }, updateContainerSize), 500);
 
                     channel.send('ui-actions', 'container-rendered', {
                         containerId: containerId

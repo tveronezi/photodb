@@ -36,7 +36,8 @@ require.config(APP_CONFIG);
         'test/ApplicationController',
         'test/ApplicationModel',
         'test/ApplicationTemplates',
-        'test/FileManager'
+        'test/FileManager',
+        'test/ApplicationView'
     ];
 
     // Load all the test modules before starting.

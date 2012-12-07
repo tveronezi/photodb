@@ -17,7 +17,8 @@
  */
 
 "use strict";
-define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager', 'lib/jquery', 'lib/d3'],
+define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager',
+    'lib/jquery', 'lib/d3'],
     function (channel, sequence, obj, growl, I18N) {
         var svgId = sequence.next('svg');
         var deleteNotificationId = sequence.next('delete-notif');
@@ -44,7 +45,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                 .on("dragend", function () {
                     // TODO: "g.data(function(d) {})" is not working. Why?
                     // We won't create the element 'i'. This is just a workaround to get the node's data.
-                    g.attr('i', function(d) {
+                    g.attr('i', function (d) {
                         channel.send('ui-actions', 'drag-photo', {
                             photoId: d.photoId,
                             nx: d.x,
@@ -90,7 +91,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             g.on('click', function () {
                 // TODO: "g.data(function(d) {})" is not working. Why?
                 // We won't create the element 'i'. This is just a workaround to get the node's data.
-                d3.select(this).attr('i', function(d) {
+                d3.select(this).attr('i', function (d) {
                     channel.send('ui-actions', 'file-selection', {
                         photoUid: d.photoId
                     });
