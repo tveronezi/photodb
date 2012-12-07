@@ -112,15 +112,12 @@ define(['view/ApplicationView', 'ApplicationChannel', 'util/Obj'], function (App
             expect(preventDefaultExecuted).toBe(false);
 
             channel.unbindAll();
-
-
             channel.bind('ui-actions', 'window-alt-1-pressed', function () {
                 eventName = 'window-alt-1-pressed';
             });
             channel.bind('ui-actions', 'window-alt-ctrl-2-pressed', function () {
                 eventName = 'window-alt-ctrl-2-pressed';
             });
-
 
             testOnEvent('window-alt-1-pressed', 'keydown', 1, {
                 altKey: true
@@ -129,7 +126,6 @@ define(['view/ApplicationView', 'ApplicationChannel', 'util/Obj'], function (App
                 altKey: true,
                 ctrlKey: true
             });
-
         });
     });
 });
