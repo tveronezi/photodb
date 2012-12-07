@@ -20,7 +20,7 @@
 define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager',
     'lib/jquery', 'lib/d3'],
     function (channel, sequence, obj, growl, I18N) {
-        var svgId = sequence.next('svg');
+        var svg = null; // -> the svg container
         var deleteNotificationId = sequence.next('delete-notif');
 
         channel.bind('ui-actions', 'window-delete-pressed', function () {
@@ -57,30 +57,26 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
         }
 
         channel.bind('ui-actions', 'container-rendered', function (data) {
-            var svg = d3.select('#' + data.containerId)
+            // creating the svg container
+            svg = d3.select('#' + data.containerId)
                 .append('svg')
                 .classed('svg-container', true)
-                .attr('id', svgId)
                 .attr('width', '1px')
-                .attr('height', '1px');
-
-
-            $('#' + svgId).on('dragover', function (evt) {
-                evt.preventDefault();
-            });
-
-            $('#' + svgId).on('drop', function (evt) {
-                evt.preventDefault();
-                channel.send('ui-actions', 'file-drop', {
-                    evt: evt
+                .attr('height', '1px')
+                .on('dragover', function () {
+                    d3.event.preventDefault();
+                })
+                .on('drop', function () {
+                    d3.event.preventDefault();
+                    channel.send('ui-actions', 'file-drop', {
+                        evt: d3.event
+                    });
                 });
-            });
-        });
 
-        channel.bind('ui-actions', 'container-resized', function (data) {
-            d3.select('#' + svgId)
-                .attr('height', data.containerHeight + 'px')
-                .attr('width', data.containerWidth + 'px');
+            channel.bind('ui-actions', 'container-resized', function (data) {
+                svg.attr('height', data.containerHeight + 'px')
+                    .attr('width', data.containerWidth + 'px');
+            });
         });
 
         channel.bind('file-manager', 'files-updated', function (data) {
@@ -105,7 +101,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
         }
 
         function createFileItems(data) {
-            var svg = d3.select('#' + svgId);
             svg.selectAll('g').remove();
 
             var gSelection = svg.selectAll('g')

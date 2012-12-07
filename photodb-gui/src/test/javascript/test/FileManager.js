@@ -247,33 +247,31 @@ define(['FileManager', 'ApplicationChannel', 'util/Obj'], function (FileManager,
 
             var data = {
                 evt: {
-                    originalEvent: {
-                        dataTransfer: {
-                            files: [
-                                {
-                                    type: 'image/gif'
-                                },
-                                {
-                                    type: 'video/3gpp'
-                                }
-                            ]
-                        },
-                        clientX: 10,
-                        clientY: 20
-                    }
+                    dataTransfer: {
+                        files: [
+                            {
+                                type: 'image/gif'
+                            },
+                            {
+                                type: 'video/3gpp'
+                            }
+                        ]
+                    },
+                    clientX: 10,
+                    clientY: 20
                 }
             };
             channel.send('ui-actions', 'file-drop', data);
 
             expect(files.length).toBe(1);
-            expect(files[0]).toBe(data.evt.originalEvent.dataTransfer.files[0]);
+            expect(files[0]).toBe(data.evt.dataTransfer.files[0]);
             expect(callbacks.length).toBe(1);
 
             var executed = false;
             channel.bind('file-manager', 'new-local-file', function (callbackData) {
                 expect(callbackData.x).toBe(10);
                 expect(callbackData.y).toBe(20);
-                expect(callbackData.file).toBe(data.evt.originalEvent.dataTransfer.files[0]);
+                expect(callbackData.file).toBe(data.evt.dataTransfer.files[0]);
                 expect(callbackData.localId).toBeDefined();
 
                 executed = true;
