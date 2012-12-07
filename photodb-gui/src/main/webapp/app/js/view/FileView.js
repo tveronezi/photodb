@@ -20,128 +20,136 @@
 define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager',
     'lib/jquery', 'lib/d3'],
     function (channel, sequence, obj, growl, I18N) {
-        var svg = null; // -> the svg container
-        var deleteNotificationId = sequence.next('delete-notif');
+        function newObject() {
+            var svg = null; // -> the svg container
+            var deleteNotificationId = sequence.next('delete-notif');
 
-        channel.bind('ui-actions', 'window-delete-pressed', function () {
-            channel.send('ui-actions', 'delete-photos-trigger', {});
-        });
-
-        function translate(g, dx, dy) {
-            g.attr('transform', function (d) {
-                d.x = d.x + (dx ? dx : 0);
-                d.y = d.y + (dy ? dy : 0);
-                return 'translate(' + d.x + ',' + d.y + ')';
+            channel.bind('ui-actions', 'window-delete-pressed', function () {
+                channel.send('ui-actions', 'delete-photos-trigger', {});
             });
-        }
 
-        function setDragBehaviour(g) {
-            var drag = d3.behavior.drag()
-                .origin(Object)
-                .on("drag", function () {
-                    var d3Event = d3.event;
-                    translate(g, d3Event.dx, d3Event.dy);
-                })
-                .on("dragend", function () {
-                    // TODO: "g.data(function(d) {})" is not working. Why?
-                    // We won't create the element 'i'. This is just a workaround to get the node's data.
-                    g.attr('i', function (d) {
-                        channel.send('ui-actions', 'drag-photo', {
-                            photoId: d.photoId,
-                            nx: d.x,
-                            ny: d.y
-                        });
+            function translate(g, dx, dy) {
+                g.attr('transform', function (d) {
+                    d.x = d.x + (dx ? dx : 0);
+                    d.y = d.y + (dy ? dy : 0);
+                    return 'translate(' + d.x + ',' + d.y + ')';
+                });
+            }
+
+            function setDragBehaviour(g) {
+                var drag = d3.behavior.drag()
+                    .origin(Object)
+                    .on("drag", function () {
+                        var d3Event = d3.event;
+                        translate(g, d3Event.dx, d3Event.dy);
                     })
-                });
-            g.call(drag);
-        }
-
-        channel.bind('ui-actions', 'container-rendered', function (data) {
-            // creating the svg container
-            svg = d3.select('#' + data.containerId)
-                .append('svg')
-                .classed('svg-container', true)
-                .attr('width', '1px')
-                .attr('height', '1px')
-                .on('dragover', function () {
-                    d3.event.preventDefault();
-                })
-                .on('drop', function () {
-                    d3.event.preventDefault();
-                    channel.send('ui-actions', 'file-drop', {
-                        evt: d3.event
+                    .on("dragend", function () {
+                        // TODO: "g.data(function(d) {})" is not working. Why?
+                        // We won't create the element 'i'. This is just a workaround to get the node's data.
+                        g.attr('i', function (d) {
+                            channel.send('ui-actions', 'drag-photo', {
+                                photoId: d.photoId,
+                                nx: d.x,
+                                ny: d.y
+                            });
+                        })
                     });
-                });
+                g.call(drag);
+            }
+
+            channel.bind('ui-actions', 'container-rendered', function (data) {
+                // creating the svg container
+                svg = d3.select('#' + data.containerId)
+                    .append('svg')
+                    .classed('svg-container', true)
+                    .attr('width', '1px')
+                    .attr('height', '1px')
+                    .on('dragover', function () {
+                        d3.event.preventDefault();
+                    })
+                    .on('drop', function () {
+                        d3.event.preventDefault();
+                        channel.send('ui-actions', 'file-drop', {
+                            evt: d3.event
+                        });
+                    });
+            });
 
             channel.bind('ui-actions', 'container-resized', function (data) {
                 svg.attr('height', data.containerHeight + 'px')
                     .attr('width', data.containerWidth + 'px');
             });
-        });
 
-        channel.bind('file-manager', 'files-updated', function (data) {
-            createFileItems(data);
-        });
+            channel.bind('file-manager', 'files-updated', function (data) {
+                createFileItems(data);
+            });
 
-        function setSelectBehaviour(g) {
-            g.on('click', function () {
-                // TODO: "g.data(function(d) {})" is not working. Why?
-                // We won't create the element 'i'. This is just a workaround to get the node's data.
-                d3.select(this).attr('i', function (d) {
-                    channel.send('ui-actions', 'file-selection', {
-                        photoUid: d.photoId
+            function setSelectBehaviour(g) {
+                g.on('click', function () {
+                    // TODO: "g.data(function(d) {})" is not working. Why?
+                    // We won't create the element 'i'. This is just a workaround to get the node's data.
+                    d3.select(this).attr('i', function (d) {
+                        channel.send('ui-actions', 'file-selection', {
+                            photoUid: d.photoId
+                        });
+                    });
+
+                    growl.showNotification({
+                        id: deleteNotificationId,
+                        message: I18N.get('photo.delete.tip')
                     });
                 });
+            }
 
-                growl.showNotification({
-                    id: deleteNotificationId,
-                    message: I18N.get('photo.delete.tip')
+            function createFileItems(data) {
+                svg.selectAll('g').remove();
+
+                var gSelection = svg.selectAll('g')
+                    .data(data)
+                    .enter()
+                    .append('g')
+                    .attr('id', function (d) {
+                        return d.localId;
+                    })
+                    .classed('file-item', true);
+
+                gSelection.append('rect')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('rx', 20)
+                    .attr('ry', 20)
+                    .attr('height', '202px')
+                    .attr('width', '202px')
+                    .classed('selected', function (d) {
+                        return !(!d.isSelected);
+                    });
+
+                gSelection.append('image')
+                    .attr('x', 10)
+                    .attr('y', 10)
+                    .attr('height', '180px')
+                    .attr('width', '180px')
+                    .attr('xlink:href', function (d) {
+                        return d.href;
+                    });
+
+                obj.forEach(data, function (d) {
+                    var g = d3.select('#' + d.localId);
+
+                    if (d.photoId) {
+                        setDragBehaviour(g);
+                    }
+                    translate(g);
+                    setSelectBehaviour(g);
                 });
-            });
+            }
         }
 
-        function createFileItems(data) {
-            svg.selectAll('g').remove();
+        // Creating our singleton
+        newObject();
 
-            var gSelection = svg.selectAll('g')
-                .data(data)
-                .enter()
-                .append('g')
-                .attr('id', function (d) {
-                    return d.localId;
-                })
-                .classed('file-item', true);
-
-            gSelection.append('rect')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('rx', 20)
-                .attr('ry', 20)
-                .attr('height', '202px')
-                .attr('width', '202px')
-                .classed('selected', function (d) {
-                    return !(!d.isSelected);
-                });
-
-
-            gSelection.append('image')
-                .attr('x', 10)
-                .attr('y', 10)
-                .attr('height', '180px')
-                .attr('width', '180px')
-                .attr('xlink:href', function (d) {
-                    return d.href;
-                });
-
-            obj.forEach(data, function (d) {
-                var g = d3.select('#' + d.localId);
-
-                if (d.photoId) {
-                    setDragBehaviour(g);
-                }
-                translate(g);
-                setSelectBehaviour(g);
-            });
+        return {
+            newObject: newObject
         }
     }
 );
