@@ -117,10 +117,25 @@ define([],
             return false;
         }
 
+        // something like the groovy's collect method
+        // http://groovy.codehaus.org/groovy-jdk/java/util/Collection.html#collect(groovy.lang.Closure)
+        function collect(obj, collectFunction) {
+            var result = [];
+            forEach(obj, function (value) {
+                var collected = collectFunction(value);
+                if (collected === null || collected === undefined) {
+                    return;
+                }
+                result.push(collected);
+            });
+            return result;
+        }
+
         return {
             keyCodeToString: keyCodeToString,
             getArray: getArray,
             forEach: forEach,
+            collect: collect,
             forEachKey: forEachKey,
             bindScope: bindScope,
             isEmpty: isEmpty

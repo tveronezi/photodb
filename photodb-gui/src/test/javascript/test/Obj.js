@@ -77,7 +77,37 @@ define(['util/Obj', 'lib/jquery'], function (obj) {
             expect(obj.isEmpty(1, undefined)).toBe(true);
             expect(obj.isEmpty(1, null)).toBe(true);
             expect(obj.isEmpty([1])).toBe(false);
+        });
 
+        it('should test the collect method', function () {
+            expect(obj.collect({
+                value: 'a'
+            }, function (bean) {
+                return bean.value;
+            })).toEqual(['a']);
+
+            expect(obj.collect(null, function (bean) {
+                return bean.value;
+            })).toEqual([]);
+
+            expect(obj.collect(undefined, function (bean) {
+                return bean.value;
+            })).toEqual([]);
+
+            var arr = [
+                {
+                    value: 'a'
+                },
+                {
+                    value: 'b'
+                },
+                {
+                    value: 'c'
+                }
+            ];
+            expect(obj.collect(arr, function (bean) {
+                return bean.value;
+            })).toEqual(['a', 'b', 'c']);
         });
     });
 });

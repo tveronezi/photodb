@@ -23,6 +23,7 @@
 "use strict";
 define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', 'lib/jquery'],
     function (channel, obj, sequence, delayedTask) {
+        var DEFAULT_REQUEST_TIMEOUT = 1000;
 
         function newObject() {
             var updatePos = {};
@@ -47,15 +48,21 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
 
             channel.bind('server-command-callback-success', 'DeletePhotos', function (data) {
                 var uids = data.params.uids.split(',');
+                var changed = false;
                 obj.forEach(uids, function (uid) {
-                    delete photos[uid];
+                    if (photos[uid]) {
+                        delete photos[uid];
+                        changed = true;
+                    }
                 });
 
-                var photosArray = [];
-                obj.forEachKey(photos, function (key, value) {
-                    photosArray.push(value);
-                });
-                channel.send('file-manager', 'files-updated', photosArray);
+                if (changed) {
+                    var photosArray = [];
+                    obj.forEachKey(photos, function (key, value) {
+                        photosArray.push(value);
+                    });
+                    channel.send('file-manager', 'files-updated', photosArray);
+                }
             });
 
             channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
@@ -74,7 +81,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                         photosArray.push(value);
                     });
                     channel.send('file-manager', 'files-updated', photosArray);
-                }, 1000); // Wait 1s before sending this request
+                }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
 
             });
 
@@ -107,7 +114,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 task.delay(function () {
                     channel.send('file-manager', 'update-photo-position', data);
                     delete updatePos[data.photoId];
-                }, 1000); // Wait 1s before sending this request
+                }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
             });
 
             channel.bind('ui-actions', 'file-selection', function (data) {
@@ -140,16 +147,23 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                         return;
                     }
 
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        channel.send('file-manager', 'new-local-file', {
+                    var reader = new window.FileReader();
+                    reader.addEventListener('load', obj.bindScope({
+                        x: x,
+                        y: y,
+                        f: f,
+                        sequence: sequence,
+                        channel: channel
+                    }, function (e) {
+                        this.channel.send('file-manager', 'new-local-file', {
                             evt: e,
-                            x: x,
-                            y: y,
-                            file: f,
-                            localId: sequence.next('file')
+                            x: this.x,
+                            y: this.y,
+                            file: this.f,
+                            localId: this.sequence.next('file')
                         });
-                    };
+                    }));
+
                     // Read in the image file as a data URL.
                     reader.readAsDataURL(f);
                 });
