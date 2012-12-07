@@ -148,5 +148,4 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             });
         }
     }
-)
-;
+);
