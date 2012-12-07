@@ -59,8 +59,8 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
         channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
             var params = data.params;
             photos[params.uid] = {
-                x: data.params.x,
-                y: data.params.y,
+                x: Number(data.params.x),
+                y: Number(data.params.y),
                 photoId: data.params.uid,
                 localId: sequence.next('file'),
                 href: 'data:image/png;base64,' + data.output.content

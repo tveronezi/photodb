@@ -27,16 +27,14 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
         });
 
         function translate(g, dx, dy) {
-            var nx = Number(g.attr('gx')) + dx;
-            var ny = Number(g.attr('gy')) + dy;
-            var str = 'translate(' + nx + ',' + ny + ')';
-            g.attr('transform', str);
-            g.attr('gx', nx);
-            g.attr('gy', ny);
+            g.attr('transform', function (d) {
+                d.x = d.x + (dx ? dx : 0);
+                d.y = d.y + (dy ? dy : 0);
+                return 'translate(' + d.x + ',' + d.y + ')';
+            });
         }
 
-        function setDragBehaviour(img) {
-            var g = d3.select('#' + img.attr('id') + '-G');
+        function setDragBehaviour(g) {
             var drag = d3.behavior.drag()
                 .origin(Object)
                 .on("drag", function () {
@@ -44,11 +42,15 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                     translate(g, d3Event.dx, d3Event.dy);
                 })
                 .on("dragend", function () {
-                    channel.send('ui-actions', 'drag-photo', {
-                        photoId:img.attr('remote-id'),
-                        nx:g.attr('gx'),
-                        ny:g.attr('gy')
-                    });
+                    // TODO: "g.data(function(d) {})" is not working. Why?
+                    // We won't create the element 'i'. This is just a workaround to get the node's data.
+                    g.attr('i', function(d) {
+                        channel.send('ui-actions', 'drag-photo', {
+                            photoId: d.photoId,
+                            nx: d.x,
+                            ny: d.y
+                        });
+                    })
                 });
             g.call(drag);
         }
@@ -69,7 +71,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             $('#' + svgId).on('drop', function (evt) {
                 evt.preventDefault();
                 channel.send('ui-actions', 'file-drop', {
-                    evt:evt
+                    evt: evt
                 });
             });
         });
@@ -84,17 +86,19 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             createFileItems(data);
         });
 
-        function setSelectBehaviour(img) {
-            var id = img.attr('id');
-            var g = d3.select('#' + id + '-G');
-
+        function setSelectBehaviour(g) {
             g.on('click', function () {
-                channel.send('ui-actions', 'file-selection', {
-                    photoUid:img.attr('remote-id')
+                // TODO: "g.data(function(d) {})" is not working. Why?
+                // We won't create the element 'i'. This is just a workaround to get the node's data.
+                d3.select(this).attr('i', function(d) {
+                    channel.send('ui-actions', 'file-selection', {
+                        photoUid: d.photoId
+                    });
                 });
+
                 growl.showNotification({
-                    id:deleteNotificationId,
-                    message:I18N.get('photo.delete.tip')
+                    id: deleteNotificationId,
+                    message: I18N.get('photo.delete.tip')
                 });
             });
         }
@@ -108,7 +112,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                 .enter()
                 .append('g')
                 .attr('id', function (d) {
-                    return d.localId + '-G';
+                    return d.localId;
                 })
                 .classed('file-item', true);
 
@@ -125,30 +129,24 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
 
 
             gSelection.append('image')
-                .attr('id', function (d) {
-                    return d.localId;
-                })
                 .attr('x', 10)
                 .attr('y', 10)
                 .attr('height', '180px')
                 .attr('width', '180px')
                 .attr('xlink:href', function (d) {
                     return d.href;
-                })
-                .attr('remote-id', function (d) {
-                    return d.photoId;
                 });
 
             obj.forEach(data, function (d) {
-                var g = d3.select('#' + d.localId + '-G');
-                var i = d3.select('#' + d.localId);
+                var g = d3.select('#' + d.localId);
 
-                if (i.attr('remote-id')) {
-                    setDragBehaviour(i);
+                if (d.photoId) {
+                    setDragBehaviour(g);
                 }
-                translate(g, d.x, d.y);
-                setSelectBehaviour(i);
+                translate(g);
+                setSelectBehaviour(g);
             });
         }
     }
-);
+)
+;

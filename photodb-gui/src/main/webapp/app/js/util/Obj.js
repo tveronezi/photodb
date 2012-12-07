@@ -100,12 +100,30 @@ define([],
             };
         }
 
+        function isEmpty() {
+            if (arguments.length === 0) {
+                return true;
+            }
+            var obj = null;
+            for (var i = 0; i < arguments.length; i++) {
+                obj = arguments[i];
+                if (obj === null || obj === undefined) {
+                    return true;
+                }
+                if (getArray(obj).length === 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         return {
-            keyCodeToString:keyCodeToString,
-            getArray:getArray,
-            forEach:forEach,
-            forEachKey:forEachKey,
-            bindScope:bindScope
+            keyCodeToString: keyCodeToString,
+            getArray: getArray,
+            forEach: forEach,
+            forEachKey: forEachKey,
+            bindScope: bindScope,
+            isEmpty: isEmpty
         }
     }
 );

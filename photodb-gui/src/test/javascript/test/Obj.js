@@ -63,5 +63,21 @@ define(['util/Obj', 'lib/jquery'], function (obj) {
             });
         });
 
+        it('should test the isEmpty method', function () {
+            expect(obj.isEmpty()).toBe(true);
+            expect(obj.isEmpty(null)).toBe(true);
+            expect(obj.isEmpty(undefined)).toBe(true);
+            expect(obj.isEmpty(1)).toBe(false);
+
+            expect(obj.isEmpty([])).toBe(true);
+            expect(obj.isEmpty([1])).toBe(false);
+
+            expect(obj.isEmpty(null, undefined)).toBe(true);
+            expect(obj.isEmpty(null, {})).toBe(true);
+            expect(obj.isEmpty(1, undefined)).toBe(true);
+            expect(obj.isEmpty(1, null)).toBe(true);
+            expect(obj.isEmpty([1])).toBe(false);
+
+        });
     });
 });
