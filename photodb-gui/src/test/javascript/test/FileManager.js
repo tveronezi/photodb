@@ -19,6 +19,29 @@
 define(['FileManager', 'ApplicationChannel'], function (FileManager, channel) {
 
     describe('FileManager test', function () {
+        var reqs = [
+            {
+                params: {
+                    x: 1,
+                    y: 2,
+                    uid: 'myUid-A'
+                },
+                output: {
+                    content: 'laia laia laia 1'
+                }
+            },
+            {
+                params: {
+                    x: 3,
+                    y: 4,
+                    uid: 'myUid-B'
+                },
+                output: {
+                    content: 'laia laia laia 2'
+                }
+            }
+        ];
+
         // Saving the 'window.setTimeout' function
         var originalSetTimeout = window.setTimeout;
         var originalClearTimeout = window.clearTimeout;
@@ -55,29 +78,6 @@ define(['FileManager', 'ApplicationChannel'], function (FileManager, channel) {
                 expect(data.uids).not.toBe(uids.pop());
             });
 
-            var reqs = [
-                {
-                    params: {
-                        x: 1,
-                        y: 2,
-                        uid: 'myUid-A'
-                    },
-                    output: {
-                        content: 'laia laia laia 1'
-                    }
-                },
-                {
-                    params: {
-                        x: 3,
-                        y: 4,
-                        uid: 'myUid-B'
-                    },
-                    output: {
-                        content: 'laia laia laia 2'
-                    }
-                }
-            ];
-
             // Mocking successful requests
             channel.send('server-command-callback-success', 'DownloadPhoto', reqs[0]);
             channel.send('server-command-callback-success', 'DownloadPhoto', reqs[1]);
@@ -85,5 +85,75 @@ define(['FileManager', 'ApplicationChannel'], function (FileManager, channel) {
             expect(counter).toEqual(2);
         });
 
+        it('should listen for "file-selection" requests', function () {
+            var executed = false;
+            var photos = null;
+
+            // Creating the photos
+            channel.send('server-command-callback-success', 'DownloadPhoto', reqs[0]);
+            channel.send('server-command-callback-success', 'DownloadPhoto', reqs[1]);
+
+            function testMe(myUid, expectSelected) {
+                executed = false;
+                photos = null;
+                channel.send('ui-actions', 'file-selection', {
+                    photoUid: myUid
+                });
+
+                expect(executed).toBe(true);
+                expect(photos.length).toBe(2);
+                expect(photos[1].photoId).toBe(myUid); // the last guy on this list
+
+                // "!!" translates undefined and null to false
+                expect(!!photos[1].isSelected).toBe(expectSelected);
+                expect(!!photos[0].isSelected).toBe(false);
+            }
+
+            channel.bind('file-manager', 'files-updated', function (data) {
+                photos = data;
+                executed = true;
+            });
+
+            testMe('myUid-A', true);
+            testMe('myUid-A', false);
+            testMe('myUid-B', true);
+            testMe('myUid-B', false);
+
+            executed = false;
+            photos = null;
+            channel.send('ui-actions', 'file-selection', {
+                photoUid: 'UNKNOWN-UID'
+            });
+            expect(executed).toBe(false);
+            expect(photos).toBe(null);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
+
+        it('placeholder', function () {
+            expect(true).toBe(true);
+        });
     });
 });
