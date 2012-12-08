@@ -44,8 +44,6 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                 var data = JSON.parse(e.currentTarget.response);
 
                 // Commands callback calls
-                channel.send('server-command-callback', this.bean.cmdName, data);
-
                 if (data.success) {
                     channel.send('server-command-callback-success', this.bean.cmdName, data);
                 } else {
@@ -89,7 +87,6 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
                         var data = JSON.parse(message);
 
                         // Commands callback calls
-                        channel.send('server-command-callback', bean.cmdName, data);
                         if (data.success) {
                             channel.send('server-command-callback-success', bean.cmdName, data);
                         } else {

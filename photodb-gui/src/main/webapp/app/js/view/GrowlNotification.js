@@ -35,6 +35,7 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
             if (!active) {
                 active = true;
                 myBody.append(container);
+                channel.send('notification', 'activating-notifications');
             }
 
             function removeAlert() {
@@ -51,19 +52,26 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
                     console.error(e);
                 }
                 delete timeout[alertId];
+                channel.send('notification', 'alert-removed', {
+                    alertId: alertId
+                });
             }
 
-
             if (timeout[alertId]) {
+                channel.send('notification', 'alert-delay', {
+                    alertId: alertId
+                });
                 timeout[alertId].delay(removeAlert, waitTime);
             } else {
                 var alert = $(templates.getValue('application-growl-message', {
-                    alertId:alertId,
-                    messageType:'alert-' + messageType,
-                    message:message
+                    alertId: alertId,
+                    messageType: 'alert-' + messageType,
+                    message: message
                 }));
                 container.append(alert);
                 alert.fadeIn();
+
+                channel.send('notification', 'new-alert', params);
 
                 if (autohide === false) {
                     // no-op
@@ -80,7 +88,7 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
         }
 
         return {
-            showNotification:showNotification
+            showNotification: showNotification
         };
     }
 );
