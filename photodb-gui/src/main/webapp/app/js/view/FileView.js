@@ -37,23 +37,30 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             }
 
             function setDragBehaviour(g) {
-                var drag = d3.behavior.drag()
-                    .origin(Object)
-                    .on("drag", function () {
+                var drag = d3.behavior.drag().origin(Object)
+                    .on('drag', obj.bindScope({
+                        g: g
+                    }, function () {
                         var d3Event = d3.event;
-                        translate(g, d3Event.dx, d3Event.dy);
-                    })
-                    .on("dragend", function () {
+                        translate(this.g, d3Event.dx, d3Event.dy);
+                    })).on('dragend', obj.bindScope({
+                        g: g,
+                        channel: channel
+                    }, function () {
+                        // I need to do this because the "this" inside the "attr" function is another object.
+                        // Welcome to the "this" hell of JS!
+                        var myChanel = this.channel;
+
                         // TODO: "g.data(function(d) {})" is not working. Why?
                         // We won't create the element 'i'. This is just a workaround to get the node's data.
-                        g.attr('i', function (d) {
-                            channel.send('ui-actions', 'drag-photo', {
+                        this.g.attr('i', function (d) {
+                            myChanel.send('ui-actions', 'drag-photo', {
                                 photoId: d.photoId,
                                 nx: d.x,
                                 ny: d.y
                             });
                         })
-                    });
+                    }));
                 g.call(drag);
             }
 

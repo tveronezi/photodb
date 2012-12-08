@@ -27,6 +27,7 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery', 'l
             var originalClearTimeout = window.clearTimeout;
 
             var oSelectionPrototypeOnFunction = d3.selection.prototype.on;
+            var oD3Rebind = d3.rebind;
 
             beforeEach(function () {
                 channel.unbindAll();
@@ -41,6 +42,7 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery', 'l
                 window.setTimeout = originalSetTimeout;
                 window.clearTimeout = originalClearTimeout;
                 d3.selection.prototype.on = oSelectionPrototypeOnFunction;
+                d3.rebind = oD3Rebind;
                 channel.unbindAll();
                 $('#' + testContainerId).remove();
             });
@@ -92,6 +94,70 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery', 'l
                 expect(preventDefaultExecuted).toBe(true);
                 expect(fileDropExecuted).toBe(true);
             });
+
+
+            it('should listen for "files-updated" events', function () {
+                var callbacks = {};
+                d3.rebind = function (target, source) {
+                    callbacks.drag = source.drag;
+                    callbacks.dragend = source.dragend;
+                    return oD3Rebind.apply(this, arguments);
+                };
+
+                // creating the svg element
+                channel.send('ui-actions', 'container-rendered', {
+                    containerId: testContainerId
+                });
+
+                var fileData = [
+                    {
+                        localId: 'myLocalA',
+                        href: 'http://goo.gl/Shp7b',
+                        x: 20,
+                        y: 20
+                    },
+                    {
+                        localId: 'myLocalB',
+                        href: 'http://goo.gl/Shp7b',
+                        x: 20,
+                        y: 20,
+                        isSelected: true
+                    },
+                    {
+                        localId: 'myLocalC',
+                        href: 'http://goo.gl/Shp7b',
+                        x: 20,
+                        y: 20,
+                        photoId: 'MyPhotoId'
+                    }
+                ];
+                channel.send('file-manager', 'files-updated', fileData);
+
+                var myContainer = $('#' + testContainerId);
+                expect(myContainer.find('.file-item').length).toBe(3);
+                expect(myContainer.find('.selected').length).toBe(1);
+
+                expect(callbacks.drag).toBeDefined();
+                d3.event.dx = 100;
+                d3.event.dy = 200;
+                // We are going to call the drag event in the last node
+                callbacks.drag();
+                expect(fileData[2].x).toBe(120);
+                expect(fileData[2].y).toBe(220);
+
+                expect(callbacks.dragend).toBeDefined();
+                var dragPhotoExecuted = false;
+                channel.bind('ui-actions', 'drag-photo', function (d) {
+                    dragPhotoExecuted = true;
+                    expect(d.photoId).toBe('MyPhotoId');
+                    expect(d.nx).toBe(120);
+                    expect(d.ny).toBe(220);
+                });
+
+                callbacks.dragend();
+                expect(dragPhotoExecuted).toBe(true);
+            });
+
         });
     }
 );
