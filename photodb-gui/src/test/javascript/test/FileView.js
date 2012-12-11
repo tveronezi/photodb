@@ -131,7 +131,9 @@ define(['view/FileView', 'ApplicationChannel', 'util/Sequence', 'lib/jquery', 'l
                         photoId: 'MyPhotoId'
                     }
                 ];
-                channel.send('file-manager', 'files-updated', fileData);
+                channel.send('file-manager', 'files-updated', {
+                    photos: fileData
+                });
 
                 var myContainer = $('#' + testContainerId);
                 expect(myContainer.find('.file-item').length).toBe(3);

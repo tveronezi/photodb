@@ -15,8 +15,10 @@
 CURRENT_DIR=$(shell cd .. && pwd)
 RUNTIME_DIR=$(CURRENT_DIR)/photodb-runtime
 OPENEJB_DIRECTORY=$(RUNTIME_DIR)/openejb
+# OPENEJB_SVN=https://svn.apache.org/repos/asf/openejb/trunk/openejb
+OPENEJB_SVN=https://svn.apache.org/repos/asf/openejb/tags/openejb-4.5.1/
 TOMEE_DIRECTORY=$(RUNTIME_DIR)/tomee
-TOMEEPLUS_ZIP_NAME=apache-tomee-plus-1.5.1-SNAPSHOT
+TOMEEPLUS_ZIP_NAME=apache-tomee-plus-1.5.1
 TOMEEPLUS_ZIP=$(RUNTIME_DIR)/openejb/source-code/tomee/apache-tomee/target/$(TOMEEPLUS_ZIP_NAME).tar.gz
 
 clean-log:
@@ -45,7 +47,7 @@ $(OPENEJB_DIRECTORY)/source-code/tomee/apache-tomee/target:
 
 $(OPENEJB_DIRECTORY):
 	mkdir -p $(OPENEJB_DIRECTORY)
-	cd $(OPENEJB_DIRECTORY) && svn co https://svn.apache.org/repos/asf/openejb/trunk/openejb source-code
+	cd $(OPENEJB_DIRECTORY) && svn co $(OPENEJB_SVN) source-code
 
 kill-tomee:
 	@if test -f $(RUNTIME_DIR)/tomee-pid.txt; then \

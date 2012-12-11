@@ -30,8 +30,14 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
 
             function translate(g, dx, dy) {
                 g.attr('transform', function (d) {
-                    d.x = d.x + (dx ? dx : 0);
-                    d.y = d.y + (dy ? dy : 0);
+                    var nx = d.x + (dx ? dx : 0);
+                    var ny = d.y + (dy ? dy : 0);
+                    if (nx >= 0) {
+                        d.x = nx;
+                    }
+                    if (ny >= 0) {
+                        d.y = ny;
+                    }
                     return 'translate(' + d.x + ',' + d.y + ')';
                 });
             }
@@ -90,7 +96,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             });
 
             channel.bind('file-manager', 'files-updated', function (data) {
-                createFileItems(data);
+                createFileItems(data.photos);
             });
 
             function setSelectBehaviour(g) {

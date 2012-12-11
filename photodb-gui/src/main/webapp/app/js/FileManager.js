@@ -61,7 +61,9 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                     obj.forEachKey(photos, function (key, value) {
                         photosArray.push(value);
                     });
-                    channel.send('file-manager', 'files-updated', photosArray);
+                    channel.send('file-manager', 'files-updated', {
+                        photos: photosArray
+                    });
                 }
             });
 
@@ -80,7 +82,9 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                     obj.forEachKey(photos, function (key, value) {
                         photosArray.push(value);
                     });
-                    channel.send('file-manager', 'files-updated', photosArray);
+                    channel.send('file-manager', 'files-updated', {
+                        photos: photosArray
+                    });
                 }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
 
             });
@@ -137,7 +141,9 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 // This is the last guy to be plot
                 photosArray.push(photoData);
 
-                channel.send('file-manager', 'files-updated', photosArray);
+                channel.send('file-manager', 'files-updated', {
+                    photos: photosArray
+                });
             });
 
             function handleFileSelect(files, x, y) {

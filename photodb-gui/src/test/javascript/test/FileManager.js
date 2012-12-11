@@ -77,7 +77,7 @@ define(['FileManager', 'ApplicationChannel', 'util/Obj'], function (FileManager,
                 counter++;
 
                 expect(data).not.toBe(null);
-                expect(data.uids).not.toBe(uids.pop());
+                expect(data.photos.uids).not.toBe(uids.pop());
             });
 
             // Mocking successful requests
@@ -89,7 +89,7 @@ define(['FileManager', 'ApplicationChannel', 'util/Obj'], function (FileManager,
 
         it('should listen for "file-selection" requests', function () {
             var executed = false;
-            var photos = null;
+            var photoData = null;
 
             // Creating the photos
             channel.send('server-command-callback-success', 'DownloadPhoto', reqs[0]);
@@ -97,22 +97,22 @@ define(['FileManager', 'ApplicationChannel', 'util/Obj'], function (FileManager,
 
             function testMe(myUid, expectSelected) {
                 executed = false;
-                photos = null;
+                photoData = null;
                 channel.send('ui-actions', 'file-selection', {
                     photoUid: myUid
                 });
 
                 expect(executed).toBe(true);
-                expect(photos.length).toBe(2);
-                expect(photos[1].photoId).toBe(myUid); // the last guy on this list
+                expect(photoData.photos.length).toBe(2);
+                expect(photoData.photos[1].photoId).toBe(myUid); // the last guy on this list
 
                 // "!!" translates undefined and null to false
-                expect(!!photos[1].isSelected).toBe(expectSelected);
-                expect(!!photos[0].isSelected).toBe(false);
+                expect(!!photoData.photos[1].isSelected).toBe(expectSelected);
+                expect(!!photoData.photos[0].isSelected).toBe(false);
             }
 
             channel.bind('file-manager', 'files-updated', function (data) {
-                photos = data;
+                photoData = data;
                 executed = true;
             });
 
@@ -122,12 +122,12 @@ define(['FileManager', 'ApplicationChannel', 'util/Obj'], function (FileManager,
             testMe('myUid-B', false);
 
             executed = false;
-            photos = null;
+            photoData = null;
             channel.send('ui-actions', 'file-selection', {
                 photoUid: 'UNKNOWN-UID'
             });
             expect(executed).toBe(false);
-            expect(photos).toBe(null);
+            expect(photoData).toBe(null);
         });
 
         it('should listen for "delete-photos-trigger" requests', function () {
@@ -166,7 +166,7 @@ define(['FileManager', 'ApplicationChannel', 'util/Obj'], function (FileManager,
             var data = null;
             channel.bind('file-manager', 'files-updated', function (photosArray) {
                 executed = true;
-                data = photosArray;
+                data = photosArray.photos;
             });
 
             channel.send('server-command-callback-success', 'DeletePhotos', {
