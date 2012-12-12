@@ -62,6 +62,10 @@ echo-variables:
 	@echo TOMEEPLUS_ZIP_NAME is $(TOMEEPLUS_ZIP_NAME)
 	@echo TOMEEPLUS_ZIP is $(TOMEEPLUS_ZIP)
 
+pack: echo-variables kill-tomee deploy
+	cd $(TOMEE_DIRECTORY) && \
+	tar cvzf $(RUNTIME_DIR)/photodb-distribution.tar.gz $(TOMEEPLUS_ZIP_NAME)
+
 start-tomee: echo-variables kill-tomee deploy
 	export JPDA_SUSPEND=n && export CATALINA_PID=$(RUNTIME_DIR)/tomee-pid.txt \
 		&& export CATALINA_OPTS="-Djava.security.auth.login.config=$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/login.config \
@@ -91,3 +95,4 @@ up-static:
 	cp -r photodb-gui/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/
 
 .PHONY: echo-variables clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
+	pack
