@@ -148,7 +148,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                         return d.href;
                     });
 
-                obj.forEach(data, function (d) {
+                obj.forEach(data.photos, function (d) {
                     var g = d3.select('#' + d.localId);
 
                     if (d.photoId) {
