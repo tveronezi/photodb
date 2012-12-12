@@ -79,11 +79,17 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
 
                 triggerNewRemoteFile.delay(function () {
                     var photosArray = [];
+                    var x = 0;
+                    var y = 0;
                     obj.forEachKey(photos, function (key, value) {
                         photosArray.push(value);
+                        x = Math.max(value.x, x);
+                        y = Math.max(value.y, y);
                     });
                     channel.send('file-manager', 'files-updated', {
-                        photos: photosArray
+                        photos: photosArray,
+                        max_x: x,
+                        max_y: y
                     });
                 }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
 

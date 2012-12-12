@@ -96,7 +96,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
             });
 
             channel.bind('file-manager', 'files-updated', function (data) {
-                createFileItems(data.photos);
+                createFileItems(data);
             });
 
             function setSelectBehaviour(g) {
@@ -120,7 +120,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                 svg.selectAll('g').remove();
 
                 var gSelection = svg.selectAll('g')
-                    .data(data)
+                    .data(data.photos)
                     .enter()
                     .append('g')
                     .attr('id', function (d) {
