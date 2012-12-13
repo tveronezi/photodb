@@ -68,8 +68,7 @@ pack: echo-variables kill-tomee deploy
 
 start-tomee: echo-variables kill-tomee deploy
 	export JPDA_SUSPEND=n && export CATALINA_PID=$(RUNTIME_DIR)/tomee-pid.txt \
-		&& export CATALINA_OPTS="-Djava.security.auth.login.config=$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/login.config \
-			-Dopenejb.ScriptLoginModule.scriptURI=file://$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/loginscript.js" \
+		&& export CATALINA_OPTS="-Djava.security.auth.login.config=$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/login.config" \
 		&& $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/bin/catalina.sh jpda start
 
 build: clean-log openejb
@@ -83,7 +82,7 @@ prepare-webapps:
 	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./login.config $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./server.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
-	cp -f ./loginscript.js $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
+	cp -f ./login.js $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 
 deploy: build gettomee prepare-webapps
 
