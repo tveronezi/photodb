@@ -105,6 +105,28 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 });
             }
 
+            function cleanOverflow() {
+                container.removeClass('overflow-x-axe');
+                container.removeClass('overflow-y-axe');
+                container.removeClass('overflow-xy-axe');
+            }
+
+            channel.bind('ui-actions', 'svg-bigger-than-container-x', function () {
+                cleanOverflow();
+                container.addClass('overflow-x-axe');
+            });
+            channel.bind('ui-actions', 'svg-bigger-than-container-y', function () {
+                cleanOverflow();
+                container.addClass('overflow-y-axe');
+            });
+            channel.bind('ui-actions', 'svg-bigger-than-container-xy', function () {
+                cleanOverflow();
+                container.addClass('overflow-xy-axe');
+            });
+            channel.bind('ui-actions', 'svg-smaller-than-container', function () {
+                cleanOverflow();
+            });
+
             return {
                 getContainerId: function () {
                     return containerId;

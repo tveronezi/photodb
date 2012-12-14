@@ -16,37 +16,52 @@
  */
 
 body {
-    overflow: hidden;
+  overflow: hidden;
 
-    .growl-container {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        z-index: 5000;
+  .growl-container {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 5000;
 
-        .growl {
-            display: none;
-            width: 300px;
-        }
+    .growl {
+      display: none;
+      width: 300px;
     }
+  }
+}
+
+.overflow-xy-axe {
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+
+.overflow-x-axe {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.overflow-y-axe {
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .app {
-    .svg-container {
+  .svg-container {
 
-        .file-item {
-            .selected {
-                fill: red;
-            }
+    .file-item {
+      .selected {
+        fill: red;
+      }
 
-            rect {
-                fill: black;
-                stroke: black;
-                stroke-width: 2;
-                opacity: 0.8;
-            }
-
-        }
+      rect {
+        fill: black;
+        stroke: black;
+        stroke-width: 2;
+        opacity: 0.8;
+      }
 
     }
+
+  }
 }

@@ -31,6 +31,19 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
             var photos = {};
             var triggerNewRemoteFile = delayedTask.newObject();
 
+            function triggerPhotoMaxPos() {
+                var topX = 0;
+                var topY = 0;
+                obj.forEachKey(photos, function (key, value) {
+                    topX = Math.max(value.x, topX);
+                    topY = Math.max(value.y, topY);
+                });
+                channel.send('file-manager', 'photo-max-position', {
+                    topX: topX + 200,
+                    topY: topY + 200
+                });
+            }
+
             channel.bind('ui-actions', 'delete-photos-trigger', function () {
                 var uids = [];
                 obj.forEachKey(photos, function (key, value) {
@@ -79,18 +92,13 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
 
                 triggerNewRemoteFile.delay(function () {
                     var photosArray = [];
-                    var x = 0;
-                    var y = 0;
                     obj.forEachKey(photos, function (key, value) {
                         photosArray.push(value);
-                        x = Math.max(value.x, x);
-                        y = Math.max(value.y, y);
                     });
                     channel.send('file-manager', 'files-updated', {
-                        photos: photosArray,
-                        max_x: x,
-                        max_y: y
+                        photos: photosArray
                     });
+                    triggerPhotoMaxPos();
                 }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
 
             });
@@ -113,6 +121,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 if (!photoData) {
                     return;
                 }
+
                 photoData.x = data.nx;
                 photoData.y = data.ny;
 
@@ -124,6 +133,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
                 task.delay(function () {
                     channel.send('file-manager', 'update-photo-position', data);
                     delete updatePos[data.photoId];
+                    triggerPhotoMaxPos();
                 }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
             });
 

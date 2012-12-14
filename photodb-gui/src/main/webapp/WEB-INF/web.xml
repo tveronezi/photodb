@@ -14,6 +14,16 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <!-- .. -->
+    <servlet>
+        <servlet-name>cmd</servlet-name>
+        <servlet-class>photodb.web.command.CommandServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cmd</servlet-name>
+        <url-pattern>/cmd</url-pattern>
+    </servlet-mapping>
+
     <!-- ... -->
     <security-constraint>
         <web-resource-collection>
@@ -22,6 +32,7 @@
         </web-resource-collection>
         <auth-constraint>
             <role-name>photo-admin</role-name>
+            <role-name>photo-user</role-name>
         </auth-constraint>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>

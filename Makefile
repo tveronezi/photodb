@@ -82,7 +82,7 @@ prepare-webapps:
 	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./login.config $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./server.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
-	cp -f ./login.js $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
+	cp -f ./loginscript.js $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 
 deploy: build gettomee prepare-webapps
 

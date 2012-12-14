@@ -22,6 +22,12 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
     function (channel, sequence, obj, growl, I18N) {
         function newObject() {
             var svg = null; // -> the svg container
+
+            var svgMinHeight = 1;
+            var svgMinWidth = 1;
+            var containerHeight = 0;
+            var containerWidth = 0;
+
             var deleteNotificationId = sequence.next('delete-notif');
 
             channel.bind('ui-actions', 'window-delete-pressed', function () {
@@ -90,9 +96,42 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                     }));
             });
 
+            function fitContent() {
+                var height = Math.max(containerHeight, svgMinHeight);
+                var width = Math.max(containerWidth, svgMinWidth);
+                var eventData = {
+                    svgMinHeight: svgMinHeight,
+                    svgMinWidth: svgMinWidth,
+                    containerHeight: containerHeight,
+                    containerWidth: containerWidth
+                };
+                svg.attr('height', height + 'px')
+                    .attr('width', width + 'px');
+                if (containerWidth < svgMinWidth || containerHeight < svgMinHeight) {
+                    if (containerWidth < svgMinWidth && containerHeight < svgMinHeight) {
+                        channel.send('ui-actions', 'svg-bigger-than-container-xy', eventData);
+                    } else if (containerWidth < svgMinWidth) {
+                        channel.send('ui-actions', 'svg-bigger-than-container-x', eventData);
+                    } else if (containerHeight < svgMinHeight) {
+                        channel.send('ui-actions', 'svg-bigger-than-container-y', eventData);
+                    }
+                } else {
+                    if (containerWidth > svgMinWidth && containerHeight > svgMinHeight) {
+                        channel.send('ui-actions', 'svg-smaller-than-container', eventData);
+                    }
+                }
+            }
+
+            channel.bind('file-manager', 'photo-max-position', function (data) {
+                svgMinHeight = data.topY;
+                svgMinWidth = data.topX;
+                fitContent();
+            });
+
             channel.bind('ui-actions', 'container-resized', function (data) {
-                svg.attr('height', data.containerHeight + 'px')
-                    .attr('width', data.containerWidth + 'px');
+                containerHeight = data.containerHeight;
+                containerWidth = data.containerWidth;
+                fitContent();
             });
 
             channel.bind('file-manager', 'files-updated', function (data) {
