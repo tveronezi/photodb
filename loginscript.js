@@ -24,10 +24,11 @@ var result = null;
 
 with (myImports) {
     var p = new Properties();
-    p.put("java.naming.factory.initial", "org.apache.openejb.client.LocalInitialContextFactory");
+    p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+    p.put("java.naming.provider.url", "http://localhost:8080/tomee/ejb");
 
     var ctx = new InitialContext(p);
-    var myBean = ctx.lookup("LoginImplLocalBean");
+    var myBean =  ctx.lookup("LoginImplRemote");
     result = myBean.authenticate(user, password);
 }
 

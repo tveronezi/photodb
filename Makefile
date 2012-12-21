@@ -71,6 +71,14 @@ start-tomee: echo-variables kill-tomee deploy
 		&& export CATALINA_OPTS="-Djava.security.auth.login.config=$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/login.config" \
 		&& $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/bin/catalina.sh jpda start
 
+restart-tomee: echo-variables kill-tomee
+	export JPDA_SUSPEND=n && export CATALINA_PID=$(RUNTIME_DIR)/tomee-pid.txt \
+		&& export CATALINA_OPTS="-Djava.security.auth.login.config=$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/login.config" \
+		&& $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/bin/catalina.sh jpda start
+
+shutdown-tomee:
+	$(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/bin/shutdown.sh
+
 build: clean-log openejb
 	mvn clean install -DskipTests=true 
 
@@ -94,4 +102,4 @@ up-static:
 	cp -r photodb-gui/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/
 
 .PHONY: echo-variables clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
-	pack
+	pack restart-tomee shutdown-tomee
