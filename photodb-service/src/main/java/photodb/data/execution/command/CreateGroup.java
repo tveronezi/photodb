@@ -16,34 +16,21 @@
  *  limitations under the License.
  */
 
-package photodb.service.bean;
+package photodb.data.execution.command;
 
 import photodb.data.entity.Group;
-import photodb.data.entity.User;
-import photodb.service.remote.Login;
+import photodb.data.execution.BaseEAO;
+import photodb.data.execution.DbCommand;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
+public class CreateGroup implements DbCommand<Group> {
 
-@Stateless
-public class LoginImpl implements Login {
-
-    @EJB
-    private UserImpl userImpl;
+    public String name;
 
     @Override
-    public List<String> authenticate(String user, String password) {
-        final User userBean = this.userImpl.getUser(user);
-        if (userBean == null || !userBean.getPassword().equals(password)) {
-            throw new RuntimeException("Bad user or password!");
-        }
-
-        final List<String> groups = new ArrayList<String>();
-        for (Group group : userBean.getGroups()) {
-            groups.add(group.getName());
-        }
-        return groups;
+    public Group execute(BaseEAO eao) {
+        Group grp = new Group();
+        grp.setName(this.name);
+        grp = eao.create(grp);
+        return grp;
     }
 }

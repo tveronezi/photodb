@@ -18,18 +18,31 @@
 
 package photodb.data.execution.command;
 
+import photodb.data.entity.Group;
 import photodb.data.entity.User;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.DbCommand;
 
+import java.util.Set;
+
 public class CreateUser implements DbCommand<User> {
 
     public String name;
+    public String password;
+    public Set<Group> groups;
 
     @Override
     public User execute(BaseEAO eao) {
         User user = new User();
         user.setName(this.name);
+
+        if (this.password == null) {
+            user.setPassword("");
+        } else {
+            user.setPassword(this.password);
+        }
+
+        user.setGroups(this.groups);
         user = eao.create(user);
         return user;
     }

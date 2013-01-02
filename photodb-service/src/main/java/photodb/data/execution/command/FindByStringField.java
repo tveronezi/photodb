@@ -18,7 +18,6 @@
 
 package photodb.data.execution.command;
 
-import photodb.data.entity.User;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.DbCommand;
 
@@ -26,20 +25,27 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 
-public class FindUserByName implements DbCommand<User> {
+public class FindByStringField<T> implements DbCommand<T> {
 
-    public String name;
+    public final Class<T> cls;
+    public final String name;
+    public String value;
+
+    public FindByStringField(Class<T> cls, String name) {
+        this.cls = cls;
+        this.name = name;
+    }
 
     @Override
-    public User execute(BaseEAO eao) {
+    public T execute(BaseEAO eao) {
         final CriteriaBuilder cb = eao.getCriteriaBuilder();
-        final CriteriaQuery<User> cq = cb.createQuery(User.class);
-        final Root<User> root = cq.from(User.class);
+        final CriteriaQuery<T> cq = cb.createQuery(this.cls);
+        final Root<T> root = cq.from(this.cls);
         cq.select(root);
-        final Path<String> pathName = root.get("name");
-        final Predicate pName = cb.equal(pathName, this.name);
-        cq.where(pName);
-        final TypedQuery<User> q = eao.createQuery(cq);
+        final Path<String> pathName = root.get(this.name);
+        final Predicate pValue = cb.equal(pathName, this.value);
+        cq.where(pValue);
+        final TypedQuery<T> q = eao.createQuery(cq);
 
         try {
             return q.getSingleResult();

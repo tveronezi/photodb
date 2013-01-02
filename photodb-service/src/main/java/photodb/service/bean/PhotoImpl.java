@@ -19,10 +19,11 @@
 package photodb.service.bean;
 
 import photodb.data.entity.Photo;
+import photodb.data.entity.User;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.command.CreatePhoto;
+import photodb.data.execution.command.FindByStringField;
 import photodb.data.execution.command.FindPhotoByUser;
-import photodb.data.execution.command.FindUserByName;
 import photodb.service.ApplicationException;
 
 import javax.annotation.Resource;
@@ -48,16 +49,16 @@ public class PhotoImpl {
         create.x = x;
         create.y = y;
 
-        FindUserByName findUserByName = new FindUserByName();
-        findUserByName.name = this.ctx.getCallerPrincipal().getName();
+        FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
+        findUserByName.value = this.ctx.getCallerPrincipal().getName();
         create.user = this.baseEAO.execute(findUserByName);
 
         return this.baseEAO.execute(create);
     }
 
     public List<Photo> getPhotos() {
-        FindUserByName findUserByName = new FindUserByName();
-        findUserByName.name = this.ctx.getCallerPrincipal().getName();
+        FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
+        findUserByName.value = this.ctx.getCallerPrincipal().getName();
 
         FindPhotoByUser find = new FindPhotoByUser();
         find.user = this.baseEAO.execute(findUserByName);
