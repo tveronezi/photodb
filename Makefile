@@ -89,7 +89,6 @@ prepare-webapps:
 	cp -f ./tomcat-users.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./tomee.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./login.config $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
-	cp -f ./server.xml $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 	cp -f ./loginscript.js $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/conf/
 
 deploy: build gettomee prepare-webapps
@@ -101,5 +100,9 @@ up-static:
 	rm -rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/app
 	cp -r photodb-gui/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/
 
+up-tomee-static:
+	rm -Rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/tomee/app
+	cp -r $(OPENEJB_DIRECTORY)/source-code/tomee/tomee-webapp/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/tomee/
+
 .PHONY: echo-variables clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
-	pack restart-tomee shutdown-tomee
+	pack restart-tomee shutdown-tomee up-tomee-static
