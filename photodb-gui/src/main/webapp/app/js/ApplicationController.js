@@ -20,10 +20,24 @@
  * This is the application controller. This is the central point for logic and to forward actions to the views.
  * It contains all the views and model instances.
  */
-"use strict";
-define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/GrowlNotification', 'util/I18N'],
-    function (channel, model, ApplicationView, growl, I18N) {
+
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/GrowlNotification', 'util/I18N'];
+
+    define(deps, function (channel, model, ApplicationView, growl, I18N) {
+
         function newObject() {
+            function triggerPhotoDownload(data) {
+                model.sendMessage({
+                    cmdName: 'DownloadPhoto',
+                    uid: data.photoId,
+                    localId: data.localId,
+                    x: data.x,
+                    y: data.y
+                });
+            }
 
             channel.bind('file-manager', 'new-local-file', function (data) {
                 var bean = {
@@ -60,16 +74,6 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
             channel.bind('file-manager', 'get-file-bin', function (data) {
                 triggerPhotoDownload(data);
             });
-
-            function triggerPhotoDownload(data) {
-                model.sendMessage({
-                    cmdName: 'DownloadPhoto',
-                    uid: data.photoId,
-                    localId: data.localId,
-                    x: data.x,
-                    y: data.y
-                });
-            }
 
             channel.bind('server-command-callback-success', 'GetUser', function (data) {
                 growl.showNotification({
@@ -123,5 +127,6 @@ define(['ApplicationChannel', 'ApplicationModel', 'view/ApplicationView', 'view/
         return {
             newObject: newObject
         };
-    }
-);
+    });
+}());
+

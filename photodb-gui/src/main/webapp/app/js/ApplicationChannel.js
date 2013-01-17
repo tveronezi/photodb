@@ -26,9 +26,13 @@
  * In this application an example of that is the pagingToolChannel sending message to its parent.
  *
  */
-"use strict";
-define(['util/Obj', 'lib/jquery', 'util/Log'],
-    function (obj) {
+
+(function () {
+    'use strict';
+
+    var deps = ['util/Obj', 'lib/jquery', 'util/Log'];
+
+    define(deps, function (obj) {
         var channels = {};
 
         function createChannel(channelName) {
@@ -85,13 +89,7 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
                 if (listeners[messageKey] && listeners[messageKey].length > 0) {
                     hasListeners = true;
                 }
-                console.log(
-                    'Channel', name,
-                    'key', messageKey,
-                    'Parameters', paramsObj,
-                    'Listeners available',
-                    hasListeners
-                );
+                window.console.log('Channel', name, 'key', messageKey, 'Parameters', paramsObj, 'Listeners available', hasListeners);
 
                 if (!hasListeners) {
                     return {
@@ -132,12 +130,12 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
         }
 
         function unbindAll(name) {
-            if(name) {
-                console.log('Unbinding all the listeners of "' + name + '"');
+            if (name) {
+                window.console.log('Unbinding all the listeners of "' + name + '"');
                 getChannel(name).unbindAll();
             } else {
-                console.warn('You are zapping all the channels and listeners!');
-                obj.forEachKey(channels, function(key) {
+                window.console.warn('You are zapping all the channels and listeners!');
+                obj.forEachKey(channels, function (key) {
                     getChannel(key).unbindAll();
                 });
             }
@@ -155,5 +153,5 @@ define(['util/Obj', 'lib/jquery', 'util/Log'],
                 return getChannel(name).send(key, data);
             }
         };
-    }
-);
+    });
+}());

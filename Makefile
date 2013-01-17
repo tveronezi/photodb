@@ -96,6 +96,9 @@ deploy: build gettomee prepare-webapps
 run-jasmine:
 	cd ./photodb-gui/ && mvn jasmine:bdd
 
+run-lint:
+	cd ./photodb-gui/ && mvn jslint4java:lint
+
 up-static:
 	rm -rf $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/app
 	cp -r photodb-gui/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/photodb/
@@ -105,4 +108,4 @@ up-tomee-static:
 	cp -r $(OPENEJB_DIRECTORY)/source-code/tomee/tomee-webapp/src/main/webapp/app $(TOMEE_DIRECTORY)/$(TOMEEPLUS_ZIP_NAME)/webapps/tomee/
 
 .PHONY: echo-variables clean clean-log openejb gettomee kill-tomee start-tomee build prepare-webapps deploy run-jasmine
-	pack restart-tomee shutdown-tomee up-tomee-static
+	run-lint pack restart-tomee shutdown-tomee up-tomee-static

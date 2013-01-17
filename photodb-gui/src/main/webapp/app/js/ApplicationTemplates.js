@@ -16,8 +16,9 @@
  *  limitations under the License.
  */
 
-"use strict";
 (function () {
+    'use strict';
+
     var files = [
         'application',
         'application-growl',
@@ -26,26 +27,30 @@
 
     // Preparing the "requirements" paths.
     var requirements = [];
-    for (var i = 0; i < files.length; i++) {
-        requirements.push('text!templates/' + files[i] + '.handlebars');
-    }
+    (function () {
+        var i;
+        for (i = 0; i < files.length; i += 1) {
+            requirements.push('text!templates/' + files[i] + '.handlebars');
+        }
+    }());
+
     requirements.push('lib/handlebars');
 
     define(requirements, function () {
-            var templates = {};
-            for (var i = 0; i < files.length; i++) {
-                templates[files[i]] = Handlebars.compile(arguments[i]);
-            }
-            return {
-                getValue:function (templateName, cfg) {
-                    var template = templates[templateName];
-                    if (!template) {
-                        throw 'Template not registered. "' + templateName + '"';
-                    }
-                    return template(cfg);
-                }
-            };
+        var templates = {};
+        var i;
+        for (i = 0; i < files.length; i += 1) {
+            templates[files[i]] = Handlebars.compile(arguments[i]);
         }
-    );
-})();
+        return {
+            getValue: function (templateName, cfg) {
+                var template = templates[templateName];
+                if (!template) {
+                    throw 'Template not registered. "' + templateName + '"';
+                }
+                return template(cfg);
+            }
+        };
+    });
+}());
 

@@ -16,18 +16,22 @@
  *  limitations under the License.
  */
 
-"use strict";
-define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
-    function (channel, obj) {
+
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'];
+
+    define(deps, function (channel, obj) {
         var appSocket = null;
         var urlBase = window.document.location.pathname;
 
         channel.bind('server-command-callback-error', 'command-error', function (data) {
-            console.error('Command error', data);
+            window.console.error('Command error', data);
         });
 
         function getFormData(bean) {
-            var formData = new FormData();
+            var formData = new window.FormData();
             obj.forEachKey(bean, function (key, value) {
                 formData.append(key, value);
             });
@@ -71,34 +75,33 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
 
         function sendNormal(bean) {
             $.ajax({
-                    url: urlBase + 'cmd',
-                    type: 'POST',
-                    data: bean,
-                    dataType: 'text',
-                    error: function (e) {
-                        var data = {
-                            message: e,
-                            bean: bean
-                        };
-                        channel.send('server-command-callback-error', bean.cmdName, data);
-                        channel.send('server-command-callback-error', 'command-error', data);
-                    },
-                    success: function (message) {
-                        var data = JSON.parse(message);
+                url: urlBase + 'cmd',
+                type: 'POST',
+                data: bean,
+                dataType: 'text',
+                error: function (e) {
+                    var data = {
+                        message: e,
+                        bean: bean
+                    };
+                    channel.send('server-command-callback-error', bean.cmdName, data);
+                    channel.send('server-command-callback-error', 'command-error', data);
+                },
+                success: function (message) {
+                    var data = JSON.parse(message);
 
-                        // Commands callback calls
-                        if (data.success) {
-                            channel.send('server-command-callback-success', bean.cmdName, data);
-                        } else {
-                            channel.send('server-command-callback-error', bean.cmdName, data);
-                            channel.send('server-command-callback-error', 'command-error', {
-                                data: data,
-                                bean: bean
-                            });
-                        }
+                    // Commands callback calls
+                    if (data.success) {
+                        channel.send('server-command-callback-success', bean.cmdName, data);
+                    } else {
+                        channel.send('server-command-callback-error', bean.cmdName, data);
+                        channel.send('server-command-callback-error', 'command-error', {
+                            data: data,
+                            bean: bean
+                        });
                     }
                 }
-            );
+            });
         }
 
         function sendMessage(bean) {
@@ -122,6 +125,7 @@ define(['ApplicationChannel', 'util/Obj', 'util/Log', 'lib/jquery'],
 
         return {
             sendMessage: sendMessage
-        }
-    }
-);
+        };
+    });
+}());
+

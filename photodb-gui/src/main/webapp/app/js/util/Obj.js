@@ -17,128 +17,138 @@
  "use strict";
  */
 
-"use strict";
-define([],
-    function () {
-        // http://www.quirksmode.org/js/keys.html
-        function keyCodeToString(keyCode) {
-            if (keyCode === 16) {
-                return 'shift';
-            }
 
-            if (keyCode === 17) {
-                return 'control';
-            }
+(function () {
+    'use strict';
 
-            if (keyCode === 18) {
-                return 'alt';
-            }
+    var deps = [];
 
-            if (keyCode === 27) {
-                return 'esc';
-            }
 
-            if (keyCode === 46) {
-                return 'delete';
-            }
+}());
 
-            // Numbers or Letters
-            if (keyCode >= 48 && keyCode <= 57 || //Numbers
-                keyCode >= 65 && keyCode <= 90) { //Letters
-                return String.fromCharCode(keyCode);
-            }
+define([], function () {
+    'use strict';
 
-            if (keyCode >= 112 && keyCode <= 123) { //F1 -> F12
-                return 'F' + (keyCode - 111);
-            }
-
-            return null;
+    // http://www.quirksmode.org/js/keys.html
+    function keyCodeToString(keyCode) {
+        if (keyCode === 16) {
+            return 'shift';
         }
 
-        function getArray(obj) {
-            if (!obj) {
-                return [];
-            }
-
-            // IE9 does not have FileList
-            if (window.FileList && obj instanceof window.FileList) {
-                return obj;
-            }
-
-            if (obj instanceof Array) {
-                return obj;
-            }
-
-            return [obj];
+        if (keyCode === 17) {
+            return 'control';
         }
 
-        function forEach(value, callback) {
-            var arr = getArray(value);
-            for (var i = 0; i < arr.length; i++) {
-                callback(arr[i], i);
-            }
+        if (keyCode === 18) {
+            return 'alt';
         }
 
-        function forEachKey(obj, callback) {
-            if (!obj) {
-                return;
-            }
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    if (callback(key, obj[key]) === false) {
-                        // return false if you want to break the loop
-                        break;
-                    }
-                }
-            }
+        if (keyCode === 27) {
+            return 'esc';
         }
 
-        // http://stackoverflow.com/a/193853 -> Really nice trick to get rid of the javascript 'this' nightmare!
-        function bindScope(scope, fn) {
-            return function () {
-                fn.apply(scope, arguments);
-            };
+        if (keyCode === 46) {
+            return 'delete';
         }
 
-        function isEmpty() {
-            if (arguments.length === 0) {
-                return true;
-            }
-            var obj = null;
-            for (var i = 0; i < arguments.length; i++) {
-                obj = arguments[i];
-                if (obj === null || obj === undefined) {
-                    return true;
-                }
-                if (getArray(obj).length === 0) {
-                    return true;
-                }
-            }
-            return false;
+        // Numbers or Letters,
+        if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90)) {
+            return String.fromCharCode(keyCode);
         }
 
-        // something like the groovy's collect method
-        // http://groovy.codehaus.org/groovy-jdk/java/util/Collection.html#collect(groovy.lang.Closure)
-        function collect(obj, collectFunction) {
-            var result = [];
-            forEach(obj, function (value) {
-                var collected = collectFunction(value);
-                if (collected === null || collected === undefined) {
-                    return;
-                }
-                result.push(collected);
-            });
-            return result;
+        if (keyCode >= 112 && keyCode <= 123) { //F1 -> F12
+            return 'F' + (keyCode - 111);
         }
 
-        return {
-            keyCodeToString: keyCodeToString,
-            getArray: getArray,
-            forEach: forEach,
-            collect: collect,
-            forEachKey: forEachKey,
-            bindScope: bindScope,
-            isEmpty: isEmpty
+        return null;
+    }
+
+    function getArray(obj) {
+        if (!obj) {
+            return [];
+        }
+
+        // IE9 does not have FileList
+        if (window.FileList && obj instanceof window.FileList) {
+            return obj;
+        }
+
+        if (obj instanceof Array) {
+            return obj;
+        }
+
+        return [obj];
+    }
+
+    function forEach(value, callback) {
+        var arr = getArray(value);
+        var i;
+        for (i = 0; i < arr.length; i += 1) {
+            callback(arr[i], i);
         }
     }
-);
+
+    function forEachKey(obj, callback) {
+        if (!obj) {
+            return;
+        }
+        var key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (callback(key, obj[key]) === false) {
+                    // return false if you want to break the loop
+                    break;
+                }
+            }
+        }
+    }
+
+    // http://stackoverflow.com/a/193853 -> Really nice trick to get rid of the javascript 'this' nightmare!
+    function bindScope(scope, fn) {
+        return function () {
+            fn.apply(scope, arguments);
+        };
+    }
+
+    function isEmpty() {
+        if (arguments.length === 0) {
+            return true;
+        }
+        var obj = null;
+        var i;
+        for (i = 0; i < arguments.length; i += 1) {
+            obj = arguments[i];
+            if (obj === null || obj === undefined) {
+                return true;
+            }
+            if (getArray(obj).length === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // something like the groovy's collect method
+    // http://groovy.codehaus.org/groovy-jdk/java/util/Collection.html#collect(groovy.lang.Closure)
+    function collect(obj, collectFunction) {
+        var result = [];
+        forEach(obj, function (value) {
+            var collected = collectFunction(value);
+            if (collected === null || collected === undefined) {
+                return;
+            }
+            result.push(collected);
+        });
+        return result;
+    }
+
+    return {
+        keyCodeToString: keyCodeToString,
+        getArray: getArray,
+        forEach: forEach,
+        collect: collect,
+        forEachKey: forEachKey,
+        bindScope: bindScope,
+        isEmpty: isEmpty
+    };
+});

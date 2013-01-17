@@ -16,10 +16,14 @@
  *  limitations under the License.
  */
 
-"use strict";
-define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager',
-    'lib/jquery', 'lib/d3'],
-    function (channel, sequence, obj, growl, I18N) {
+
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotification', 'util/I18N', 'FileManager',
+        'lib/jquery', 'lib/d3'];
+
+    define(deps, function (channel, sequence, obj, growl, I18N) {
         function newObject() {
             var svg = null; // -> the svg container
 
@@ -36,8 +40,8 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
 
             function translate(g, dx, dy) {
                 g.attr('transform', function (d) {
-                    var nx = d.x + (dx ? dx : 0);
-                    var ny = d.y + (dy ? dy : 0);
+                    var nx = d.x + (dx || 0);
+                    var ny = d.y + (dy || 0);
                     if (nx >= 0) {
                         d.x = nx;
                     }
@@ -63,7 +67,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                         // Welcome to the "this" hell of JS!
                         var myChanel = this.channel;
 
-                        // TODO: "g.data(function(d) {})" is not working. Why?
                         // We won't create the element 'i'. This is just a workaround to get the node's data.
                         this.g.attr('i', function (d) {
                             myChanel.send('ui-actions', 'drag-photo', {
@@ -71,7 +74,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                                 nx: d.x,
                                 ny: d.y
                             });
-                        })
+                        });
                     }));
                 g.call(drag);
             }
@@ -122,25 +125,8 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                 }
             }
 
-            channel.bind('file-manager', 'photo-max-position', function (data) {
-                svgMinHeight = data.topY;
-                svgMinWidth = data.topX;
-                fitContent();
-            });
-
-            channel.bind('ui-actions', 'container-resized', function (data) {
-                containerHeight = data.containerHeight;
-                containerWidth = data.containerWidth;
-                fitContent();
-            });
-
-            channel.bind('file-manager', 'files-updated', function (data) {
-                createFileItems(data);
-            });
-
             function setSelectBehaviour(g) {
                 g.on('click', function () {
-                    // TODO: "g.data(function(d) {})" is not working. Why?
                     // We won't create the element 'i'. This is just a workaround to get the node's data.
                     d3.select(this).attr('i', function (d) {
                         channel.send('ui-actions', 'file-selection', {
@@ -175,7 +161,7 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                     .attr('height', '202px')
                     .attr('width', '202px')
                     .classed('selected', function (d) {
-                        return !(!d.isSelected);
+                        return (d.isSelected === true);
                     });
 
                 gSelection.append('image')
@@ -197,6 +183,22 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
                     setSelectBehaviour(g);
                 });
             }
+
+            channel.bind('file-manager', 'photo-max-position', function (data) {
+                svgMinHeight = data.topY;
+                svgMinWidth = data.topX;
+                fitContent();
+            });
+
+            channel.bind('ui-actions', 'container-resized', function (data) {
+                containerHeight = data.containerHeight;
+                containerWidth = data.containerWidth;
+                fitContent();
+            });
+
+            channel.bind('file-manager', 'files-updated', function (data) {
+                createFileItems(data);
+            });
         }
 
         // Creating our singleton
@@ -204,6 +206,6 @@ define(['ApplicationChannel', 'util/Sequence', 'util/Obj', 'view/GrowlNotificati
 
         return {
             newObject: newObject
-        }
-    }
-);
+        };
+    });
+}());

@@ -20,9 +20,12 @@
  * This is the entry point for our javascript application.
  * DO NOT add any logic here. All business logic should be implemented in the ApplicationController object.
  */
-"use strict";
-define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', 'lib/jquery'],
-    function (channel, obj, sequence, delayedTask) {
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', 'lib/jquery'];
+
+    define(deps, function (channel, obj, sequence, delayedTask) {
         var DEFAULT_REQUEST_TIMEOUT = 1000;
 
         function newObject() {
@@ -204,5 +207,6 @@ define(['ApplicationChannel', 'util/Obj', 'util/Sequence', 'util/DelayedTask', '
         return {
             newObject: newObject
         };
-    }
-);
+    });
+}());
+

@@ -16,10 +16,13 @@
  *  limitations under the License.
  */
 
-"use strict";
-define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
-    'util/DelayedTask', 'lib/jquery'],
-    function (channel, templates, sequence, delayedTask) {
+
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence', 'util/DelayedTask', 'lib/jquery'];
+
+    define(deps, function (channel, templates, sequence, delayedTask) {
         var container = $(templates.getValue('application-growl', {}));
         var myBody = $('body');
         var active = false;
@@ -45,11 +48,11 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
                         try {
                             alert.remove();
                         } catch (e) {
-                            console.error(e);
+                            window.console.error(e);
                         }
                     });
                 } catch (e) {
-                    console.error(e);
+                    window.console.error(e);
                 }
                 delete timeout[alertId];
                 channel.send('notification', 'alert-removed', {
@@ -73,16 +76,13 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
 
                 channel.send('notification', 'new-alert', params);
 
-                if (autohide === false) {
-                    // no-op
-                } else {
-                    if (autohide === true) {
-                        // no-op
-                    } else {
-                        timeout = autohide;
-                    }
+                var empty = (autohide === undefined || autohide === null);
+                if (autohide || empty) {
                     timeout[alertId] = delayedTask.newObject();
                     timeout[alertId].delay(removeAlert, waitTime);
+                    if (empty) {
+                        timeout = autohide;
+                    }
                 }
             }
         }
@@ -90,5 +90,5 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/Sequence',
         return {
             showNotification: showNotification
         };
-    }
-);
+    });
+}());

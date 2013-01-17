@@ -17,43 +17,50 @@
  "use strict";
  */
 
-"use strict";
-define(['util/Obj', 'lib/handlebars', 'util/Log'],
-    function (utils) {
-        var missing = Handlebars.compile('[!{{key}}!]');
-        var messages = {
-            'application.name':'photodb',
-            'application.welcome':'Hi {{userName}}! Welcome to {{appName}}!',
-            'html.support.error':'This browser does not fully support HTML5. Try again with another browser.',
-            'drag.photos.hint':'Drag photos to your browser.',
-            'photo.upload':'Uploading file {{fileName}}',
-            'photo.delete.tip':'Files selected. Hit the "delete" key to remove them.'
-        };
+(function () {
+    'use strict';
 
-        utils.forEachKey(messages, function (key, value) {
-            var template = Handlebars.compile(value);
-            messages[key] = template;
-        });
+    var deps = [];
 
-        var get = function (key, values) {
-            var template = messages[key];
-            var cfg = values;
-            if (!template) {
-                template = missing;
-                cfg = {
-                    key:key
-                };
-                console.error('Missing i18n message.', key);
-            }
-            return template(cfg);
-        };
 
-        Handlebars.registerHelper('i18n', function (key) {
-            return get(key);
-        });
+}());
 
-        return {
-            get:get
-        };
-    }
-);
+define(['util/Obj', 'lib/handlebars', 'util/Log'], function (utils) {
+    'use strict';
+
+    var missing = Handlebars.compile('[!{{key}}!]');
+    var messages = {
+        'application.name': 'photodb',
+        'application.welcome': 'Hi {{userName}}! Welcome to {{appName}}!',
+        'html.support.error': 'This browser does not fully support HTML5. Try again with another browser.',
+        'drag.photos.hint': 'Drag photos to your browser.',
+        'photo.upload': 'Uploading file {{fileName}}',
+        'photo.delete.tip': 'Files selected. Hit the "delete" key to remove them.'
+    };
+
+    utils.forEachKey(messages, function (key, value) {
+        var template = Handlebars.compile(value);
+        messages[key] = template;
+    });
+
+    var get = function (key, values) {
+        var template = messages[key];
+        var cfg = values;
+        if (!template) {
+            template = missing;
+            cfg = {
+                key: key
+            };
+            window.console.error('Missing i18n message.', key);
+        }
+        return template(cfg);
+    };
+
+    Handlebars.registerHelper('i18n', function (key) {
+        return get(key);
+    });
+
+    return {
+        get: get
+    };
+});

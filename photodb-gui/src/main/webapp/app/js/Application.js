@@ -20,16 +20,21 @@
  * This is the entry point for our javascript application.
  * DO NOT add any logic here. All business logic should be implemented in the ApplicationController object.
  */
-"use strict";
-define(['ApplicationController', 'lib/jquery'],
-    function (ApplicationController) {
+
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationController', 'lib/jquery'];
+
+    define(deps, function (ApplicationController) {
         return {
-            start:function () {
-                $(document).ready(function () {
+            start: function () {
+                $(window.document).ready(function () {
                     ApplicationController.newObject();
                 });
             }
         };
+    });
+}());
 
-    }
-);
+

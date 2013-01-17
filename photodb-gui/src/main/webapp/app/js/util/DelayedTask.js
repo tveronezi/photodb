@@ -16,37 +16,45 @@
  *  limitations under the License.
  */
 
-"use strict";
-define([],
-    function () {
-        function newObject() {
-            var currentTimer = null;
 
-            function delay(callback, millis) {
-                if (!callback) {
-                    throw 'You should give me a callback method to execute';
-                }
+(function () {
+    'use strict';
 
-                // Cancel previous execution
-                if (currentTimer !== null) {
-                    clearTimeout(currentTimer);
-                }
+    var deps = [];
 
-                if (millis) {
-                    currentTimer = setTimeout(callback, millis);
-                } else {
-                    // No timeout set.
-                    callback();
-                }
+
+}());
+
+define([], function () {
+    'use strict';
+
+    function newObject() {
+        var currentTimer = null;
+
+        function delay(callback, millis) {
+            if (!callback) {
+                throw 'You should give me a callback method to execute';
             }
 
-            return {
-                delay:delay
-            };
+            // Cancel previous execution
+            if (currentTimer !== null) {
+                window.clearTimeout(currentTimer);
+            }
+
+            if (millis) {
+                currentTimer = window.setTimeout(callback, millis);
+            } else {
+                // No timeout set.
+                callback();
+            }
         }
 
         return {
-            newObject:newObject
-        }
+            delay: delay
+        };
     }
-);
+
+    return {
+        newObject: newObject
+    };
+});

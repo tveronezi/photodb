@@ -17,10 +17,14 @@
  */
 
 
-"use strict";
-define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
-    'view/GrowlNotification', 'util/Obj', 'util/I18N', 'util/Sequence', 'lib/jquery', 'view/FileView'],
-    function (channel, templates, delayedTask, growl, utils, I18N, sequence) {
+(function () {
+    'use strict';
+
+    var deps = ['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
+        'view/GrowlNotification', 'util/Obj', 'util/I18N', 'util/Sequence', 'lib/jquery', 'view/FileView'];
+
+    define(deps, function (channel, templates, delayedTask, growl, utils, I18N, sequence) {
+
         function newObject(cfg) {
             var browserWindow = cfg.browserWindow;
             var containerId = sequence.next('app-container');
@@ -29,11 +33,39 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
             }));
             var delayedContainerResize = delayedTask.newObject();
 
+            // You need to create a new scope for this method.
+            // The "this" object should have the "browserWindow" and the "channel" objects.
+            var UpdateContainerSize = function (browserWindow, channel) {
+                this.browserWindow = browserWindow;
+                this.channel = channel;
+                this.execute = function () {
+                    var containerHeight;
+                    var containerWidth;
+
+                    containerHeight = this.browserWindow.outerHeight();
+                    containerWidth = this.browserWindow.outerWidth();
+
+                    container.css('height', containerHeight + 'px');
+                    container.css('width', containerWidth + 'px');
+
+                    this.channel.send('ui-actions', 'container-resized', {
+                        containerHeight: containerHeight,
+                        containerWidth: containerWidth
+                    });
+                };
+            };
+
+            function cleanOverflow() {
+                container.removeClass('overflow-x-axe');
+                container.removeClass('overflow-y-axe');
+                container.removeClass('overflow-xy-axe');
+            }
+
             browserWindow.on('resize', function () {
-                delayedContainerResize.delay(utils.bindScope({
-                    browserWindow: browserWindow,
-                    channel: channel
-                }, updateContainerSize), 500);
+                var callback = new UpdateContainerSize(browserWindow, channel);
+                delayedContainerResize.delay(function () {
+                    callback.execute();
+                }, 500);
             });
 
             browserWindow.on('keyup', function (ev) {
@@ -70,8 +102,8 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                     key.push('shift');
                 }
 
-                if (ev.keyCode !== 46 && // 'Delete' key
-                    key.length === 0 && !(ev.keyCode >= 112 && ev.keyCode <= 123 || ev.keyCode === 27)) { // F1...F12 or esc
+                // 'Delete' key - F1...F12 or esc
+                if (ev.keyCode !== 46 && key.length === 0 && !((ev.keyCode >= 112 && ev.keyCode <= 123) || ev.keyCode === 27)) {
                     return; //nothing to do
                 }
 
@@ -86,30 +118,6 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                     ev.preventDefault();
                 }
             });
-
-            // You need to create a new scope for this method.
-            // The "this" object should have the "browserWindow" and the "channel" objects.
-            function updateContainerSize() {
-                var containerHeight;
-                var containerWidth;
-
-                containerHeight = this.browserWindow.outerHeight();
-                containerWidth = this.browserWindow.outerWidth();
-
-                container.css('height', containerHeight + 'px');
-                container.css('width', containerWidth + 'px');
-
-                this.channel.send('ui-actions', 'container-resized', {
-                    containerHeight: containerHeight,
-                    containerWidth: containerWidth
-                });
-            }
-
-            function cleanOverflow() {
-                container.removeClass('overflow-x-axe');
-                container.removeClass('overflow-y-axe');
-                container.removeClass('overflow-xy-axe');
-            }
 
             channel.bind('ui-actions', 'svg-bigger-than-container-x', function () {
                 cleanOverflow();
@@ -134,20 +142,21 @@ define(['ApplicationChannel', 'ApplicationTemplates', 'util/DelayedTask',
                 render: function () {
                     var body = $('body');
                     body.append(container);
-                    delayedContainerResize.delay(utils.bindScope({
-                        browserWindow: browserWindow,
-                        channel: channel
-                    }, updateContainerSize), 500);
+
+                    var callback = new UpdateContainerSize(browserWindow, channel);
+                    delayedContainerResize.delay(function () {
+                        callback.execute();
+                    }, 500);
 
                     channel.send('ui-actions', 'container-rendered', {
                         containerId: containerId
                     });
                 }
             };
-        };
+        }
 
         return {
             newObject: newObject
         };
-    }
-);
+    });
+}());

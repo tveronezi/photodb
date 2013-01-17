@@ -16,9 +16,14 @@
  *  limitations under the License.
  */
 
-"use strict";
-define([],
-    function () {
+
+(function () {
+    'use strict';
+
+    var deps = [];
+
+    define(deps, function () {
+
         var sequenceMap = {};
 
         function next(prefix) {
@@ -38,7 +43,7 @@ define([],
         }
 
         return {
-            next:next
+            next: next
         };
-    }
-);
+    });
+}());

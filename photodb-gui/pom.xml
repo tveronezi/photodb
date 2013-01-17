@@ -70,6 +70,22 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.googlecode.jslint4java</groupId>
+                <artifactId>jslint4java-maven-plugin</artifactId>
+                <version>2.0.3</version>
+                <configuration>
+                    <failOnError>true</failOnError>
+                    <options>
+                        <vars>true</vars>
+                        <predef>define,window,d3,$,Handlebars</predef>
+                        <indent>4</indent>
+                    </options>
+                    <sourceFolders>
+                        <sourceFolder>${basedir}/src/main/webapp/app/js</sourceFolder>
+                    </sourceFolders>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

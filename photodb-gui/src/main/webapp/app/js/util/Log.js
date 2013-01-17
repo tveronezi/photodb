@@ -17,26 +17,33 @@
  */
 
 
-"use strict";
-define([],
-    function () {
-        var noOp = function () {
-        };
+(function () {
+    'use strict';
 
-        if (!window.console) {
-            window.console = {};
-        }
+    var deps = [];
 
-        if (!window.console.error) {
-            window.console.error = noOp;
-        }
 
-        if (!window.console.warn) {
-            window.console.warn = noOp;
-        }
+}());
 
-        if (!window.console.log) {
-            window.console.log = noOp;
-        }
+define([], function () {
+    'use strict';
+
+    var noOp = function () {
+    };
+
+    if (!window.console) {
+        window.console = {};
     }
-);
+
+    if (!window.console.error) {
+        window.console.error = noOp;
+    }
+
+    if (!window.console.warn) {
+        window.console.warn = noOp;
+    }
+
+    if (!window.console.log) {
+        window.console.log = noOp;
+    }
+});
