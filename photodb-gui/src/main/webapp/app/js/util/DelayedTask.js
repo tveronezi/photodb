@@ -16,15 +16,6 @@
  *  limitations under the License.
  */
 
-
-(function () {
-    'use strict';
-
-    var deps = [];
-
-
-}());
-
 define([], function () {
     'use strict';
 

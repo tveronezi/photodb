@@ -16,34 +16,28 @@
  *  limitations under the License.
  */
 
-
-(function () {
+define([], function () {
     'use strict';
 
-    var deps = [];
+    var sequenceMap = {};
 
-    define(deps, function () {
-
-        var sequenceMap = {};
-
-        function next(prefix) {
-            var myPrefix = (prefix ? prefix.trim() : null);
-            if (!myPrefix || myPrefix === '') {
-                myPrefix = 'APP';
-            }
-
-            var sequence = sequenceMap[myPrefix];
-            if (!sequence) {
-                sequence = 0;
-                sequenceMap[myPrefix] = sequence;
-            }
-
-            sequenceMap[myPrefix] = sequence + 1;
-            return myPrefix + '-' + sequence;
+    function next(prefix) {
+        var myPrefix = (prefix ? prefix.trim() : null);
+        if (!myPrefix || myPrefix === '') {
+            myPrefix = 'APP';
         }
 
-        return {
-            next: next
-        };
-    });
-}());
+        var sequence = sequenceMap[myPrefix];
+        if (!sequence) {
+            sequence = 0;
+            sequenceMap[myPrefix] = sequence;
+        }
+
+        sequenceMap[myPrefix] = sequence + 1;
+        return myPrefix + '-' + sequence;
+    }
+
+    return {
+        next: next
+    };
+});

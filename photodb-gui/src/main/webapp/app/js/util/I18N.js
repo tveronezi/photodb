@@ -17,14 +17,6 @@
  "use strict";
  */
 
-(function () {
-    'use strict';
-
-    var deps = [];
-
-
-}());
-
 define(['util/Obj', 'lib/handlebars', 'util/Log'], function (utils) {
     'use strict';
 
