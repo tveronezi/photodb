@@ -27,7 +27,6 @@
     <modules>
         <module>photodb-gui</module>
         <module>photodb-web</module>
-        <module>photodb-service</module>
     </modules>
     <repositories>
         <repository>

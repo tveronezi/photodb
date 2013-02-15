@@ -31,7 +31,7 @@ unzip-tomee: kill-tomee
 	tar -xzf tomee-runtime.tar.gz && \
 	mv apache-tomee-plus-1.5.2-SNAPSHOT tomee-runtime
 	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps
-	cp ./config/loginscript.js ./$(PROJECT_NAME)-gui/target/tomee-runtime/conf
+	cp ./src/main/config/loginscript.js ./$(PROJECT_NAME)-gui/target/tomee-runtime/conf
 
 kill-tomee:
 	@if test -f $(HOME_DIR)/tomee-pid.txt; then \
@@ -48,7 +48,7 @@ restart-tomee: kill-tomee
 	cd ./$(PROJECT_NAME)-gui/target/ && \
 	export JPDA_SUSPEND=n && \
 	export CATALINA_PID=$(HOME_DIR)/tomee-pid.txt && \
-	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/config/login.config" && \
+	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/src/main/config/login.config" && \
 	./tomee-runtime/bin/catalina.sh jpda start
 
 run-jasmine:
