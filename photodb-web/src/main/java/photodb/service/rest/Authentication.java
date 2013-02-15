@@ -21,7 +21,7 @@ package photodb.service.rest;
 import photodb.data.dto.AuthenticationDto;
 import photodb.service.bean.LoginImpl;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,7 +30,7 @@ import java.util.List;
 
 @Path("/authentication")
 public class Authentication {
-    @Inject
+    @EJB
     private LoginImpl login;
 
     @POST
