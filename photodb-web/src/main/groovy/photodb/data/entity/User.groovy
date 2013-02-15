@@ -27,12 +27,4 @@ class User extends BaseEntity {
     @Column(name = 'usr_name', nullable = false)
     String name
 
-    //TODO: encrypt me
-    @Column(name = 'usr_pass', nullable = false)
-    String password
-
-    @ManyToMany
-    @JoinTable(name = "usrs_grps_table")
-    Set<Group> groups
-
 }

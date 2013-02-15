@@ -15,20 +15,14 @@
  * limitations under the License.
  */
 
-var myImports = new JavaImporter(
-    java.util.Properties,
-    javax.naming.InitialContext
-);
-
 var result = null;
 
-with (myImports) {
-    var p = new Properties();
-    p.put("java.naming.factory.initial", "org.apache.openejb.client.LocalInitialContextFactory");
-
-    var ctx = new InitialContext(p);
-    var myBean = ctx.lookup("java:global/photodb-service/LoginImpl");
-    result = myBean.authenticate(user, password);
+if(user === 'michael' && password === 'bad') {
+    result = new java.util.ArrayList();[];
+    result.add('photo-admin');
+    result.add('photo-user');
+} else {
+    throw 'Bad user or password';
 }
 
 result;

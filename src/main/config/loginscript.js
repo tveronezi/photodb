@@ -15,21 +15,14 @@
  * limitations under the License.
  */
 
-var myImports = new JavaImporter(
-    java.util.Properties,
-    javax.naming.InitialContext
-);
-
 var result = null;
 
-with (myImports) {
-    var p = new Properties();
-    p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
-    p.put("java.naming.provider.url", "http://localhost:8080/tomee/ejb");
-
-    var ctx = new InitialContext(p);
-    var myBean =  ctx.lookup("LoginImplRemote");
-    result = myBean.authenticate(user, password);
+if(user === 'michael' && password === 'bad') {
+    result = new java.util.ArrayList();[];
+    result.add('photo-admin');
+    result.add('photo-user');
+} else {
+    throw 'Bad user or password';
 }
 
 result;
