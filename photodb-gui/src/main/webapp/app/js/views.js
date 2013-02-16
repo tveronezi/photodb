@@ -16,10 +16,37 @@
  *  limitations under the License.
  */
 
-require.config(APP_CONFIG);
+(function () {
+    'use strict';
 
-requirejs(['Application', 'lib/less', 'lib/bootstrap'],
-    function (app) {
-        app.start();
-    }
-);
+    var deps = [
+        'container',
+        'about',
+        'files'
+    ];
+
+    var paths = _.map(deps, function (dep) {
+        return 'app/js/view/' + dep;
+    });
+
+    define(paths, function () {
+        var myViews = {};
+
+        var myArgs = arguments;
+        _.each(deps, function (dep, index) {
+            myViews[dep] = myArgs[index];
+        });
+
+        return {
+            newInstance: function (key, opts) {
+                var Cls = myViews[key];
+                if (!Cls) {
+                    throw 'View not found. "' + key + '"';
+                }
+                return new Cls(opts);
+            }
+        };
+    });
+}());
+
+

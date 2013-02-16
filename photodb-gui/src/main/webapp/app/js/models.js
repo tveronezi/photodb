@@ -16,28 +16,41 @@
  *  limitations under the License.
  */
 
-define([], function () {
+(function () {
     'use strict';
 
-    var sequenceMap = {};
+    var deps = [
+        'menu'
+    ];
 
-    function next(prefix) {
-        var myPrefix = (prefix ? prefix.trim() : null);
-        if (!myPrefix || myPrefix === '') {
-            myPrefix = 'APP';
+    var paths = _.map(deps, function (dep) {
+        return 'app/js/model/' + dep;
+    });
+
+    define(paths, function () {
+        var myModels = {};
+
+        var myArgs = arguments;
+        _.each(deps, function (dep, index) {
+            myModels[dep] = myArgs[index];
+        });
+
+        function getClass(key) {
+            var Cls = myModels[key];
+            if (!Cls) {
+                throw 'Model not found. "' + key + '"';
+            }
+            return Cls;
         }
 
-        var sequence = sequenceMap[myPrefix];
-        if (!sequence) {
-            sequence = 0;
-            sequenceMap[myPrefix] = sequence;
-        }
+        return {
+            newInstance: function (key, opts) {
+                var Cls = getClass(key);
+                return new Cls(opts);
+            },
+            getClass: getClass
+        };
+    });
+}());
 
-        sequenceMap[myPrefix] = sequence + 1;
-        return myPrefix + '-' + sequence;
-    }
 
-    return {
-        next: next
-    };
-});

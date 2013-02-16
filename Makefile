@@ -18,7 +18,7 @@ PROJECT_NAME=photodb
 up-static:
 	rm -rf ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps/$(PROJECT_NAME)/app
 	cp -r $(PROJECT_NAME)-gui/src/main/webapp/app ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps/$(PROJECT_NAME)/
-	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.html ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps/$(PROJECT_NAME)/index.html
+	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.jsp ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps/$(PROJECT_NAME)/index.jsp
 
 clean-start: clean-install start-tomee
 

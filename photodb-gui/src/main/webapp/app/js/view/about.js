@@ -16,24 +16,21 @@
  *  limitations under the License.
  */
 
-/**
- * This is the entry point for our javascript application.
- * DO NOT add any logic here. All business logic should be implemented in the ApplicationController object.
- */
-
 (function () {
     'use strict';
 
-    var deps = ['ApplicationController', 'lib/backbone'];
+    var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
+    define(deps, function (templates) {
 
-    define(deps, function (ApplicationController) {
-        return {
-            start: function () {
-                $(window.document).ready(function () {
-                    ApplicationController.newObject();
-                });
+        return Backbone.View.extend({
+            render: function () {
+                this.$el.empty();
+                var html = templates.getValue('about');
+                this.$el.html(html);
+                return this;
             }
-        };
+        });
+
     });
 }());
 

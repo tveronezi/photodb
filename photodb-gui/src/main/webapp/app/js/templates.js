@@ -20,8 +20,10 @@
     'use strict';
 
     var files = [
-        'application',
-        'photos',
+        'container',
+        'menu',
+        'files',
+        'about',
         'photo-preview',
         'application-growl',
         'application-growl-message'
@@ -32,25 +34,28 @@
     (function () {
         var i;
         for (i = 0; i < files.length; i += 1) {
-            requirements.push('text!templates/' + files[i] + '.handlebars');
+            requirements.push('text!app/js/templates/' + files[i] + '.handlebars');
         }
     }());
 
-    requirements.push('lib/handlebars');
-
     define(requirements, function () {
         var templates = {};
-        var i;
-        for (i = 0; i < files.length; i += 1) {
-            templates[files[i]] = Handlebars.compile(arguments[i]);
-        }
+
+        var myArgs = arguments;
+        _.each(files, function(file, i) {
+            templates[file] = Handlebars.compile(myArgs[i]);
+        });
         return {
             getValue: function (templateName, cfg) {
                 var template = templates[templateName];
                 if (!template) {
                     throw 'Template not registered. "' + templateName + '"';
                 }
-                return template(cfg);
+                if (cfg) {
+                    return template(cfg);
+                } else {
+                    return template({});
+                }
             }
         };
     });

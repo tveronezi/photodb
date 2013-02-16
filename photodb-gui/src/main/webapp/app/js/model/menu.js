@@ -16,36 +16,20 @@
  *  limitations under the License.
  */
 
-define([], function () {
+(function () {
     'use strict';
 
-    function newObject() {
-        var currentTimer = null;
+    var deps = ['lib/backbone'];
+    define(deps, function () {
 
-        function delay(callback, millis) {
-            if (!callback) {
-                throw 'You should give me a callback method to execute';
+        return Backbone.Model.extend({
+            defaults: {
+                'files':  'active',
+                'about':  ''
             }
+        });
 
-            // Cancel previous execution
-            if (currentTimer !== null) {
-                window.clearTimeout(currentTimer);
-            }
+    });
+}());
 
-            if (millis) {
-                currentTimer = window.setTimeout(callback, millis);
-            } else {
-                // No timeout set.
-                callback();
-            }
-        }
 
-        return {
-            delay: delay
-        };
-    }
-
-    return {
-        newObject: newObject
-    };
-});

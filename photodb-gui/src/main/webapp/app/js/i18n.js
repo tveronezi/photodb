@@ -17,7 +17,7 @@
  "use strict";
  */
 
-define(['util/Obj', 'lib/handlebars', 'util/Log'], function (utils) {
+define(['lib/handlebars', 'lib/underscore', 'app/js/log'], function (utils) {
     'use strict';
 
     var missing = Handlebars.compile('[!{{key}}!]');
@@ -32,8 +32,8 @@ define(['util/Obj', 'lib/handlebars', 'util/Log'], function (utils) {
         'application.about': 'About'
     };
 
-    utils.forEachKey(messages, function (key, value) {
-        var template = Handlebars.compile(value);
+    _.each(_.keys(messages), function(key) {
+        var template = Handlebars.compile(messages[key]);
         messages[key] = template;
     });
 

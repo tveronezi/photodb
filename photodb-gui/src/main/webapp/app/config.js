@@ -17,28 +17,28 @@
  */
 
 var APP_CONFIG = {
-    baseUrl: 'app/js',
+    baseUrl: ROOT_URL,
     paths: {
         // https://github.com/requirejs/text
-        'text': '../lib/require/text',
+        'text': 'app/lib/require/text',
 
         // http://lesscss.org/
-        'lib/less': '../lib/less/less-1.3.0.min',
+        'lib/less': 'app/lib/less/less-1.3.0.min',
 
         // http://jquery.com/
-        'lib/jquery': '../lib/jquery/jquery-1.7.2.min',
+        'lib/jquery': 'app/lib/jquery/jquery-1.7.2.min',
 
         // http://twitter.github.com/bootstrap/
-        'lib/bootstrap': '../lib/bootstrap/2.1.1/js/bootstrap.min',
+        'lib/bootstrap': 'app/lib/bootstrap/2.1.1/js/bootstrap.min',
 
         // http://handlebarsjs.com/
-        'lib/handlebars': '../lib/handlebars/handlebars-1.0.rc.1',
+        'lib/handlebars': 'app/lib/handlebars/handlebars-1.0.rc.1',
 
-        'lib/json2': '../lib/json2/json2-2012-10-08',
+        'lib/json2': 'app/lib/json2/json2-2012-10-08',
 
-        'lib/underscore': '../lib/underscore/underscore-1-4-3',
+        'lib/underscore': 'app/lib/underscore/underscore-1-4-3',
 
-        'lib/backbone': '../lib/backbone/backbone_0-9-10'
+        'lib/backbone': 'app/lib/backbone/backbone_0-9-10'
     },
     shim: {
         // bootstrap depends on jquery, therefore we need to load jquery first
@@ -49,6 +49,18 @@ var APP_CONFIG = {
 
         'lib/backbone': {
             deps: ['lib/jquery', 'lib/json2', 'lib/underscore']
+        },
+
+        'app/js/templates': {
+            deps: ['lib/underscore', 'app/js/i18n']
+        },
+
+        'app/js/views': {
+            deps: ['lib/underscore']
+        },
+
+        'app/js/models': {
+            deps: ['lib/underscore']
         }
     }
 };

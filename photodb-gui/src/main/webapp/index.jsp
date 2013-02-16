@@ -15,15 +15,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>photodb</title>
-    <link href="app/lib/bootstrap/2.1.1/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet/less" type="text/css" href="app/app.less">
-    <script src="app/lib/require/require.js"></script>
-    <script src="app/config.js"></script>
-    <script src="app/start.js"></script>
+    <link href="<c:url value='/app/lib/bootstrap/2.1.1/css/bootstrap.css'/>" rel="stylesheet">
+    <link href="<c:url value='/app/app.less'/>" rel="stylesheet/less" type="text/css" >
+    <script src="<c:url value='/app/lib/require/require.js'/>"></script>
+    <script type="text/javascript">
+        // Save the path to the application. Case the application is not the root context, we should now that.
+        // The "c:url" is able to figure it out since forever.
+        var ROOT_URL = "<c:url value='/'/>";
+    </script>
+    <script src="<c:url value='/app/config.js'/>"></script>
+    <script src="<c:url value='/app/js/app.js'/>"></script>
 </head>
 <body></body>
 </html>
