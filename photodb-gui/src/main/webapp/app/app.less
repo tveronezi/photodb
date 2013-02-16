@@ -31,60 +31,73 @@ body {
 
 .app {
   .photos {
-    .photo { // Credits to http://www.hongkiat.com/blog/css3-image-captions/
-      border: 5px solid #fff;
-      cursor: pointer;
-      height: 182px;
-      float: left;
-      margin: 5px;
-      position: relative;
-      overflow: hidden;
-      width: 200px;
-      -webkit-box-shadow: 1px 1px 1px 1px #ccc;
-      -moz-box-shadow: 1px 1px 1px 1px #ccc;
-      box-shadow: 1px 1px 1px 1px #ccc;
+    .drop-area {
+      padding: 25px;
+      border: 2px dashed #bbb;
+      text-align: center;
+      font: 20pt bold;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      color: #bbb;
+    }
 
-      img {
-        position: absolute;
-        left: 0;
-        -webkit-transition: all 300ms ease-out;
-        -moz-transition: all 300ms ease-out;
-        -o-transition: all 300ms ease-out;
-        -ms-transition: all 300ms ease-out;
-        transition: all 300ms ease-out;
-      }
-
-      .caption {
-        background-color: rgba(0, 0, 0, 0.8);
-        position: absolute;
-        color: #fff;
-        z-index: 100;
-        -webkit-transition: all 300ms ease-out;
-        -moz-transition: all 300ms ease-out;
-        -o-transition: all 300ms ease-out;
-        -ms-transition: all 300ms ease-out;
-        transition: all 300ms ease-out;
-        left: 0;
-      }
-
-      .simple-caption {
-        height: 30px;
+    .photos-area {
+      .photo { // Credits to http://www.hongkiat.com/blog/css3-image-captions/
+        border: 5px solid #fff;
+        cursor: pointer;
+        height: 182px;
+        float: left;
+        margin: 5px;
+        position: relative;
+        overflow: hidden;
         width: 200px;
-        display: block;
-        bottom: -30px;
-        line-height: 25pt;
-        text-align: center;
-      }
+        -webkit-box-shadow: 1px 1px 1px 1px #ccc;
+        -moz-box-shadow: 1px 1px 1px 1px #ccc;
+        box-shadow: 1px 1px 1px 1px #ccc;
 
-      &:hover {
+        img {
+          position: absolute;
+          left: 0;
+          -webkit-transition: all 300ms ease-out;
+          -moz-transition: all 300ms ease-out;
+          -o-transition: all 300ms ease-out;
+          -ms-transition: all 300ms ease-out;
+          transition: all 300ms ease-out;
+        }
+
+        .caption {
+          background-color: rgba(0, 0, 0, 0.8);
+          position: absolute;
+          color: #fff;
+          z-index: 100;
+          -webkit-transition: all 300ms ease-out;
+          -moz-transition: all 300ms ease-out;
+          -o-transition: all 300ms ease-out;
+          -ms-transition: all 300ms ease-out;
+          transition: all 300ms ease-out;
+          left: 0;
+        }
+
         .simple-caption {
-          -moz-transform: translateY(-100%);
-          -o-transform: translateY(-100%);
-          -webkit-transform: translateY(-100%);
-          opacity: 1;
-          transform: translateY(-100%);
+          height: 30px;
+          width: 200px;
+          display: block;
+          bottom: -30px;
+          line-height: 25pt;
+          text-align: center;
+        }
+
+        &:hover {
+          .simple-caption {
+            -moz-transform: translateY(-100%);
+            -o-transform: translateY(-100%);
+            -webkit-transform: translateY(-100%);
+            opacity: 1;
+            transform: translateY(-100%);
+          }
         }
       }
     }
   }
+
 }

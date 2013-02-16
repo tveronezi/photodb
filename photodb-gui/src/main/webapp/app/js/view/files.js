@@ -23,6 +23,8 @@
     define(deps, function (templates) {
 
         return Backbone.View.extend({
+            tagName: 'div',
+            className: 'photos',
             render: function () {
                 this.$el.empty();
                 var html = templates.getValue('files');

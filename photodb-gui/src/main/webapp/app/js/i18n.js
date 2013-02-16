@@ -29,10 +29,11 @@ define(['lib/handlebars', 'lib/underscore', 'app/js/log'], function (utils) {
         'photo.upload': 'Uploading file {{fileName}}',
         'photo.delete.tip': 'Files selected. Hit the "delete" key to remove them.',
         'my.photos': 'My Photos',
+        'drop.files.area': 'Drop your files here',
         'application.about': 'About'
     };
 
-    _.each(_.keys(messages), function(key) {
+    _.each(_.keys(messages), function (key) {
         var template = Handlebars.compile(messages[key]);
         messages[key] = template;
     });

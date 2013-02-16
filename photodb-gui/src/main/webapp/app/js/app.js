@@ -21,7 +21,7 @@ require.config(APP_CONFIG);
 (function () {
     'use strict';
 
-    var deps = ['app/js/views', 'app/js/models', 'lib/backbone'];
+    var deps = ['app/js/views', 'app/js/models', 'lib/less', 'lib/backbone'];
     requirejs(deps, function (views, models) {
             $(document).ready(function () {
                 var menuModel = models.newInstance('menu');
