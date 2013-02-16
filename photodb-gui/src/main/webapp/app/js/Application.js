@@ -24,7 +24,7 @@
 (function () {
     'use strict';
 
-    var deps = ['ApplicationController', 'lib/jquery'];
+    var deps = ['ApplicationController', 'lib/backbone'];
 
     define(deps, function (ApplicationController) {
         return {

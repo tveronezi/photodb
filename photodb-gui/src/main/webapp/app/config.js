@@ -32,13 +32,23 @@ var APP_CONFIG = {
         'lib/bootstrap': '../lib/bootstrap/2.1.1/js/bootstrap.min',
 
         // http://handlebarsjs.com/
-        'lib/handlebars': '../lib/handlebars/handlebars-1.0.rc.1'
+        'lib/handlebars': '../lib/handlebars/handlebars-1.0.rc.1',
+
+        'lib/json2': '../lib/json2/json2-2012-10-08',
+
+        'lib/underscore': '../lib/underscore/underscore-1-4-3',
+
+        'lib/backbone': '../lib/backbone/backbone_0-9-10'
     },
     shim: {
         // bootstrap depends on jquery, therefore we need to load jquery first
         // http://requirejs.org/docs/api.html#config-shim
         'lib/bootstrap': {
             deps: ['lib/jquery']
+        },
+
+        'lib/backbone': {
+            deps: ['lib/jquery', 'lib/json2', 'lib/underscore']
         }
     }
 };
