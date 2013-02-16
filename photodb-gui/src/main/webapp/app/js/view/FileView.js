@@ -39,49 +39,26 @@
             });
 
             channel.bind('ui-actions', 'container-rendered', function (data) {
-                data.container.append(svg);
-                data.container.on('dragover', function (e) {
+                var appContainer = data.container;
+                appContainer.on('dragover', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                 });
-                data.container.on('dragenter', function (e) {
+                appContainer.on('dragenter', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                 });
-                data.container.on('drop', function (e) {
+                appContainer.on('drop', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     channel.send('ui-actions', 'file-drop', {
                         evt: e.originalEvent
                     });
                 });
-            });
 
-            function fitContent() {
-                var height = Math.max(containerHeight, svgMinHeight);
-                var width = Math.max(containerWidth, svgMinWidth);
-                var eventData = {
-                    svgMinHeight: svgMinHeight,
-                    svgMinWidth: svgMinWidth,
-                    containerHeight: containerHeight,
-                    containerWidth: containerWidth
-                };
-                svg.attr('height', height + 'px')
-                    .attr('width', width + 'px');
-                if (containerWidth < svgMinWidth || containerHeight < svgMinHeight) {
-                    if (containerWidth < svgMinWidth && containerHeight < svgMinHeight) {
-                        channel.send('ui-actions', 'svg-bigger-than-container-xy', eventData);
-                    } else if (containerWidth < svgMinWidth) {
-                        channel.send('ui-actions', 'svg-bigger-than-container-x', eventData);
-                    } else if (containerHeight < svgMinHeight) {
-                        channel.send('ui-actions', 'svg-bigger-than-container-y', eventData);
-                    }
-                } else {
-                    if (containerWidth > svgMinWidth && containerHeight > svgMinHeight) {
-                        channel.send('ui-actions', 'svg-smaller-than-container', eventData);
-                    }
-                }
-            }
+                var contentContainer = $(appContainer.find('.contentarea')[0]);
+                contentContainer.append(svg);
+            });
 
             function createFileItems(data) {
                 svg.empty();
@@ -95,12 +72,6 @@
                     svg.append(img);
                 });
             }
-
-            channel.bind('ui-actions', 'container-resized', function (data) {
-                containerHeight = data.containerHeight;
-                containerWidth = data.containerWidth;
-                fitContent();
-            });
 
             channel.bind('file-manager', 'files-updated', function (data) {
                 createFileItems(data);

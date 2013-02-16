@@ -33,41 +33,6 @@
             }));
             var delayedContainerResize = delayedTask.newObject();
 
-            // You need to create a new scope for this method.
-            // The "this" object should have the "browserWindow" and the "channel" objects.
-            var UpdateContainerSize = function (browserWindow, channel) {
-                this.browserWindow = browserWindow;
-                this.channel = channel;
-                this.execute = function () {
-                    var containerHeight;
-                    var containerWidth;
-
-                    containerHeight = this.browserWindow.outerHeight();
-                    containerWidth = this.browserWindow.outerWidth();
-
-                    container.css('height', containerHeight + 'px');
-                    container.css('width', containerWidth + 'px');
-
-                    this.channel.send('ui-actions', 'container-resized', {
-                        containerHeight: containerHeight,
-                        containerWidth: containerWidth
-                    });
-                };
-            };
-
-            function cleanOverflow() {
-                container.removeClass('overflow-x-axe');
-                container.removeClass('overflow-y-axe');
-                container.removeClass('overflow-xy-axe');
-            }
-
-            browserWindow.on('resize', function () {
-                var callback = new UpdateContainerSize(browserWindow, channel);
-                delayedContainerResize.delay(function () {
-                    callback.execute();
-                }, 500);
-            });
-
             browserWindow.on('keyup', function (ev) {
                 var result = {
                     consumed: false
@@ -119,22 +84,6 @@
                 }
             });
 
-            channel.bind('ui-actions', 'svg-bigger-than-container-x', function () {
-                cleanOverflow();
-                container.addClass('overflow-x-axe');
-            });
-            channel.bind('ui-actions', 'svg-bigger-than-container-y', function () {
-                cleanOverflow();
-                container.addClass('overflow-y-axe');
-            });
-            channel.bind('ui-actions', 'svg-bigger-than-container-xy', function () {
-                cleanOverflow();
-                container.addClass('overflow-xy-axe');
-            });
-            channel.bind('ui-actions', 'svg-smaller-than-container', function () {
-                cleanOverflow();
-            });
-
             return {
                 getContainerId: function () {
                     return containerId;
@@ -142,11 +91,6 @@
                 render: function () {
                     var body = $('body');
                     body.append(container);
-
-                    var callback = new UpdateContainerSize(browserWindow, channel);
-                    delayedContainerResize.delay(function () {
-                        callback.execute();
-                    }, 500);
 
                     channel.send('ui-actions', 'container-rendered', {
                         containerId: containerId,

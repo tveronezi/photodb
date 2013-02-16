@@ -27,7 +27,9 @@ define(['util/Obj', 'lib/handlebars', 'util/Log'], function (utils) {
         'html.support.error': 'This browser does not fully support HTML5. Try again with another browser.',
         'drag.photos.hint': 'Drag photos to your browser.',
         'photo.upload': 'Uploading file {{fileName}}',
-        'photo.delete.tip': 'Files selected. Hit the "delete" key to remove them.'
+        'photo.delete.tip': 'Files selected. Hit the "delete" key to remove them.',
+        'my.photos': 'My Photos',
+        'application.about': 'About'
     };
 
     utils.forEachKey(messages, function (key, value) {
