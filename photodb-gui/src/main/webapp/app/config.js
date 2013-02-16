@@ -22,9 +22,6 @@ var APP_CONFIG = {
         // https://github.com/requirejs/text
         'text': '../lib/require/text',
 
-        // http://d3js.org/
-        'lib/d3': '../lib/d3/d3.v2.min',
-
         // http://lesscss.org/
         'lib/less': '../lib/less/less-1.3.0.min',
 

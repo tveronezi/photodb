@@ -39,12 +39,6 @@ class Photo extends BaseEntity {
     String contentType;
 
     @Column(nullable = false)
-    Integer x
-
-    @Column(nullable = false)
-    Integer y
-
-    @Column(nullable = false)
     Boolean publicData
 
     @ManyToOne(optional=false)

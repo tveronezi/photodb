@@ -34,8 +34,6 @@ public class DtoBuilderImpl {
         }
         final PhotoDto result = new PhotoDto();
         result.setUid(photo.getUid());
-        result.setX(photo.getX());
-        result.setY(photo.getY());
         result.setPath(photo.getPath());
         result.setMime(photo.getContentType());
         result.setName(photo.getFileName());

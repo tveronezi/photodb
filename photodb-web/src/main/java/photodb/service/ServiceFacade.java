@@ -27,7 +27,7 @@ import java.util.Set;
 public interface ServiceFacade {
     UserDto getUser();
 
-    Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y);
+    Long createPhoto(String path, String fileName, String contentType);
 
     Set<PhotoDto> getAllPhotoDtos();
 
@@ -35,5 +35,4 @@ public interface ServiceFacade {
 
     List<String> deletePhotos(List<Long> uids);
 
-    void updatePhotoPosition(Long uid, Integer x, Integer y);
 }

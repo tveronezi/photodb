@@ -149,7 +149,8 @@
                     }, 500);
 
                     channel.send('ui-actions', 'container-rendered', {
-                        containerId: containerId
+                        containerId: containerId,
+                        container: container
                     });
                 }
             };

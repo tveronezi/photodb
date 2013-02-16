@@ -41,13 +41,11 @@ public class PhotoImpl {
     @Resource
     private SessionContext ctx;
 
-    public Photo createPhoto(String path, String fileName, String contentType, Integer x, Integer y) {
+    public Photo createPhoto(String path, String fileName, String contentType) {
         final CreatePhoto create = new CreatePhoto();
         create.path = path;
         create.fileName = fileName;
         create.contentType = contentType;
-        create.x = x;
-        create.y = y;
 
         FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
         findUserByName.value = this.ctx.getCallerPrincipal().getName();
@@ -75,19 +73,6 @@ public class PhotoImpl {
             throw new ApplicationException("No access to photo.");
         }
         return photo;
-    }
-
-    public void updatePhotoPosition(Long uid, Integer x, Integer y) {
-        final Photo photo = this.getPhoto(uid);
-        if (photo == null) {
-            return;
-        }
-        final String userName = this.ctx.getCallerPrincipal().getName();
-        if (!photo.getUser().getName().equals(userName)) {
-            return;
-        }
-        photo.setX(x);
-        photo.setY(y);
     }
 
     public List<String> deletePhotos(List<Long> uids) {

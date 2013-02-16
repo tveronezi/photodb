@@ -29,8 +29,6 @@ public class CreatePhoto implements DbCommand<Photo> {
     public String path;
     public String fileName;
     public String contentType;
-    public Integer x;
-    public Integer y;
 
     @Override
     public Photo execute(BaseEAO eao) {
@@ -38,8 +36,6 @@ public class CreatePhoto implements DbCommand<Photo> {
         photo.setPath(this.path);
         photo.setFileName(this.fileName);
         photo.setContentType(this.contentType);
-        photo.setX(this.x);
-        photo.setY(this.y);
         photo.setUser(this.user);
         photo.setPublicData(Boolean.FALSE);
         photo = eao.create(photo);

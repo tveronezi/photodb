@@ -21,6 +21,8 @@
 
     var files = [
         'application',
+        'photos',
+        'photo-preview',
         'application-growl',
         'application-growl-message'
     ];

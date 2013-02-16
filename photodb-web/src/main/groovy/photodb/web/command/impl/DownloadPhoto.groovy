@@ -22,14 +22,12 @@ import photodb.data.dto.PhotoDto
 import photodb.service.ServiceFacade
 import photodb.web.command.Command
 
-import java.awt.AlphaComposite
-import java.awt.Graphics2D
-import java.awt.Image
-import java.awt.image.BufferedImage
-import java.util.prefs.Base64
 import javax.imageio.ImageIO
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
+import java.awt.*
+import java.awt.image.BufferedImage
+import java.util.prefs.Base64
 
 class DownloadPhoto implements Command {
     private static final int MAX_SIZE = 200
@@ -52,12 +50,12 @@ class DownloadPhoto implements Command {
     private BufferedImage getThumb(File file, Integer maxSize) {
         def calculateScale = {
             values ->
-            float scale = 1
-            if (values.a > maxSize) {
-                scale = maxSize / values.a
-                values.a = maxSize
-            }
-            values.b = Math.round(values.b * scale)
+                float scale = 1
+                if (values.a > maxSize) {
+                    scale = maxSize / values.a
+                    values.a = maxSize
+                }
+                values.b = Math.round(values.b * scale)
 
         }
 
@@ -85,7 +83,7 @@ class DownloadPhoto implements Command {
         Long uid = req.getParameter('uid') as Long
         Boolean original = req.getParameter('original') as Boolean
         PhotoDto dto = serviceFacade.getPhoto(uid)
-        File file = new File(req.getRealPath('/WEB-INF/images'), dto.path)
+        File file = new File(req.getServletContext().getRealPath('/WEB-INF/images'), dto.path)
 
         def result
         if (original) {
@@ -109,7 +107,9 @@ class DownloadPhoto implements Command {
 
             // We are going to return the string representation of the thumb
             result = [
-                    content: Base64.byteArrayToBase64(content)
+                    content: Base64.byteArrayToBase64(content),
+                    mime: dto.mime,
+                    name: dto.name
             ]
         }
 

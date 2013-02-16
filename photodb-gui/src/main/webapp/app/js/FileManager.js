@@ -34,19 +34,6 @@
             var photos = {};
             var triggerNewRemoteFile = delayedTask.newObject();
 
-            function triggerPhotoMaxPos() {
-                var topX = 0;
-                var topY = 0;
-                obj.forEachKey(photos, function (key, value) {
-                    topX = Math.max(value.x, topX);
-                    topY = Math.max(value.y, topY);
-                });
-                channel.send('file-manager', 'photo-max-position', {
-                    topX: topX + 200,
-                    topY: topY + 200
-                });
-            }
-
             channel.bind('ui-actions', 'delete-photos-trigger', function () {
                 var uids = [];
                 obj.forEachKey(photos, function (key, value) {
@@ -86,11 +73,11 @@
             channel.bind('server-command-callback-success', 'DownloadPhoto', function (data) {
                 var params = data.params;
                 photos[params.uid] = {
-                    x: Number(data.params.x),
-                    y: Number(data.params.y),
                     photoId: data.params.uid,
                     localId: sequence.next('file'),
-                    href: 'data:image/png;base64,' + data.output.content
+                    href: 'data:image/png;base64,' + data.output.content,
+                    mime: data.output.mime,
+                    name: data.output.name
                 };
 
                 triggerNewRemoteFile.delay(function () {
@@ -101,7 +88,6 @@
                     channel.send('file-manager', 'files-updated', {
                         photos: photosArray
                     });
-                    triggerPhotoMaxPos();
                 }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
 
             });
@@ -110,34 +96,10 @@
                 obj.forEach(data.output, function (value) {
                     var itemData = {
                         localId: sequence.next('file'),
-                        x: value.x,
-                        y: value.y,
                         photoId: value.uid
                     };
                     channel.send('file-manager', 'get-file-bin', itemData);
                 });
-            });
-
-            channel.bind('ui-actions', 'drag-photo', function (data) {
-                // data.photoId, data.nx, data.ny
-                var photoData = photos[data.photoId];
-                if (!photoData) {
-                    return;
-                }
-
-                photoData.x = data.nx;
-                photoData.y = data.ny;
-
-                var task = updatePos[data.photoId];
-                if (!task) {
-                    task = delayedTask.newObject();
-                    updatePos[data.photoId] = task;
-                }
-                task.delay(function () {
-                    channel.send('file-manager', 'update-photo-position', data);
-                    delete updatePos[data.photoId];
-                    triggerPhotoMaxPos();
-                }, DEFAULT_REQUEST_TIMEOUT); // Wait 1s before sending this request
             });
 
             channel.bind('ui-actions', 'file-selection', function (data) {
@@ -165,7 +127,7 @@
                 });
             });
 
-            function handleFileSelect(files, x, y) {
+            function handleFileSelect(files) {
                 obj.forEach(files, function (f) {
                     // Only process image files.
                     if (!f.type.match('image.*')) {
@@ -174,16 +136,12 @@
 
                     var reader = new window.FileReader();
                     reader.addEventListener('load', obj.bindScope({
-                        x: x,
-                        y: y,
                         f: f,
                         sequence: sequence,
                         channel: channel
                     }, function (e) {
                         this.channel.send('file-manager', 'new-local-file', {
                             evt: e,
-                            x: this.x,
-                            y: this.y,
                             file: this.f,
                             localId: this.sequence.next('file')
                         });
@@ -197,7 +155,7 @@
             channel.bind('ui-actions', 'file-drop', function (data) {
                 var evt = data.evt;
                 var files = evt.dataTransfer.files;
-                handleFileSelect(files, evt.clientX, evt.clientY);
+                handleFileSelect(files);
             });
         }
 

@@ -62,8 +62,8 @@ public class ServiceFacadeImpl implements ServiceFacade {
     }
 
     @Override
-    public Long createPhoto(String path, String fileName, String contentType, Integer x, Integer y) {
-        final Photo photo = this.photoService.createPhoto(path, fileName, contentType, x, y);
+    public Long createPhoto(String path, String fileName, String contentType) {
+        final Photo photo = this.photoService.createPhoto(path, fileName, contentType);
         return photo.getUid();
     }
 
@@ -87,10 +87,5 @@ public class ServiceFacadeImpl implements ServiceFacade {
     @Override
     public List<String> deletePhotos(List<Long> uids) {
         return this.photoService.deletePhotos(uids);
-    }
-
-    @Override
-    public void updatePhotoPosition(Long uid, Integer x, Integer y) {
-        this.photoService.updatePhotoPosition(uid, x, y);
     }
 }

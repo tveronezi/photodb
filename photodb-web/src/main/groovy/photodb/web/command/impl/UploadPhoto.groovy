@@ -45,9 +45,7 @@ class UploadPhoto implements Command {
         def photoId = serviceFacade.createPhoto(
                 path,
                 data.fileItem.fileName as String,
-                data.fileItem.contentType as String,
-                data.x as Integer,
-                data.y as Integer
+                data.fileItem.contentType as String
         )
         return [
                 photoId: photoId
