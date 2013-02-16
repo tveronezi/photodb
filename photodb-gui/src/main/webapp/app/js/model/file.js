@@ -19,38 +19,18 @@
 (function () {
     'use strict';
 
-    var deps = [
-        'menu',
-        'file'
-    ];
+    var deps = ['lib/backbone'];
+    define(deps, function () {
 
-    var paths = _.map(deps, function (dep) {
-        return 'app/js/model/' + dep;
-    });
-
-    define(paths, function () {
-        var myModels = {};
-
-        var myArgs = arguments;
-        _.each(deps, function (dep, index) {
-            myModels[dep] = myArgs[index];
+        return Backbone.Model.extend({
+            defaults: {
+                'src': '',
+                'name': '',
+                'size': 0,
+                'id': ''
+            }
         });
 
-        function getClass(key) {
-            var Cls = myModels[key];
-            if (!Cls) {
-                throw 'Model not found. "' + key + '"';
-            }
-            return Cls;
-        }
-
-        return {
-            newInstance: function (key, opts) {
-                var Cls = getClass(key);
-                return new Cls(opts);
-            },
-            getClass: getClass
-        };
     });
 }());
 

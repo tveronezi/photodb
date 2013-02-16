@@ -22,14 +22,65 @@
     var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
     define(deps, function (templates) {
 
+        var FileView = Backbone.View.extend({
+            tagName: 'div',
+            className: 'photo',
+            render: function () {
+                var self = this;
+
+                self.$el.empty();
+                var html = templates.getValue('file', {
+                    src: this.model.get('src'),
+                    name: this.model.get('name')
+                });
+                self.$el.html(html);
+
+                return self;
+            },
+            initialize: function () {
+                var self = this;
+                self.listenTo(this.model, 'destroy', function () {
+                    self.remove();
+                });
+            }
+        });
+
         return Backbone.View.extend({
             tagName: 'div',
             className: 'photos',
             render: function () {
-                this.$el.empty();
+                var self = this;
+
+                self.$el.empty();
                 var html = templates.getValue('files');
-                this.$el.html(html);
+                self.$el.html(html);
+
+                var dropZone = self.$('.drop-area')[0];
+                dropZone.addEventListener('dragover', function (evt) {
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    evt.dataTransfer.dropEffect = 'copy';
+                }, false);
+                dropZone.addEventListener('drop', function (evt) {
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    var files = evt.dataTransfer.files;
+                    self.trigger('file-drop', {
+                        files: files
+                    });
+                }, false);
+
                 return this;
+            },
+            showFile: function (fileModel) {
+                var fileView = new FileView({
+                    model: fileModel
+                }).render();
+                this.$('.photos-area').prepend(fileView.el);
+            },
+            initialize: function () {
+                var self = this;
+                self.listenTo(this.model, 'add', self.showFile);
             }
         });
 

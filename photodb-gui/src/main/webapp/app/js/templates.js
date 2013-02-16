@@ -23,8 +23,8 @@
         'container',
         'menu',
         'files',
+        'file',
         'about',
-        'photo-preview',
         'application-growl',
         'application-growl-message'
     ];
@@ -42,7 +42,7 @@
         var templates = {};
 
         var myArgs = arguments;
-        _.each(files, function(file, i) {
+        _.each(files, function (file, i) {
             templates[file] = Handlebars.compile(myArgs[i]);
         });
         return {

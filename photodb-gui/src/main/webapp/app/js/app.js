@@ -25,11 +25,19 @@ require.config(APP_CONFIG);
     requirejs(deps, function (views, models) {
             $(document).ready(function () {
                 var menuModel = models.newInstance('menu');
+                var filesList = (function () {
+                    var Cls = Backbone.Collection.extend({
+                        model: models.getClass('file')
+                    });
+                    return new Cls();
+                }());
 
                 var containerView = views.newInstance('container', {
                     menuModel: menuModel
                 });
-                var filesView = views.newInstance('files').render();
+                var filesView = views.newInstance('files', {
+                    model: filesList
+                }).render();
                 var aboutView = views.newInstance('about').render();
 
                 //Starting the backbone router.
@@ -59,9 +67,34 @@ require.config(APP_CONFIG);
                     }
                 });
                 var router = new Router();
+
+
                 containerView.on('navigate', function (data) {
                     router.navigate(data.href, {
                         trigger: true
+                    });
+                });
+
+                filesView.on('file-drop', function (data) {
+                    _.each(data.files, function (f) {
+                        // Only process image files.
+                        if (!f.type.match('image.*')) {
+                            return;
+                        }
+
+                        var myFile = {
+                            name: f.name,
+                            size: f.size
+                        };
+
+                        var reader = new window.FileReader();
+                        reader.addEventListener('load', function (evt) {
+                            myFile.src = evt.target.result;
+                            filesList.add(myFile);
+                        });
+
+                        // Read in the image file as a data URL.
+                        reader.readAsDataURL(f);
                     });
                 });
 
