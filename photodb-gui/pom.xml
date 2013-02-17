@@ -107,7 +107,7 @@
                     <failOnError>true</failOnError>
                     <options>
                         <vars>true</vars>
-                        <predef>define,window,d3,$,Handlebars</predef>
+                        <predef>define,window,Backbone,_,$,Handlebars</predef>
                         <indent>4</indent>
                     </options>
                     <sourceFolders>

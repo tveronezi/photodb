@@ -68,7 +68,6 @@ require.config(APP_CONFIG);
                 });
                 var router = new Router();
 
-
                 containerView.on('navigate', function (data) {
                     router.navigate(data.href, {
                         trigger: true

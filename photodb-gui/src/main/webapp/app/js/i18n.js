@@ -30,7 +30,9 @@ define(['lib/handlebars', 'lib/underscore', 'app/js/log'], function (utils) {
         'photo.delete.tip': 'Files selected. Hit the "delete" key to remove them.',
         'my.photos': 'My Photos',
         'drop.files.area': 'Drop your files here',
-        'application.about': 'About'
+        'application.about': 'About',
+        'close': 'Close',
+        'delete': 'Delete'
     };
 
     _.each(_.keys(messages), function (key) {

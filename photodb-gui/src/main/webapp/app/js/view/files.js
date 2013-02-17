@@ -22,16 +22,59 @@
     var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
     define(deps, function (templates) {
 
+        var FileDetailsView = Backbone.View.extend({
+            el: function () {
+                return $('<div class="modal" tabindex="-1" role="dialog"></div>');
+            },
+            events: {
+                'click .close-modal': function () {
+                    var self = this;
+                    self.$el.modal('hide');
+                }
+            },
+            render: function () {
+                var self = this;
+
+                self.$el.empty();
+                var html = templates.getValue('file-details', {
+                    src: self.model.get('src'),
+                    name: self.model.get('name')
+                });
+                self.$el.html(html);
+                self.$el.bind('hidden', function() {
+                    self.remove();
+                });
+
+                return self;
+            },
+            initialize: function () {
+                var self = this;
+                self.listenTo(this.model, 'destroy', function () {
+                    self.remove();
+                });
+            }
+        });
+
         var FileView = Backbone.View.extend({
             tagName: 'div',
             className: 'photo',
+
+            events: {
+                'click': function () {
+                    var self = this;
+                    self.trigger('photo-clicked', {
+                        model: self.model
+                    });
+                }
+            },
+
             render: function () {
                 var self = this;
 
                 self.$el.empty();
                 var html = templates.getValue('file', {
-                    src: this.model.get('src'),
-                    name: this.model.get('name')
+                    src: self.model.get('src'),
+                    name: self.model.get('name')
                 });
                 self.$el.html(html);
 
@@ -70,13 +113,27 @@
                     });
                 }, false);
 
+                self.model.forEach(function (fileModel) {
+                    self.showFile(fileModel);
+                });
+
                 return this;
             },
+            showDetails: function (data) {
+                var self = this;
+                var detailsView = new FileDetailsView({
+                    model: data.model
+                }).render();
+                self.$('.details-area').append(detailsView.el);
+                detailsView.$el.modal({});
+            },
             showFile: function (fileModel) {
+                var self = this;
                 var fileView = new FileView({
                     model: fileModel
                 }).render();
-                this.$('.photos-area').prepend(fileView.el);
+                self.listenTo(fileView, 'photo-clicked', self.showDetails);
+                self.$('.photos-area').prepend(fileView.el);
             },
             initialize: function () {
                 var self = this;

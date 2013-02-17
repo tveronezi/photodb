@@ -24,6 +24,7 @@
         'menu',
         'files',
         'file',
+        'file-details',
         'about',
         'application-growl',
         'application-growl-message'
