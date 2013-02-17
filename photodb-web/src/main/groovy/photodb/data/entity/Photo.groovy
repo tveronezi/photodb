@@ -18,22 +18,17 @@
 
 package photodb.data.entity
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = ['file_path']))
 class Photo extends BaseEntity {
-
-    @Column(name = 'file_path', nullable = false)
-    String path
 
     @Column(nullable = false)
     String fileName;
+
+    @Column(nullable = false)
+    @Lob
+    String content;
 
     @Column(nullable = false)
     String contentType;
@@ -41,8 +36,8 @@ class Photo extends BaseEntity {
     @Column(nullable = false)
     Boolean publicData
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="usr_id", nullable=false, updatable=false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "usr_id", nullable = false, updatable = false)
     User user
 
 }

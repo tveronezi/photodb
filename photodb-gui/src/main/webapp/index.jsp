@@ -27,10 +27,10 @@
     <script type="text/javascript">
         // Save the path to the application. Case the application is not the root context, we should now that.
         // The "c:url" is able to figure it out since forever.
-        var ROOT_URL = "<c:url value='/'/>";
+        var ROOT_URL = "<c:url value='/'/>".split(';')[0];
     </script>
     <script src="<c:url value='/app/config.js'/>"></script>
-    <script src="<c:url value='/app/js/app.js'/>"></script>
+    <script src="<c:url value='/app/js/start.js'/>"></script>
 </head>
 <body></body>
 </html>

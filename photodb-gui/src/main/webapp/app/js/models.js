@@ -21,7 +21,8 @@
 
     var deps = [
         'menu',
-        'file'
+        'file',
+        'files'
     ];
 
     var paths = _.map(deps, function (dep) {
@@ -48,8 +49,7 @@
             newInstance: function (key, opts) {
                 var Cls = getClass(key);
                 return new Cls(opts);
-            },
-            getClass: getClass
+            }
         };
     });
 }());

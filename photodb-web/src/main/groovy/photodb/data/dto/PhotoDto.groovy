@@ -18,9 +18,27 @@
 
 package photodb.data.dto
 
-class PhotoDto implements Serializable {
-    Long uid
+import javax.xml.bind.annotation.XmlAccessType
+import javax.xml.bind.annotation.XmlAccessorType
+import javax.xml.bind.annotation.XmlElement
+import javax.xml.bind.annotation.XmlRootElement
+
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement
+class PhotoDto {
+
+    @XmlElement
+    Long id
+
+    @XmlElement
     String name
-    String path
-    String mime
+
+    @XmlElement
+    String contentType
+
+    @XmlElement
+    String content
+
+    @XmlElement
+    Boolean publicData
 }

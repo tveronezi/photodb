@@ -18,14 +18,18 @@
 
 package photodb.service;
 
+import photodb.service.rest.Photos;
+
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-//@ApplicationPath("/rest")
+@ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         final Set<Class<?>> clsSet = new HashSet<Class<?>>();
+        clsSet.add(Photos.class);
         return clsSet;
     }
 }

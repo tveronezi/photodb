@@ -19,33 +19,37 @@
 package photodb.service.bean;
 
 import photodb.data.dto.PhotoDto;
-import photodb.data.dto.UserDto;
 import photodb.data.entity.Photo;
-import photodb.data.entity.User;
 
 import javax.ejb.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Singleton
 public class DtoBuilderImpl {
 
-    public PhotoDto buildPhoto(Photo photo) {
+    public PhotoDto build(Photo photo) {
         if (photo == null) {
             return null;
         }
         final PhotoDto result = new PhotoDto();
-        result.setUid(photo.getUid());
-        result.setPath(photo.getPath());
-        result.setMime(photo.getContentType());
+        result.setId(photo.getUid());
         result.setName(photo.getFileName());
+        result.setContent(photo.getContent());
+        result.setContentType(photo.getContentType());
+        result.setPublicData(photo.getPublicData());
         return result;
     }
 
-    public UserDto buildUser(User user) {
-        if (user == null) {
-            return null;
+    public List<PhotoDto> build(Collection<Photo> photos) {
+        List<PhotoDto> result = new ArrayList<PhotoDto>();
+        if (photos != null) {
+            for (Photo photo : photos) {
+                result.add(build(photo));
+            }
         }
-        final UserDto result = new UserDto();
-        result.setName(user.getName());
         return result;
     }
+
 }

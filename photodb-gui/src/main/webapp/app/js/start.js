@@ -16,29 +16,12 @@
  *  limitations under the License.
  */
 
-package photodb.data.execution.command;
+require.config(APP_CONFIG);
 
-import photodb.data.entity.User;
-import photodb.data.entity.Photo;
-import photodb.data.execution.BaseEAO;
-import photodb.data.execution.DbCommand;
+requirejs(['app/js/application'], function (app) {
+    $(document).ready(function () {
+        // all the action is in app
+        app.start();
+    });
+});
 
-public class CreatePhoto implements DbCommand<Photo> {
-
-    public User user;
-    public String path;
-    public String fileName;
-    public String contentType;
-
-    @Override
-    public Photo execute(BaseEAO eao) {
-        Photo photo = new Photo();
-        photo.setPath(this.path);
-        photo.setFileName(this.fileName);
-        photo.setContentType(this.contentType);
-        photo.setUser(this.user);
-        photo.setPublicData(Boolean.FALSE);
-        photo = eao.create(photo);
-        return photo;
-    }
-}

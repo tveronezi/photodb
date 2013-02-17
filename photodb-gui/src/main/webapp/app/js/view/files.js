@@ -43,7 +43,7 @@
 
                 self.$el.empty();
                 var html = templates.getValue('file-details', {
-                    src: self.model.get('src'),
+                    content: self.model.get('content'),
                     name: self.model.get('name')
                 });
                 self.$el.html(html);
@@ -79,7 +79,7 @@
 
                 self.$el.empty();
                 var html = templates.getValue('file', {
-                    src: self.model.get('src'),
+                    content: self.model.get('content'),
                     name: self.model.get('name')
                 });
                 self.$el.html(html);

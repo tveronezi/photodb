@@ -16,17 +16,18 @@
  *  limitations under the License.
  */
 
-package photodb.web.command.impl
+(function () {
+    'use strict';
 
-import photodb.service.ServiceFacade
-import photodb.web.command.Command
+    var deps = ['app/js/model/file', 'lib/backbone'];
+    define(deps, function (File) {
 
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
+        return Backbone.Collection.extend({
+            url: ROOT_URL + 'rest/photos',
+            model: File
+        });
 
-class GetUser implements Command {
-    @Override
-    def execute(ServiceFacade serviceFacade, ServletRequest req, ServletResponse resp) {
-        return serviceFacade.getUser()
-    }
-}
+    });
+}());
+
+

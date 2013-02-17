@@ -31,7 +31,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@Stateless
+@Stateless(name = "photodb-BaseEAOImpl")
 @Local(BaseEAO.class)
 public class BaseEAOImpl implements BaseEAO {
     @PersistenceContext(unitName = "photoPU")

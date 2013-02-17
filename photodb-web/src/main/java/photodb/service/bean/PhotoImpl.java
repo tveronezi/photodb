@@ -21,7 +21,6 @@ package photodb.service.bean;
 import photodb.data.entity.Photo;
 import photodb.data.entity.User;
 import photodb.data.execution.BaseEAO;
-import photodb.data.execution.command.CreatePhoto;
 import photodb.data.execution.command.FindByStringField;
 import photodb.data.execution.command.FindPhotoByUser;
 import photodb.service.ApplicationException;
@@ -30,7 +29,6 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -41,17 +39,34 @@ public class PhotoImpl {
     @Resource
     private SessionContext ctx;
 
-    public Photo createPhoto(String path, String fileName, String contentType) {
-        final CreatePhoto create = new CreatePhoto();
-        create.path = path;
-        create.fileName = fileName;
-        create.contentType = contentType;
+    private void setValues(Photo photo, String fileName, String content, String contentType, Boolean publicData) {
+        photo.setFileName(fileName);
+        photo.setContent(content);
+        photo.setContentType(contentType);
+        photo.setPublicData(publicData);
+    }
 
-        FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
-        findUserByName.value = this.ctx.getCallerPrincipal().getName();
-        create.user = this.baseEAO.execute(findUserByName);
+    public Photo savePhoto(Long id, String fileName, String content, String contentType, Boolean publicData) {
+        Photo photo;
+        if (id == null) {
+            photo = new Photo();
+            setValues(photo, fileName, content, contentType, publicData);
 
-        return this.baseEAO.execute(create);
+            // Set photo owner
+            final FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
+            findUserByName.value = this.ctx.getCallerPrincipal().getName();
+            final User user = this.baseEAO.execute(findUserByName);
+            photo.setUser(user);
+
+            // Create the photo object
+            photo = this.baseEAO.create(photo);
+        } else {
+            photo = this.baseEAO.find(Photo.class, id);
+
+            // Once this transaction is done, these values will be persisted
+            setValues(photo, fileName, content, contentType, publicData);
+        }
+        return photo;
     }
 
     public List<Photo> getPhotos() {
@@ -75,20 +90,15 @@ public class PhotoImpl {
         return photo;
     }
 
-    public List<String> deletePhotos(List<Long> uids) {
+    public void deletePhoto(Long uid) {
         final String userName = this.ctx.getCallerPrincipal().getName();
-        final List<String> paths = new ArrayList<String>();
-        for (Long uid : uids) {
-            final Photo photo = this.baseEAO.find(Photo.class, uid);
-            if (photo == null) {
-                continue;
-            }
-            if (!photo.getUser().getName().equals(userName)) {
-                continue;
-            }
-            paths.add(photo.getPath());
-            this.baseEAO.delete(photo);
+        final Photo photo = this.baseEAO.find(Photo.class, uid);
+        if (photo == null) {
+            return;
         }
-        return paths;
+        if (!photo.getUser().getName().equals(userName)) {
+            return;
+        }
+        this.baseEAO.delete(photo);
     }
 }

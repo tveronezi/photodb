@@ -20,7 +20,6 @@ package photodb.service.bean;
 
 import photodb.data.entity.User;
 import photodb.data.execution.BaseEAO;
-import photodb.data.execution.command.CreateUser;
 import photodb.data.execution.command.FindByStringField;
 
 import javax.annotation.Resource;
@@ -37,9 +36,9 @@ public class UserImpl {
     private SessionContext ctx;
 
     public User createUser(String name) {
-        final CreateUser createUser = new CreateUser();
-        createUser.name = name;
-        return this.baseEAO.execute(createUser);
+        final User user = new User();
+        user.setName(name);
+        return this.baseEAO.create(user);
     }
 
     public User getUser(String name) {

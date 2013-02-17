@@ -27,6 +27,10 @@
         <servlet-name>index</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    
+    <listener>
+        <listener-class>photodb.service.UserSessionListener</listener-class>
+    </listener>
 
     <!-- ... -->
     <security-constraint>

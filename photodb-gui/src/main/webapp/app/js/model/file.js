@@ -23,15 +23,20 @@
     define(deps, function () {
 
         return Backbone.Model.extend({
-            url: '#',
+            urlRoot: ROOT_URL + 'rest/photos',
+            idAttribute: 'id',
+            toJSON: function() {
+                return {
+                    'photoDto': this.attributes
+                };
+            },
             defaults: {
-                'src': '',
                 'name': '',
-                'size': 0,
-                'id': ''
+                'contentType': '',
+                'content': '',
+                'publicData': false
             }
         });
-
     });
 }());
 
