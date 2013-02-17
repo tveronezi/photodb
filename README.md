@@ -7,6 +7,7 @@ If you use a Unix-like OS with Makefile support, you can run the application by 
 
 1. Checkout this source code
 2. Go to the root of your application and run *make clean-start*
+3. Open <http://localhost:8080/photodb>
 
 
 ### Makefile targets ###
