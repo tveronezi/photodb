@@ -23,10 +23,21 @@
     define(deps, function (templates) {
 
         return Backbone.View.extend({
+            events: {
+                'click a': function (evt) {
+                    // TRICK: to avoid full page reload.
+                    evt.preventDefault();
+                    var href = $(evt.currentTarget).attr('href');
+                    window.open(href);
+                }
+            },
             render: function () {
-                this.$el.empty();
+                var self = this;
+                self.$el.empty();
+
                 var html = templates.getValue('about');
-                this.$el.html(html);
+                self.$el.html(html);
+
                 return this;
             }
         });
