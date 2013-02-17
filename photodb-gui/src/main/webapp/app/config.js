@@ -34,9 +34,9 @@ var APP_CONFIG = {
         // http://handlebarsjs.com/
         'lib/handlebars': 'app/lib/handlebars/handlebars-1.0.rc.1',
 
-        'lib/json2': 'app/lib/json2/json2-2012-10-08',
-
         'lib/underscore': 'app/lib/underscore/underscore-1-4-3',
+
+        'lib/json2': 'app/lib/json2/json2-2012-10-08',
 
         'lib/backbone': 'app/lib/backbone/backbone_0-9-10'
     },
@@ -47,8 +47,7 @@ var APP_CONFIG = {
             deps: ['lib/jquery']
         },
 
-        'underscore': {
-            deps: ['lib/underscore'],
+        'lib/underscore': {
             exports: '_'
         },
 

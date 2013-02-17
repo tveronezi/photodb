@@ -83,6 +83,7 @@
                 <configuration>
                     <preloadSources>
                         <source>http://localhost:8234/src/main/webapp/app/lib/require/require.js</source>
+                        <source>http://localhost:8234/src/test/resources/test_config.js</source>
                         <source>http://localhost:8234/src/main/webapp/app/config.js</source>
                         <source>http://localhost:8234/src/test/resources/start.js</source>
                     </preloadSources>

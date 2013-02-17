@@ -19,7 +19,7 @@
 (function () {
     'use strict';
 
-    var deps = ['app/js/views', 'app/js/models', 'underscore', 'lib/less', 'lib/backbone'];
+    var deps = ['app/js/views', 'app/js/models', 'lib/underscore', 'lib/less', 'lib/backbone'];
     define(deps, function (views, models, underscore) {
 
         function start() {

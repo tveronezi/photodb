@@ -16,18 +16,4 @@
  *  limitations under the License.
  */
 
-define(['util/Sequence'], function (sequence) {
-    describe('Sequence test', function () {
-        it('should get test the next function', function () {
-            expect(sequence.next(null)).toEqual('APP-0');
-            expect(sequence.next()).toEqual('APP-1');
-            expect(sequence.next('')).toEqual('APP-2');
-
-            expect(sequence.next('MY-PREFIX')).toEqual('MY-PREFIX-0');
-            expect(sequence.next('MY-PREFIX')).toEqual('MY-PREFIX-1');
-
-            expect(sequence.next('MY-OTHER-PREFIX')).toEqual('MY-OTHER-PREFIX-0');
-        });
-
-    });
-});
+var ROOT_URL = 'http://localhost:8234/';

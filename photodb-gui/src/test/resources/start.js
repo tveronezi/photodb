@@ -18,7 +18,7 @@
 
 // Set the paths needed for our tests
 APP_CONFIG.paths.test = '/src/test/javascript/test/';
-APP_CONFIG.baseUrl = '/src/main/webapp/app/js/';
+APP_CONFIG.baseUrl = '/src/main/webapp/';
 
 // APP_CONFIG is the same object used by the official application "start.js" file
 require.config(APP_CONFIG);
@@ -28,17 +28,8 @@ require.config(APP_CONFIG);
 
     // Don't forget to put a new entry here whenever you add a new test file.
     var tests = [
-        'test/I18N',
-        'test/DelayedTask',
-        'test/Obj',
-        'test/Sequence',
-        'test/ApplicationChannel',
-        'test/ApplicationController',
-        'test/ApplicationModel',
-        'test/ApplicationTemplates',
-        'test/FileManager',
-        'test/ApplicationView',
-        'test/FileView'
+        'lib/jquery',
+        'test/I18N'
     ];
 
     // Load all the test modules before starting.
