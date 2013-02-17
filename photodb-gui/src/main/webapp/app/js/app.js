@@ -74,6 +74,11 @@ require.config(APP_CONFIG);
                     });
                 });
 
+                filesView.on('delete-action', function(data) {
+                    filesList.remove(data.model);
+                    data.model.destroy();
+                });
+
                 filesView.on('file-drop', function (data) {
                     _.each(data.files, function (f) {
                         // Only process image files.

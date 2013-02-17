@@ -30,6 +30,12 @@
                 'click .close-modal': function () {
                     var self = this;
                     self.$el.modal('hide');
+                },
+                'click .delete-action': function () {
+                    var self = this;
+                    self.trigger('delete-action', {
+                        model: self.model
+                    });
                 }
             },
             render: function () {
@@ -41,7 +47,7 @@
                     name: self.model.get('name')
                 });
                 self.$el.html(html);
-                self.$el.bind('hidden', function() {
+                self.$el.bind('hidden', function () {
                     self.remove();
                 });
 
@@ -50,7 +56,7 @@
             initialize: function () {
                 var self = this;
                 self.listenTo(this.model, 'destroy', function () {
-                    self.remove();
+                    self.$el.modal('hide');
                 });
             }
         });
@@ -91,6 +97,7 @@
         return Backbone.View.extend({
             tagName: 'div',
             className: 'photos',
+
             render: function () {
                 var self = this;
 
@@ -124,6 +131,9 @@
                 var detailsView = new FileDetailsView({
                     model: data.model
                 }).render();
+                self.listenTo(detailsView, 'delete-action', function (data) {
+                    self.trigger('delete-action', data);
+                });
                 self.$('.details-area').append(detailsView.el);
                 detailsView.$el.modal({});
             },

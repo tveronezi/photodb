@@ -23,6 +23,7 @@
     define(deps, function () {
 
         return Backbone.Model.extend({
+            url: '#',
             defaults: {
                 'src': '',
                 'name': '',
