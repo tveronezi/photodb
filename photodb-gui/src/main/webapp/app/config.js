@@ -47,6 +47,11 @@ var APP_CONFIG = {
             deps: ['lib/jquery']
         },
 
+        'underscore': {
+            deps: ['lib/underscore'],
+            exports: '_'
+        },
+
         'lib/backbone': {
             deps: ['lib/jquery', 'lib/json2', 'lib/underscore']
         },

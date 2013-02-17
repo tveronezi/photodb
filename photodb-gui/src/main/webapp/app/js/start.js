@@ -19,7 +19,9 @@
 require.config(APP_CONFIG);
 
 requirejs(['app/js/application'], function (app) {
-    $(document).ready(function () {
+    'use strict';
+
+    $(window.document).ready(function () {
         // all the action is in app
         app.start();
     });

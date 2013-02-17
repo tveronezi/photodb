@@ -25,15 +25,26 @@
         'files'
     ];
 
-    var paths = _.map(deps, function (dep) {
-        return 'app/js/view/' + dep;
-    });
+    function loop(values, callback) {
+        var index;
+        for (index = 0; index < values.length; index += 1) {
+            callback(values[index], index);
+        }
+    }
+
+    var paths = (function () {
+        var result = [];
+        loop(deps, function (dep) {
+            result.push('app/js/view/' + dep);
+        });
+        return result;
+    }());
 
     define(paths, function () {
         var myViews = {};
 
         var myArgs = arguments;
-        _.each(deps, function (dep, index) {
+        loop(deps, function (dep, index) {
             myViews[dep] = myArgs[index];
         });
 

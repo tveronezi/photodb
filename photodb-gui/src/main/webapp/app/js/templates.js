@@ -28,33 +28,41 @@
         'about'
     ];
 
+    function loop(values, callback) {
+        var index;
+        for (index = 0; index < values.length; index += 1) {
+            callback(values[index], index);
+        }
+    }
+
     // Preparing the "requirements" paths.
     var requirements = [];
-    (function () {
-        var i;
-        for (i = 0; i < files.length; i += 1) {
-            requirements.push('text!app/js/templates/' + files[i] + '.handlebars');
-        }
-    }());
+    loop(files, function (file) {
+        requirements.push('text!app/js/templates/' + file + '.handlebars');
+    });
 
     define(requirements, function () {
         var templates = {};
 
         var myArgs = arguments;
-        _.each(files, function (file, i) {
+        loop(files, function (file, i) {
             templates[file] = Handlebars.compile(myArgs[i]);
         });
+
         return {
             getValue: function (templateName, cfg) {
                 var template = templates[templateName];
                 if (!template) {
                     throw 'Template not registered. "' + templateName + '"';
                 }
+
+                var result;
                 if (cfg) {
-                    return template(cfg);
+                    result = template(cfg);
                 } else {
-                    return template({});
+                    result = template({});
                 }
+                return result;
             }
         };
     });

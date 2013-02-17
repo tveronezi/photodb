@@ -25,7 +25,7 @@
         return Backbone.Model.extend({
             urlRoot: ROOT_URL + 'rest/photos',
             idAttribute: 'id',
-            toJSON: function() {
+            toJSON: function () {
                 return {
                     'photoDto': this.attributes
                 };

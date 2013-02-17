@@ -25,15 +25,26 @@
         'files'
     ];
 
-    var paths = _.map(deps, function (dep) {
-        return 'app/js/model/' + dep;
-    });
+    function loop(values, callback) {
+        var index;
+        for (index = 0; index < values.length; index += 1) {
+            callback(values[index], index);
+        }
+    }
+
+    var paths = (function () {
+        var result = [];
+        loop(deps, function (dep) {
+            result.push('app/js/model/' + dep);
+        });
+        return result;
+    }());
 
     define(paths, function () {
         var myModels = {};
 
         var myArgs = arguments;
-        _.each(deps, function (dep, index) {
+        loop(deps, function (dep, index) {
             myModels[dep] = myArgs[index];
         });
 

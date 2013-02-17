@@ -107,7 +107,7 @@
                     <failOnError>true</failOnError>
                     <options>
                         <vars>true</vars>
-                        <predef>define,window,Backbone,_,$,Handlebars</predef>
+                        <predef>define,require,requirejs,window,Backbone,_,$,Handlebars,ROOT_URL,APP_CONFIG</predef>
                         <indent>4</indent>
                     </options>
                     <sourceFolders>

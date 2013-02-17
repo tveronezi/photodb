@@ -19,15 +19,15 @@
 (function () {
     'use strict';
 
-    var deps = ['app/js/views', 'app/js/models', 'lib/less', 'lib/backbone'];
-    define(deps, function (views, models) {
+    var deps = ['app/js/views', 'app/js/models', 'underscore', 'lib/less', 'lib/backbone'];
+    define(deps, function (views, models, underscore) {
 
         function start() {
             var menuModel = models.newInstance('menu');
             var filesList = models.newInstance('files');
             filesList.fetch({
                 success: function (collection, response, options) {
-                    _.each(response.photoDto, function (dto) {
+                    underscore.each(response.photoDto, function (dto) {
                         filesList.add(dto);
                     });
                 }
@@ -92,7 +92,7 @@
             }
 
             filesView.on('file-drop', function (data) {
-                _.each(data.files, function (f) {
+                underscore.each(data.files, function (f) {
                     // Only process image files.
                     if (!f.type.match('image.*')) {
                         return;
