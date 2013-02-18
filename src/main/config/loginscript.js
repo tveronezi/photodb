@@ -15,14 +15,90 @@
  * limitations under the License.
  */
 
-var result = null;
+var request = 'http://localhost:8080/faceid/rest/authentication/';
+var urlParameters = 'account=' + user + '&password=' + password;
 
-if(user === 'michael' && password === 'bad') {
-    result = new java.util.ArrayList();[];
-    result.add('photo-admin');
-    result.add('photo-user');
-} else {
-    throw 'Bad user or password';
+function loop(values, callback) {
+    var i;
+    for (i = 0; i < values.length; i += 1) {
+        callback(values[i], i);
+    }
 }
 
-result;
+function getBytes(str) {
+    var bytes = [];
+    var i;
+    for (i = 0; i < str.length; i += 1) {
+        bytes.push(str.charCodeAt(i));
+    }
+    return bytes;
+}
+
+function authenticate() {
+    var data = getBytes(urlParameters);
+    var url = new java.net.URL(request);
+    var conn = url.openConnection();
+    conn.setDoOutput(true);
+    conn.setDoInput(true);
+    conn.setInstanceFollowRedirects(false);
+    conn.setRequestMethod('POST');
+    conn.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded');
+    conn.setRequestProperty('charset', 'utf-8');
+    conn.setRequestProperty('Content-Length', '' + data.length);
+    conn.setUseCaches(false);
+    conn.getOutputStream().write(data);
+
+    var reader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+    var lines = [];
+    var line;
+    var hasValues = false;
+    while ((line = reader.readLine()) !== null) {
+        hasValues = true;
+        lines.push(line.trim());
+    }
+    reader.close();
+    conn.disconnect();
+
+    if (hasValues) {
+        return lines.join('');
+    } else {
+        return null;
+    }
+}
+
+function getGroupsList(authenticationResult) {
+    if (!authenticationResult) {
+        throw 'Bad user or password. The groups list is null.';
+    }
+
+    var result = new java.util.ArrayList();
+    loop(authenticationResult.split(','), function (grp) {
+        result.add(grp);
+    });
+    return result;
+}
+
+function isRemoteLogin() {
+    // Use "-DappRemoteLogin=true" parameter
+    var appRemoteLogin = String(java.lang.System.getProperty('appRemoteLogin'));
+    return (appRemoteLogin.toLowerCase() === 'true');
+}
+
+function localAuthentication() {
+    println('Using local login script authentication. user: "' + user + '"; password: "' + password + '".');
+    if (user === 'michael' && password === 'test') {
+        return 'photo-admin,photo-user';
+    } else {
+        throw 'Bad user or password. Test.';
+    }
+}
+
+var auth;
+if (isRemoteLogin()) {
+    auth = authenticate();
+} else {
+    auth = localAuthentication();
+}
+
+// Returning the groups
+getGroupsList(auth);

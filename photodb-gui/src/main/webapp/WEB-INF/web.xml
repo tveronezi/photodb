@@ -57,7 +57,6 @@
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>photo-admin</role-name>
             <role-name>photo-user</role-name>
         </auth-constraint>
         <user-data-constraint>
@@ -69,9 +68,6 @@
         <auth-method>BASIC</auth-method>
     </login-config>
     <!-- ... -->
-    <security-role>
-        <role-name>photo-admin</role-name>
-    </security-role>
     <security-role>
         <role-name>photo-user</role-name>
     </security-role>
