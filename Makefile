@@ -13,18 +13,19 @@
 #
 
 HOME_DIR=$(shell cd && pwd)
+TOMEE_DIR=$(HOME_DIR)/TOMEE
 PROJECT_NAME=photodb
 
 up-static:
-	rm -rf $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/app
-	cp -r $(PROJECT_NAME)-gui/src/main/webapp/app $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/
-	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.jsp $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/index.jsp
+	rm -rf $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/app
+	cp -r $(PROJECT_NAME)-gui/src/main/webapp/app $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/
+	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.jsp $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/index.jsp
 
 up-war: kill-tomee clean-install
-	cp -r ./src/main/config/loginscript.js $(HOME_DIR)/tomee-runtime/conf
-	rm -f $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME).war
-	rm -Rf $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)
-	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war $(HOME_DIR)/tomee-runtime/webapps/
+	cp -r ./src/main/config/loginscript.js $(TOMEE_DIR)/tomee-runtime/conf
+	rm -f $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME).war
+	rm -Rf $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)
+	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war $(TOMEE_DIR)/tomee-runtime/webapps/
 
 up-war-restart: up-war restart-tomee
 
@@ -35,12 +36,13 @@ clean-install: kill-tomee
 
 unzip-tomee: kill-tomee
 	cd ./$(PROJECT_NAME)-gui/target/ && \
-	rm -f tomee-runtime && \
+	rm -Rf tomee-runtime && \
 	tar -xzf tomee-runtime.tar.gz && \
 	mv apache-tomee-plus-1.5.2-SNAPSHOT tomee-runtime
 	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps
-	rm -Rf $(HOME_DIR)/tomee-runtime
-	mv ./$(PROJECT_NAME)-gui/target/tomee-runtime $(HOME_DIR)
+	mkdir -p $(TOMEE_DIR)
+	rm -Rf $(TOMEE_DIR)/tomee-runtime
+	mv ./$(PROJECT_NAME)-gui/target/tomee-runtime $(TOMEE_DIR)/
 
 kill-tomee:
 	@if test -f $(HOME_DIR)/tomee-pid.txt; then \
@@ -51,13 +53,13 @@ kill-tomee:
 start-tomee: unzip-tomee restart-tomee
 
 tail:
-	tail -f $(HOME_DIR)/tomee-runtime/logs/catalina.out
+	tail -f $(TOMEE_DIR)/tomee-runtime/logs/catalina.out
 
 restart-tomee: kill-tomee
 	export JPDA_SUSPEND=n && \
 	export CATALINA_PID=$(HOME_DIR)/tomee-pid.txt && \
 	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/src/main/config/login.config -DappRemoteLogin=true" && \
-	cd $(HOME_DIR)/tomee-runtime/ && \
+	cd $(TOMEE_DIR)/tomee-runtime/ && \
 	./bin/catalina.sh jpda start
 
 run-jasmine:
