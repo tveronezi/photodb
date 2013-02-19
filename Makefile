@@ -18,16 +18,17 @@ PROJECT_NAME=photodb
 up-static:
 	rm -rf $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/app
 	cp -r $(PROJECT_NAME)-gui/src/main/webapp/app $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/
-	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.html $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/index.html
+	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.jsp $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/index.jsp
 
 up-war: kill-tomee clean-install
+	cp -r ./src/main/config/loginscript.js $(HOME_DIR)/tomee-runtime/conf
 	rm -f $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME).war
 	rm -Rf $(HOME_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)
 	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war $(HOME_DIR)/tomee-runtime/webapps/
 
 up-war-restart: up-war restart-tomee
 
-clean-start: clean-install start-tomee
+clean-start: start-tomee up-war
 
 clean-install: kill-tomee
 	mvn clean install -DskipTests=true
@@ -53,7 +54,6 @@ tail:
 	tail -f $(HOME_DIR)/tomee-runtime/logs/catalina.out
 
 restart-tomee: kill-tomee
-	cp -r ./src/main/config/loginscript.js $(HOME_DIR)/tomee-runtime/conf
 	export JPDA_SUSPEND=n && \
 	export CATALINA_PID=$(HOME_DIR)/tomee-pid.txt && \
 	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/src/main/config/login.config -DappRemoteLogin=true" && \

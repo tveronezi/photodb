@@ -64,7 +64,9 @@
                     return this;
                 }
 
-                var html = templates.getValue('container');
+                var html = templates.getValue('container', {
+                    userName: USER_NAME
+                });
                 this.$el.html(html);
 
                 var menuContainer = this.$('.ux-menu');

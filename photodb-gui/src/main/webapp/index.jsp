@@ -27,7 +27,9 @@
     <script type="text/javascript">
         // Save the path to the application. Case the application is not the root context, we should now that.
         // The "c:url" is able to figure it out since forever.
-        var ROOT_URL = "<c:url value='/'/>".split(';')[0];
+        var USER_NAME = "<%=request.getUserPrincipal().getName()%>";
+        var SESSION_ID = "<%=request.getSession().getId()%>";
+        var ROOT_URL = "<c:url value='/'/>".replace(';jsessionid=' + SESSION_ID, '');
     </script>
     <script src="<c:url value='/app/config.js'/>"></script>
     <script src="<c:url value='/app/js/start.js'/>"></script>
