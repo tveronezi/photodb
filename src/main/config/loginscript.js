@@ -80,7 +80,7 @@ function getGroupsList(authenticationResult) {
 
 function isRemoteLogin() {
     // Use "-DappRemoteLogin=true" parameter
-    var appRemoteLogin = String(java.lang.System.getProperty('appRemoteLogin'));
+    var appRemoteLogin = String(java.lang.System.getProperty('appRemoteLogin', 'false'));
     return (appRemoteLogin.toLowerCase() === 'true');
 }
 
