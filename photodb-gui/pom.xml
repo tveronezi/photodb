@@ -40,35 +40,6 @@
         <finalName>photodb</finalName>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.openejb</groupId>
-                                    <artifactId>apache-tomee</artifactId>
-                                    <version>1.5.2-SNAPSHOT</version>
-                                    <classifier>plus</classifier>
-                                    <type>tar.gz</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.basedir}/target/</outputDirectory>
-                                    <destFileName>tomee-runtime.tar.gz</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                            <!-- other configurations here -->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>com.github.searls</groupId>
                 <artifactId>jasmine-maven-plugin</artifactId>
                 <version>1.2.0.0</version>

@@ -23,10 +23,12 @@
     <name>photodb</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tomee.version>1.5.2-SNAPSHOT</tomee.version>
     </properties>
     <modules>
         <module>photodb-gui</module>
         <module>photodb-web</module>
+        <module>photodb-resources</module>
     </modules>
     <repositories>
         <repository>

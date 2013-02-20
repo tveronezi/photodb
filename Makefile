@@ -34,15 +34,15 @@ clean-start: start-tomee up-war
 clean-install: kill-tomee
 	mvn clean install -DskipTests=true
 
-unzip-tomee: kill-tomee
-	cd ./$(PROJECT_NAME)-gui/target/ && \
+unzip-tomee: kill-tomee clean-install
+	cd ./$(PROJECT_NAME)-resources/target && \
 	rm -Rf tomee-runtime && \
 	tar -xzf tomee-runtime.tar.gz && \
 	mv apache-tomee-plus-1.5.2-SNAPSHOT tomee-runtime
-	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war ./$(PROJECT_NAME)-gui/target/tomee-runtime/webapps
 	mkdir -p $(TOMEE_DIR)
 	rm -Rf $(TOMEE_DIR)/tomee-runtime
-	mv ./$(PROJECT_NAME)-gui/target/tomee-runtime $(TOMEE_DIR)/
+	mv ./$(PROJECT_NAME)-resources/target/tomee-runtime $(TOMEE_DIR)/
+	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war $(TOMEE_DIR)/tomee-runtime/webapps
 
 kill-tomee:
 	@if test -f $(HOME_DIR)/tomee-pid.txt; then \
