@@ -114,6 +114,10 @@
                 });
             });
 
+            filesView.on('show-photo-details', function (data) {
+                data.model.fetch({});
+            });
+
             //Starting the backbone history.
             Backbone.history.start({
                 pushState: true,

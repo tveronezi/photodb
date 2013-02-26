@@ -18,12 +18,13 @@
 
 package photodb.service.rest;
 
+import photodb.cdi.util.DtoBuilder;
 import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
-import photodb.service.bean.DtoBuilderImpl;
 import photodb.service.bean.PhotoImpl;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.List;
 
@@ -33,8 +34,8 @@ public class Photos {
     @EJB
     private PhotoImpl photoService;
 
-    @EJB
-    private DtoBuilderImpl dtoBuilder;
+    @Inject
+    private DtoBuilder dtoBuilder;
 
     @GET
     @Path("/{id}")

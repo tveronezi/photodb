@@ -87,7 +87,7 @@ function isRemoteLogin() {
 function localAuthentication() {
     println('Using local login script authentication. user: "' + user + '"; password: "' + password + '".');
     if (user === 'michael' && password === 'test') {
-        return 'photo-admin,photo-user';
+        return 'photo-user';
     } else {
         throw 'Bad user or password. Test.';
     }

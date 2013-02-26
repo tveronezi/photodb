@@ -58,6 +58,9 @@
                 self.listenTo(this.model, 'destroy', function () {
                     self.$el.modal('hide');
                 });
+                self.listenTo(this.model, 'change', function() {
+                    self.render();
+                });
             }
         });
 
@@ -142,7 +145,10 @@
                 var fileView = new FileView({
                     model: fileModel
                 }).render();
-                self.listenTo(fileView, 'photo-clicked', self.showDetails);
+                self.listenTo(fileView, 'photo-clicked', function(data) {
+                    self.trigger('show-photo-details', data);
+                    self.showDetails(data);
+                });
                 self.$('.photos-area').prepend(fileView.el);
             },
             initialize: function () {

@@ -26,9 +26,7 @@ import photodb.data.execution.command.FindPhotoByUser;
 import photodb.service.ApplicationException;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import java.util.List;
 
 @Stateless
@@ -39,6 +37,7 @@ public class PhotoImpl {
     @Resource
     private SessionContext ctx;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void setValues(Photo photo, String fileName, String content, String contentType, Boolean publicData) {
         photo.setFileName(fileName);
         photo.setContent(content);
@@ -46,6 +45,7 @@ public class PhotoImpl {
         photo.setPublicData(publicData);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Photo savePhoto(Long id, String fileName, String content, String contentType, Boolean publicData) {
         Photo photo;
         if (id == null) {
@@ -69,6 +69,7 @@ public class PhotoImpl {
         return photo;
     }
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Photo> getPhotos() {
         FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
         findUserByName.value = this.ctx.getCallerPrincipal().getName();
@@ -78,6 +79,7 @@ public class PhotoImpl {
         return this.baseEAO.execute(find);
     }
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Photo getPhoto(Long uid) {
         // TODO No security yet. Just get the photo if that's yours.
         final Photo photo = this.baseEAO.find(Photo.class, uid);
@@ -90,6 +92,7 @@ public class PhotoImpl {
         return photo;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deletePhoto(Long uid) {
         final String userName = this.ctx.getCallerPrincipal().getName();
         final Photo photo = this.baseEAO.find(Photo.class, uid);

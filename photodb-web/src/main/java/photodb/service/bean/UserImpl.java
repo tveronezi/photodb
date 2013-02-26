@@ -23,11 +23,10 @@ import photodb.data.execution.BaseEAO;
 import photodb.data.execution.command.FindByStringField;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UserImpl {
     @EJB
     private BaseEAO baseEAO;
@@ -35,6 +34,7 @@ public class UserImpl {
     @Resource
     private SessionContext ctx;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public User createUser(String name) {
         final User user = new User();
         user.setName(name);
@@ -47,10 +47,13 @@ public class UserImpl {
         return this.baseEAO.execute(find);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public User getUser() {
         final String userName = this.ctx.getCallerPrincipal().getName();
         User user = getUser(userName);
         if (user == null) {
+            // createUser is a local method. Therefore, the server wont inject the transaction if we call it from here.
+            // That's why this getUser() method should have the REQUIRED annotation.
             user = createUser(userName);
         }
         return user;
