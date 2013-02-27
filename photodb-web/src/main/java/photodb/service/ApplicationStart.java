@@ -18,17 +18,27 @@
 
 package photodb.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 @Singleton
 @Startup
 public class ApplicationStart {
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationStart.class);
 
     @PostConstruct
-    public void applicationStartup() {
-        // placeholder
+    public void start() {
+        LOG.info("The application is starting up...");
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        LOG.info("The application is shutting down...");
     }
 
 }

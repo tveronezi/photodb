@@ -29,6 +29,7 @@ import javax.ws.rs.*;
 import java.util.List;
 
 @Path("/photos")
+@Produces("application/json")
 public class Photos {
 
     @EJB
@@ -39,7 +40,6 @@ public class Photos {
 
     @GET
     @Path("/{id}")
-    @Produces("application/json")
     public PhotoDto get(@PathParam("id") Long id) {
         final Photo photo = photoService.getPhoto(id);
         return dtoBuilder.build(photo);
@@ -47,21 +47,18 @@ public class Photos {
 
     @DELETE
     @Path("/{id}")
-    @Produces("application/json")
     public Boolean delete(@PathParam("id") Long id) {
         photoService.deletePhoto(id);
         return Boolean.TRUE;
     }
 
     @PUT
-    @Produces("application/json")
     @Consumes("application/json")
     public PhotoDto put(PhotoDto dto) {
         return save(dto);
     }
 
     @POST
-    @Produces("application/json")
     @Consumes("application/json")
     public PhotoDto post(PhotoDto dto) {
         return save(dto);
@@ -80,7 +77,6 @@ public class Photos {
 
 
     @GET
-    @Produces("application/json")
     public List<PhotoDto> list() {
         final List<Photo> photos = photoService.getPhotos();
         return dtoBuilder.build(photos);
