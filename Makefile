@@ -22,7 +22,7 @@ up-static:
 	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.jsp $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/index.jsp
 
 up-war: kill-tomee clean-install
-	cp -r ./src/main/config/loginscript.js $(TOMEE_DIR)/tomee-runtime/conf
+	cp -r ./src/main/config/localLoginScript.js $(TOMEE_DIR)/tomee-runtime/conf
 	rm -f $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME).war
 	rm -Rf $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)
 	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war $(TOMEE_DIR)/tomee-runtime/webapps/
@@ -50,6 +50,10 @@ kill-tomee:
 		rm $(HOME_DIR)/tomee-pid.txt; \
 	fi
 
+shutdown-tomee:
+	cd $(TOMEE_DIR)/tomee-runtime/ && \
+	./bin/shutdown.sh
+
 start-tomee: unzip-tomee restart-tomee
 
 tail:
@@ -58,7 +62,7 @@ tail:
 restart-tomee: kill-tomee
 	export JPDA_SUSPEND=n && \
 	export CATALINA_PID=$(HOME_DIR)/tomee-pid.txt && \
-	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/src/main/config/login.config -DappRemoteLogin=true" && \
+	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/src/main/config/login.config" && \
 	cd $(TOMEE_DIR)/tomee-runtime/ && \
 	./bin/catalina.sh jpda start
 
@@ -68,6 +72,6 @@ run-jasmine:
 run-lint:
 	cd ./$(PROJECT_NAME)-gui/ && mvn jslint4java:lint
 
-.PHONY: up-war up-war-restart up-static clean-start clean-install unzip-tomee kill-tomee start-tomee restart-tomee \
-		run-jasmine run-lint tail
+.PHONY: up-war up-war-restart up-static clean-start clean-install unzip-tomee shutdown-tomee kill-tomee start-tomee \
+		restart-tomee run-jasmine run-lint tail
 

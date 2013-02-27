@@ -21,7 +21,7 @@ package photodb.data.entity
 import javax.persistence.*
 
 @Entity
-@Table(name = 'user_tbl', uniqueConstraints = @UniqueConstraint(columnNames = ['usr_name']))
+@Table(name = 'photodb_user_tbl', uniqueConstraints = @UniqueConstraint(columnNames = ['usr_name']))
 class User extends BaseEntity {
 
     @Column(name = 'usr_name', nullable = false)

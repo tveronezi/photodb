@@ -21,6 +21,7 @@ package photodb.data.entity
 import javax.persistence.*
 
 @Entity
+@Table(name = 'photodb_photo_tbl')
 class Photo extends BaseEntity {
 
     @Column(nullable = false)
