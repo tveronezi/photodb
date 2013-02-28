@@ -34,25 +34,24 @@ class DtoBuilder {
         if (photo == null) {
             return null
         }
-        final PhotoDto result = new PhotoDto()
-        result.setId(photo.getUid())
-        result.setName(photo.getFileName())
-        result.setContent(photo.getContent())
-        result.setContentType(photo.getContentType())
-        result.setPublicData(photo.getPublicData())
-        return result
+        return new PhotoDto(
+                id: photo.uid,
+                name: photo.fileName,
+                content: photo.content,
+                contentType: photo.contentType,
+                publicData: photo.publicData
+        )
     }
 
     List<PhotoDto> build(Collection<Photo> photos) {
         List<PhotoDto> result = new ArrayList<PhotoDto>()
-        if (photos != null) {
-            for (Photo photo : photos) {
-                final PhotoDto dto = build((photo))
-                final String thumb = imageManager.getThumb(dto.getContent())
-                dto.setContent(thumb)
-                result.add(dto)
-            }
+
+        photos?.each {
+            PhotoDto dto = build(it)
+            dto.content = imageManager.getThumb(dto.content)
+            result.add(dto)
         }
+
         return result
     }
 }
