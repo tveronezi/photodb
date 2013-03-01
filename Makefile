@@ -15,6 +15,7 @@
 HOME_DIR=$(shell cd && pwd)
 TOMEE_DIR=$(HOME_DIR)/TOMEE
 PROJECT_NAME=photodb
+TOMEE_ORIGINAL_DIR_NAME=apache-tomee-plus-1.6.0-SNAPSHOT
 
 up-static:
 	rm -rf $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/app
@@ -38,7 +39,7 @@ unzip-tomee: kill-tomee clean-install
 	cd ./$(PROJECT_NAME)-resources/target && \
 	rm -Rf tomee-runtime && \
 	tar -xzf tomee-runtime.tar.gz && \
-	mv apache-tomee-plus-1.5.2-SNAPSHOT tomee-runtime
+	mv $(TOMEE_ORIGINAL_DIR_NAME) tomee-runtime
 	mkdir -p $(TOMEE_DIR)
 	rm -Rf $(TOMEE_DIR)/tomee-runtime
 	mv ./$(PROJECT_NAME)-resources/target/tomee-runtime $(TOMEE_DIR)/
