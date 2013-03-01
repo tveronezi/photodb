@@ -76,21 +76,21 @@ class ImageManager {
 
     private BufferedImage getFromBase64(String base64) {
         byte[] decoded = Base64.decodeBase64(base64.replaceAll('^data:.*;base64,', ''))
-        InputStream input = new ByteArrayInputStream(decoded);
+        InputStream input = new ByteArrayInputStream(decoded)
         return ImageIO.read(input)
     }
 
 
 
-    public String getThumb(String originalBase64) {
+    String getThumb(String originalBase64) {
         BufferedImage original = getFromBase64(originalBase64)
         BufferedImage resized = getResizedImage(original, MAX_SIZE)
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(resized, 'png', baos);
-        baos.flush();
-        byte[] imageInByte = baos.toByteArray();
-        baos.close();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream()
+        ImageIO.write(resized, 'png', baos)
+        baos.flush()
+        byte[] imageInByte = baos.toByteArray()
+        baos.close()
 
         String encoded = Base64.encodeBase64String(imageInByte)
         return 'data:image/png;base64,' + encoded
