@@ -25,11 +25,6 @@ limitations under the License.
     <link href="<c:url value='/app/app.less'/>" rel="stylesheet/less" type="text/css" >
     <script src="<c:url value='/app/lib/require/require.js'/>"></script>
     <script type="text/javascript">
-        if(window.document.URL.charAt(window.document.URL.length - 1) !== '/') {
-            window.location = window.document.URL + '/';
-        }
-    </script>
-    <script type="text/javascript">
         // Save the path to the application. Case the application is not the root context, we should now that.
         // The "c:url" is able to figure it out since forever.
         window.ux = window.ux || {};

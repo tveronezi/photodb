@@ -16,6 +16,10 @@
  *  limitations under the License.
  */
 
+if(window.document.location.href + '/' === window.document.location.origin + window.ux.ROOT_URL) {
+    window.location = window.document.location.href + '/';
+}
+
 (function () {
     'use strict';
 
