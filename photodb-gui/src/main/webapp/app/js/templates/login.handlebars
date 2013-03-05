@@ -8,14 +8,14 @@
             {{#if error}}
             <div class="alert">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Bad user/password.</strong> Please, try again.
+                <strong>{{i18n "bad.user.password"}}</strong> {{i18n "please.try.again"}}
             </div>
             {{/if}}
             <form method="POST" action="j_security_check" class="form-signin">
-                <h2 class="form-signin-heading">Please sign in</h2>
-                <input name="j_username" type="text" class="input-block-level" placeholder="Email address">
-                <input name="j_password" type="password" class="input-block-level" placeholder="Password">
-                <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+                <h2 class="form-signin-heading">{{i18n "please.sign.in"}}</h2>
+                <input name="j_username" type="text" class="input-block-level" placeholder='{{i18n "email.address"}}'>
+                <input name="j_password" type="password" class="input-block-level" placeholder='{{i18n "password"}}'>
+                <button class="btn btn-large btn-primary" type="submit">{{i18n "sign.in"}}</button>
             </form>
         </div>
     </div>

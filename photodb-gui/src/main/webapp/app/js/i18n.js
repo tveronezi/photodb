@@ -32,7 +32,13 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'drop.files.area': 'Drop your files here',
         'application.about': 'About',
         'close': 'Close',
-        'delete': 'Delete'
+        'delete': 'Delete',
+        'bad.user.password': 'Bad user/password.',
+        'please.try.again': 'Please, try again.',
+        'please.sign.in': 'Please sign in',
+        'email.address': 'Email address',
+        'password': 'Password',
+        'sign.in': 'Sign in'
     };
 
     underscore.each(underscore.keys(messages), function (key) {
