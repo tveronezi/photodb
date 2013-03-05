@@ -22,7 +22,8 @@
     var deps = [
         'container',
         'about',
-        'files'
+        'files',
+        'login'
     ];
 
     function loop(values, callback) {

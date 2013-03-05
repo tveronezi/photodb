@@ -46,7 +46,12 @@
                 routes: {
                     '': 'showFiles',
                     'files': 'showFiles',
-                    'about': 'showAbout'
+                    'about': 'showAbout',
+                    'login': 'showLogin'
+                },
+
+                showLogin: function(opts) {
+                    views.newInstance('login', opts).render();
                 },
 
                 showFiles: function () {
@@ -121,8 +126,14 @@
             //Starting the backbone history.
             Backbone.history.start({
                 pushState: true,
-                root: ROOT_URL // This value is set by <c:url>
+                root: window.ux.ROOT_URL // This value is set by <c:url>
             });
+
+            return {
+                getRouter: function() {
+                    return router;
+                }
+            };
         }
 
         return {

@@ -19,24 +19,24 @@
 (function () {
     'use strict';
 
-    var deps = ['lib/backbone'];
-    define(deps, function () {
+    var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
+    define(deps, function (templates) {
 
-        return Backbone.Model.extend({
-            urlRoot: window.ux.ROOT_URL + 'rest/photos',
-            idAttribute: 'id',
-            toJSON: function () {
-                return {
-                    'photoDto': this.attributes
-                };
-            },
-            defaults: {
-                'name': '',
-                'contentType': '',
-                'content': '',
-                'publicData': false
+        return Backbone.View.extend({
+            el: 'body',
+            render: function () {
+                var self = this;
+                self.$el.empty();
+
+                var html = templates.getValue('login', {
+                    error: this.options.error
+                });
+                self.$el.html(html);
+
+                return this;
             }
         });
+
     });
 }());
 

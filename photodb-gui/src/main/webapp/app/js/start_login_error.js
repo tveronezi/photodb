@@ -16,28 +16,17 @@
  *  limitations under the License.
  */
 
-(function () {
+require.config(APP_CONFIG);
+
+requirejs(['app/js/application'], function (application) {
     'use strict';
 
-    var deps = ['lib/backbone'];
-    define(deps, function () {
-
-        return Backbone.Model.extend({
-            urlRoot: window.ux.ROOT_URL + 'rest/photos',
-            idAttribute: 'id',
-            toJSON: function () {
-                return {
-                    'photoDto': this.attributes
-                };
-            },
-            defaults: {
-                'name': '',
-                'contentType': '',
-                'content': '',
-                'publicData': false
-            }
+    $(window.document).ready(function () {
+        // all the action is in app
+        var app = application.start();
+        app.getRouter().showLogin({
+            error: true
         });
     });
-}());
-
+});
 

@@ -65,7 +65,7 @@
                 }
 
                 var html = templates.getValue('container', {
-                    userName: USER_NAME
+                    userName: window.ux.USER_NAME
                 });
                 this.$el.html(html);
 

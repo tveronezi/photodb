@@ -25,7 +25,8 @@
         'files',
         'file',
         'file-details',
-        'about'
+        'about',
+        'login'
     ];
 
     function loop(values, callback) {

@@ -17,7 +17,7 @@
  */
 
 var APP_CONFIG = {
-    baseUrl: ROOT_URL,
+    baseUrl: window.ux.ROOT_URL,
     paths: {
         // https://github.com/requirejs/text
         'text': 'app/lib/require/text',

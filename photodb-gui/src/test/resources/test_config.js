@@ -16,4 +16,5 @@
  *  limitations under the License.
  */
 
-var ROOT_URL = 'http://localhost:8234/';
+window.ux = window.ux || {};
+window.ux.ROOT_URL = 'http://localhost:8234/';

@@ -23,7 +23,7 @@
     define(deps, function (File) {
 
         return Backbone.Collection.extend({
-            url: ROOT_URL + 'rest/photos',
+            url: window.ux.ROOT_URL + 'rest/photos',
             model: File
         });
 
