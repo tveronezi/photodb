@@ -25,8 +25,10 @@ import photodb.data.execution.command.FindByStringField;
 import photodb.data.execution.command.FindPhotoByUser;
 import photodb.service.ApplicationException;
 
-import javax.annotation.Resource;
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
 @Stateless
@@ -34,8 +36,9 @@ public class PhotoImpl {
     @EJB
     private BaseEAO baseEAO;
 
-    @Resource
-    private SessionContext ctx;
+    @EJB
+    private UserImpl user;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void setValues(Photo photo, String fileName, String content, String contentType, Boolean publicData) {
@@ -53,9 +56,7 @@ public class PhotoImpl {
             setValues(photo, fileName, content, contentType, publicData);
 
             // Set photo owner
-            final FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
-            findUserByName.value = this.ctx.getCallerPrincipal().getName();
-            final User user = this.baseEAO.execute(findUserByName);
+            final User user = this.user.getUser();
             photo.setUser(user);
 
             // Create the photo object
@@ -72,7 +73,7 @@ public class PhotoImpl {
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Photo> getPhotos() {
         FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
-        findUserByName.value = this.ctx.getCallerPrincipal().getName();
+        findUserByName.value = this.user.getUser().getName();
 
         FindPhotoByUser find = new FindPhotoByUser();
         find.user = this.baseEAO.execute(findUserByName);
@@ -86,7 +87,7 @@ public class PhotoImpl {
         if (photo == null) {
             return null;
         }
-        if (!photo.getUser().getName().equals(this.ctx.getCallerPrincipal().getName())) {
+        if (!photo.getUser().equals(this.user.getUser())) {
             throw new ApplicationException("No access to photo.");
         }
         return photo;
@@ -94,12 +95,11 @@ public class PhotoImpl {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deletePhoto(Long uid) {
-        final String userName = this.ctx.getCallerPrincipal().getName();
         final Photo photo = this.baseEAO.find(Photo.class, uid);
         if (photo == null) {
             return;
         }
-        if (!photo.getUser().getName().equals(userName)) {
+        if (!photo.getUser().equals(this.user.getUser())) {
             return;
         }
         this.baseEAO.delete(photo);

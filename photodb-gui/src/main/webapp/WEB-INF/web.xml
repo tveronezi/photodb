@@ -23,10 +23,6 @@
 
     <display-name>photodb</display-name>
 
-    <listener>
-        <listener-class>photodb.service.UserSessionListener</listener-class>
-    </listener>
-
     <!-- The trick is to put all your static files under the same directory and map the "default" servlet to it -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>

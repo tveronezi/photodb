@@ -30,4 +30,21 @@ class User extends BaseEntity {
     @Column(name = 'usr_name', nullable = false)
     String name
 
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (!(o instanceof User)) return false
+        if (!super.equals(o)) return false
+
+        User user = (User) o
+
+        if (name != user.name) return false
+
+        return true
+    }
+
+    int hashCode() {
+        int result = super.hashCode()
+        result = 31 * result + name.hashCode()
+        return result
+    }
 }
