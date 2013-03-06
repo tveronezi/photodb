@@ -39,7 +39,10 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'email.address': 'Email address',
         'password': 'Password',
         'sign.in': 'Sign in',
-        'new.user': 'Create new user'
+        'new.user': 'Create new user',
+        'new.user.requested': 'New user requested',
+        'new.user.requested.instructions': 'Please follow the instructions sent to the provided email account'
+
     };
 
     underscore.each(underscore.keys(messages), function (key) {

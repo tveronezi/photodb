@@ -79,6 +79,15 @@ if (window.document.location.href + '/' === window.document.location.origin + wi
             });
             var router = new Router();
 
+            function renderLogin(opts) {
+                loginView.errorPage = false;
+                loginView.newUserRequested = false;
+                underscore.each(opts, function(value, key) {
+                    loginView[key] = value;
+                });
+                loginView.render();
+            }
+
             loginView.on('login-action', function (data) {
                 $.ajax({
                     type: 'POST',
@@ -86,8 +95,10 @@ if (window.document.location.href + '/' === window.document.location.origin + wi
                     data: data,
                     success: function (result, status, xhr) {
                         if (result === 'login-error') {
-                            loginView.errorPage = true;
-                            loginView.render();
+                            renderLogin({
+                                errorPage: true
+                            });
+
                         } else {
                             window.location.reload();
                         }
@@ -103,7 +114,9 @@ if (window.document.location.href + '/' === window.document.location.origin + wi
                     url: window.ux.ROOT_URL + 'rest/user',
                     data: data,
                     success: function (result, status, xhr) {
-
+                        renderLogin({
+                            newUserRequested: true
+                        });
                     }
                 });
             });

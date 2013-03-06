@@ -48,7 +48,8 @@
                 self.$el.empty();
 
                 var html = templates.getValue('login', {
-                    error: this.errorPage
+                    error: this.errorPage,
+                    newUser: this.newUserRequested
                 });
                 self.$el.html(html);
 

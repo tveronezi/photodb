@@ -6,9 +6,16 @@
     <div class="row-fluid">
         <div class="ux-contentarea span12">
             {{#if error}}
-            <div class="alert">
+            <div class="alert alert-error">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <strong>{{i18n "bad.user.password"}}</strong> {{i18n "please.try.again"}}
+            </div>
+            {{/if}}
+            {{#if newUser}}
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <p><strong>{{i18n "new.user.requested"}}</strong></p>
+                <p>{{i18n "new.user.requested.instructions"}}</p>
             </div>
             {{/if}}
             <form class="form-signin">
