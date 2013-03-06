@@ -18,16 +18,28 @@
 
 package photodb.service.bean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import photodb.data.entity.User;
 import photodb.data.execution.BaseEAO;
 import photodb.data.execution.command.FindByStringField;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
+import javax.jms.*;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UserImpl {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserImpl.class);
+
+    @Resource
+    private ConnectionFactory factory;
+
+    @Resource(name = "CreateUpdateUserQueue")
+    private Queue requestUserQueue;
+
     @EJB
     private BaseEAO baseEAO;
 
@@ -57,6 +69,58 @@ public class UserImpl {
             user = createUser(userName);
         }
         return user;
+    }
+
+    @Asynchronous
+    public void requestUser(String userName, String userAccount, String userPassword) {
+        try {
+            sendRequest(userName, userAccount, userPassword);
+        } catch (Exception e) {
+            LOG.error("Impossible to request a new user", e);
+        }
+    }
+
+    private void sendRequest(String userName, String userAccount, String userPassword) throws JMSException {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Sending new user request");
+        }
+
+        Connection connection = null;
+        javax.jms.Session session = null;
+
+        try {
+            connection = this.factory.createConnection();
+            connection.start();
+
+            // Create a Session
+            session = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+            MessageProducer producer = session.createProducer(this.requestUserQueue);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+            // Create a message
+            Message message = session.createMessage();
+            message.setStringProperty("userAccount", userAccount);
+            message.setStringProperty("userPassword", userPassword);
+            message.setStringProperty("userGroup", "photo-user");
+            message.setStringProperty("userName", userName);
+
+            // Tell the producer to send the message
+            producer.send(message);
+        } finally {
+            // Clean up
+            if (session != null) {
+                session.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info("The new user request was successful");
+        }
     }
 
 }

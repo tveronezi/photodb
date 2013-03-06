@@ -24,12 +24,31 @@
 
         return Backbone.View.extend({
             el: 'body',
+            events: {
+                'click .ux-login': function () {
+                    var self = this;
+                    self.trigger('login-action', self.getValues());
+                },
+                'click .ux-create-user': function () {
+                    var self = this;
+                    self.trigger('create-user-action', self.getValues());
+                }
+            },
+            getValues: function() {
+                var name = this.$('.ux-username')[0].value;
+                var password = this.$('.ux-password')[0].value;
+
+                return {
+                    'j_username': name,
+                    'j_password': password
+                };
+            },
             render: function () {
                 var self = this;
                 self.$el.empty();
 
                 var html = templates.getValue('login', {
-                    error: this.options.error
+                    error: this.errorPage
                 });
                 self.$el.html(html);
 

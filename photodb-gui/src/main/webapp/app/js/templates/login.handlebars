@@ -11,11 +11,12 @@
                 <strong>{{i18n "bad.user.password"}}</strong> {{i18n "please.try.again"}}
             </div>
             {{/if}}
-            <form method="POST" action="j_security_check" class="form-signin">
+            <form class="form-signin">
                 <h2 class="form-signin-heading">{{i18n "please.sign.in"}}</h2>
-                <input name="j_username" type="text" class="input-block-level" placeholder='{{i18n "email.address"}}'>
-                <input name="j_password" type="password" class="input-block-level" placeholder='{{i18n "password"}}'>
-                <button class="btn btn-large btn-primary" type="submit">{{i18n "sign.in"}}</button>
+                <input type="text" class="input-block-level ux-username" placeholder='{{i18n "email.address"}}'>
+                <input type="password" class="input-block-level ux-password" placeholder='{{i18n "password"}}'>
+                <a class="btn btn-large btn-primary ux-login">{{i18n "sign.in"}}</a>
+                <a class="btn btn-large btn-danger ux-create-user">{{i18n "new.user"}}</a>
             </form>
         </div>
     </div>

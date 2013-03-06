@@ -55,11 +55,11 @@
 
     <servlet>
         <servlet-name>login-error</servlet-name>
-        <jsp-file>/login-error.jsp</jsp-file>
+        <jsp-file>/login-error.html</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>login-error</servlet-name>
-        <url-pattern>/login-error.jsp</url-pattern>
+        <url-pattern>/login-error.html</url-pattern>
     </servlet-mapping>
 
     <!-- ... -->
@@ -72,7 +72,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>login-error</web-resource-name>
-            <url-pattern>/login-error.jsp</url-pattern>
+            <url-pattern>/login-error.html</url-pattern>
         </web-resource-collection>
     </security-constraint>
 
@@ -105,7 +105,7 @@
         <auth-method>FORM</auth-method>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/login-error.jsp</form-error-page>
+            <form-error-page>/login-error.html</form-error-page>
         </form-login-config>
     </login-config>
     <!-- ... -->

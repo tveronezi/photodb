@@ -16,22 +16,26 @@
  *  limitations under the License.
  */
 
-package photodb.service;
+package photodb.service.rest;
 
-import photodb.service.rest.Photos;
-import photodb.service.rest.User;
+import photodb.service.bean.UserImpl;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import javax.ejb.EJB;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
-@ApplicationPath("/rest")
-public class ApplicationConfig extends Application {
-    public Set<Class<?>> getClasses() {
-        final Set<Class<?>> clsSet = new HashSet<Class<?>>();
-        clsSet.add(Photos.class);
-        clsSet.add(User.class);
-        return clsSet;
+@Path("/user")
+@Produces("application/json")
+public class User {
+
+    @EJB
+    private UserImpl userService;
+
+    @POST
+    public void requestNewUser(@FormParam("j_username") String user, @FormParam("j_password") String password) {
+        this.userService.requestUser(user, user, password);
     }
+
 }

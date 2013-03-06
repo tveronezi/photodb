@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-if(window.document.location.href + '/' === window.document.location.origin + window.ux.ROOT_URL) {
+if (window.document.location.href + '/' === window.document.location.origin + window.ux.ROOT_URL) {
     window.location = window.document.location.href + '/';
 }
 
 (function () {
     'use strict';
 
-    var deps = ['app/js/views', 'app/js/models', 'lib/underscore', 'lib/less', 'lib/backbone'];
+    var deps = ['app/js/views', 'app/js/models', 'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery'];
     define(deps, function (views, models, underscore) {
 
         function start() {
@@ -44,6 +44,7 @@ if(window.document.location.href + '/' === window.document.location.origin + win
                 model: filesList
             }).render();
             var aboutView = views.newInstance('about').render();
+            var loginView = views.newInstance('login');
 
             //Starting the backbone router.
             var Router = Backbone.Router.extend({
@@ -54,8 +55,8 @@ if(window.document.location.href + '/' === window.document.location.origin + win
                     'login': 'showLogin'
                 },
 
-                showLogin: function(opts) {
-                    views.newInstance('login', opts).render();
+                showLogin: function () {
+                    loginView.render();
                 },
 
                 showFiles: function () {
@@ -77,6 +78,35 @@ if(window.document.location.href + '/' === window.document.location.origin + win
                 }
             });
             var router = new Router();
+
+            loginView.on('login-action', function (data) {
+                $.ajax({
+                    type: 'POST',
+                    'url': 'j_security_check',
+                    data: data,
+                    success: function (result, status, xhr) {
+                        if (result === 'login-error') {
+                            loginView.errorPage = true;
+                            loginView.render();
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, err) {
+                        window.location.reload();
+                    }
+                });
+            });
+            loginView.on('create-user-action', function (data) {
+                $.ajax({
+                    type: 'POST',
+                    url: window.ux.ROOT_URL + 'rest/user',
+                    data: data,
+                    success: function (result, status, xhr) {
+
+                    }
+                });
+            });
 
             containerView.on('navigate', function (data) {
                 router.navigate(data.href, {
@@ -134,7 +164,7 @@ if(window.document.location.href + '/' === window.document.location.origin + win
             });
 
             return {
-                getRouter: function() {
+                getRouter: function () {
                     return router;
                 }
             };

@@ -38,7 +38,8 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'please.sign.in': 'Please sign in',
         'email.address': 'Email address',
         'password': 'Password',
-        'sign.in': 'Sign in'
+        'sign.in': 'Sign in',
+        'new.user': 'Create new user'
     };
 
     underscore.each(underscore.keys(messages), function (key) {
