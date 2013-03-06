@@ -82,7 +82,7 @@ if (window.document.location.href + '/' === window.document.location.origin + wi
             function renderLogin(opts) {
                 loginView.errorPage = false;
                 loginView.newUserRequested = false;
-                underscore.each(opts, function(value, key) {
+                underscore.each(opts, function (value, key) {
                     loginView[key] = value;
                 });
                 loginView.render();

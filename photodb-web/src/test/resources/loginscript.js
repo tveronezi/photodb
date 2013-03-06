@@ -17,8 +17,8 @@
 
 var result = null;
 
-if(user === 'michael' && password === 'bad') {
-    result = new java.util.ArrayList();[];
+if (user === 'michael' && password === 'bad') {
+    result = new java.util.ArrayList();
     result.add('photo-admin');
     result.add('photo-user');
 } else {

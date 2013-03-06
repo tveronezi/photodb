@@ -18,7 +18,10 @@
 
 package photodb.data.entity
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 
 @Entity
 @Table(name = 'photodb_user_tbl', uniqueConstraints = @UniqueConstraint(columnNames = ['usr_name']))

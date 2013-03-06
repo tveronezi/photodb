@@ -24,8 +24,8 @@
 
         return Backbone.Model.extend({
             defaults: {
-                'files':  '',
-                'about':  ''
+                'files': '',
+                'about': ''
             }
         });
 

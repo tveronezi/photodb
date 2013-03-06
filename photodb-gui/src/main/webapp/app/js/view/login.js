@@ -34,7 +34,7 @@
                     self.trigger('create-user-action', self.getValues());
                 }
             },
-            getValues: function() {
+            getValues: function () {
                 var name = this.$('.ux-username')[0].value;
                 var password = this.$('.ux-password')[0].value;
 
