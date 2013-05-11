@@ -16,16 +16,12 @@
  */
 
 function localAuthentication() {
-    println('Using local login script authentication. user: "' + user + '"; password: "' + password + '".');
-
     var result = new java.util.ArrayList();
     result.add('photo-user');
-
-    if (user === 'michael' && password === 'test') {
-        return result;
-    } else {
+    if (!user || user.trim() === '') {
         throw 'Bad user or password. Test.';
     }
+    return result;
 }
 
 localAuthentication();

@@ -23,7 +23,6 @@ up-static:
 	cp -r $(PROJECT_NAME)-gui/src/main/webapp/index.jsp $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)/index.jsp
 
 up-war: kill-tomee clean-install
-	cp -r ./src/main/config/localLoginScript.js $(TOMEE_DIR)/tomee-runtime/conf
 	rm -f $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME).war
 	rm -Rf $(TOMEE_DIR)/tomee-runtime/webapps/$(PROJECT_NAME)
 	cp ./$(PROJECT_NAME)-gui/target/$(PROJECT_NAME).war $(TOMEE_DIR)/tomee-runtime/webapps/
@@ -61,6 +60,7 @@ tail:
 	tail -f $(TOMEE_DIR)/tomee-runtime/logs/catalina.out
 
 restart-tomee: kill-tomee
+	cp -r ./src/main/config/localLoginScript.js $(TOMEE_DIR)/tomee-runtime/conf
 	export JPDA_SUSPEND=n && \
 	export CATALINA_PID=$(HOME_DIR)/tomee-pid.txt && \
 	export CATALINA_OPTS="-Djava.security.auth.login.config=$(shell pwd)/src/main/config/login.config" && \
