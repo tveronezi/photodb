@@ -21,15 +21,15 @@ package photodb.service.bean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import photodb.data.entity.User;
-import photodb.data.execution.BaseEAO;
-import photodb.data.execution.command.FindByStringField;
 
 import javax.annotation.Resource;
-import javax.ejb.*;
+import javax.ejb.Asynchronous;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
 import javax.jms.*;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UserImpl {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserImpl.class);
@@ -46,7 +46,6 @@ public class UserImpl {
     @Resource
     private SessionContext ctx;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public User createUser(String name) {
         final User user = new User();
         user.setName(name);
@@ -54,12 +53,9 @@ public class UserImpl {
     }
 
     public User getUser(String name) {
-        final FindByStringField<User> find = new FindByStringField<User>(User.class, "name");
-        find.value = name;
-        return this.baseEAO.execute(find);
+        return this.baseEAO.find(User.class, "name", name);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public User getUser() {
         final String userName = this.ctx.getCallerPrincipal().getName();
         User user = getUser(userName);

@@ -16,29 +16,68 @@
  *  limitations under the License.
  */
 
-package photodb.data.entity
+package photodb.data.entity;
 
-import javax.persistence.*
+import javax.persistence.*;
 
 @Entity
-@Table(name = 'photodb_photo_tbl')
-class Photo extends BaseEntity {
+@Table(name = "photodb_photo_tbl")
+public class Photo extends BaseEntity {
 
     @Column(nullable = false)
-    String fileName;
+    private String fileName;
 
     @Column(nullable = false)
     @Lob
-    String content;
+    private String content;
 
     @Column(nullable = false)
-    String contentType;
+    private String contentType;
 
     @Column(nullable = false)
-    Boolean publicData
+    private Boolean publicData;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "usr_id", nullable = false, updatable = false)
-    User user
+    private User user;
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Boolean getPublicData() {
+        return publicData;
+    }
+
+    public void setPublicData(Boolean publicData) {
+        this.publicData = publicData;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

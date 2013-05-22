@@ -18,7 +18,8 @@
 
 package photodb.service.rest;
 
-import photodb.cdi.util.DtoBuilder;
+
+import photodb.cdi.DtoBuilder;
 import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
 import photodb.service.bean.PhotoImpl;
@@ -26,6 +27,7 @@ import photodb.service.bean.PhotoImpl;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import java.io.IOException;
 import java.util.List;
 
 @Path("/photos")
@@ -77,7 +79,7 @@ public class Photos {
 
 
     @GET
-    public List<PhotoDto> list() {
+    public List<PhotoDto> list() throws IOException {
         final List<Photo> photos = photoService.getPhotos();
         return dtoBuilder.build(photos);
     }

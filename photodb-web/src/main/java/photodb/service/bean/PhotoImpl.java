@@ -20,15 +20,10 @@ package photodb.service.bean;
 
 import photodb.data.entity.Photo;
 import photodb.data.entity.User;
-import photodb.data.execution.BaseEAO;
-import photodb.data.execution.command.FindByStringField;
-import photodb.data.execution.command.FindPhotoByUser;
 import photodb.service.ApplicationException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
 @Stateless
@@ -39,8 +34,6 @@ public class PhotoImpl {
     @EJB
     private UserImpl user;
 
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     private void setValues(Photo photo, String fileName, String content, String contentType, Boolean publicData) {
         photo.setFileName(fileName);
         photo.setContent(content);
@@ -48,7 +41,6 @@ public class PhotoImpl {
         photo.setPublicData(publicData);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Photo savePhoto(Long id, String fileName, String content, String contentType, Boolean publicData) {
         Photo photo;
         if (id == null) {
@@ -70,17 +62,11 @@ public class PhotoImpl {
         return photo;
     }
 
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Photo> getPhotos() {
-        FindByStringField<User> findUserByName = new FindByStringField<User>(User.class, "name");
-        findUserByName.value = this.user.getUser().getName();
-
-        FindPhotoByUser find = new FindPhotoByUser();
-        find.user = this.baseEAO.execute(findUserByName);
-        return this.baseEAO.execute(find);
+        final User owner = this.user.getUser();
+        return this.baseEAO.findAll(Photo.class, "user", owner);
     }
 
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Photo getPhoto(Long uid) {
         // TODO No security yet. Just get the photo if that's yours.
         final Photo photo = this.baseEAO.find(Photo.class, uid);
@@ -93,7 +79,6 @@ public class PhotoImpl {
         return photo;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deletePhoto(Long uid) {
         final Photo photo = this.baseEAO.find(Photo.class, uid);
         if (photo == null) {

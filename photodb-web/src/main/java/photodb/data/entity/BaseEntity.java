@@ -16,27 +16,41 @@
  *  limitations under the License.
  */
 
-package photodb
+package photodb.data.entity;
 
-import org.junit.Before
-import org.junit.Test
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
-import javax.ejb.embeddable.EJBContainer
+@MappedSuperclass
+public class BaseEntity {
 
-class TestPhoto {
+    @Id
+    @GeneratedValue
+    private Long uid;
 
-    @Before
-    public void setUp() throws Exception {
-        def ctxCl = Thread.currentThread().getContextClassLoader()
-        System.setProperty('openejb.ScriptLoginModule.scriptURI', ctxCl.getResource('loginscript.js').toExternalForm())
-
-        def p = [:] as Properties
-        EJBContainer.createEJBContainer(p)
+    public Long getUid() {
+        return uid;
     }
 
-    @Test
-    void placeholder() {
-
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseEntity that = (BaseEntity) o;
+
+        if (uid != null ? !uid.equals(that.uid) : that.uid != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return uid != null ? uid.hashCode() : 0;
+    }
 }
