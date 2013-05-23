@@ -25,6 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tomee.version>1.6.0-SNAPSHOT</tomee.version>
         <openejb.version>4.6.0-SNAPSHOT</openejb.version>
+        <arquillian.bom.version>1.0.3.Final</arquillian.bom.version>
     </properties>
     <modules>
         <module>photodb-gui</module>
@@ -45,6 +46,13 @@
     </repositories>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>

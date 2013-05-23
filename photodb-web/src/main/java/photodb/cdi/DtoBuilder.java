@@ -52,7 +52,7 @@ public class DtoBuilder {
         if (photos != null) {
             for (Photo photo : photos) {
                 PhotoDto dto = build(photo);
-                dto.setContent(imageManager.getThumb(dto.getContent()));
+                dto.setContent(this.imageManager.getThumb(dto.getContent()));
                 result.add(dto);
             }
         }
