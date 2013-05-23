@@ -25,7 +25,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <tomee.version>1.6.0-SNAPSHOT</tomee.version>
         <openejb.version>4.6.0-SNAPSHOT</openejb.version>
-        <arquillian.bom.version>1.0.3.Final</arquillian.bom.version>
+        <javaee.api>6.0-5</javaee.api>
+        <arquillian.version>1.0.3.Final</arquillian.version>
     </properties>
     <modules>
         <module>photodb-gui</module>
@@ -49,9 +50,26 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
-                <version>${arquillian.bom.version}</version>
+                <version>${arquillian.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.junit</groupId>
+                <artifactId>arquillian-junit-container</artifactId>
+                <version>${arquillian.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.openejb</groupId>
+                <artifactId>arquillian-tomee-embedded</artifactId>
+                <scope>test</scope>
+                <version>${tomee.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.7</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -63,6 +81,12 @@
                 <groupId>org.apache.openejb</groupId>
                 <artifactId>openejb-core</artifactId>
                 <version>${openejb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.openejb</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee.api}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

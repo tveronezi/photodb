@@ -37,13 +37,10 @@
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>arquillian-tomee-embedded</artifactId>
-            <scope>test</scope>
-            <version>${tomee.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>
@@ -52,7 +49,10 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>javaee-api</artifactId>
         </dependency>
     </dependencies>
     <build>
