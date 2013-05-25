@@ -1,10 +1,16 @@
 <div class="container app">
     <div class="masthead">
-        <h3 class="muted">{{i18n "application.name"}} <span class="user-name">{{userName}}</span></h3>
-
+        <h3 class="muted">photodb <span class="user-name"></span></h3>
         <div class="navbar">
             <div class="navbar-inner">
-                <div class="container ux-menu">
+                <div class="container">
+                    <ul class="nav">
+                        <li class="ux-app-menu-item ux-photos"><a href="files">{{i18n "my.photos"}}</a></li>
+                        <li class="ux-app-menu-item ux-about"><a href="about">{{i18n "application.about"}}</a></li>
+                    </ul>
+                    <ul class="ux-login-menu nav pull-right">
+                        <li class="divider-vertical"></li>
+                    </ul>
                 </div>
             </div>
         </div>

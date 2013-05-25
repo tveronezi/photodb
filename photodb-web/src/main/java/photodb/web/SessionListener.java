@@ -16,17 +16,27 @@
  *  limitations under the License.
  */
 
-require.config(APP_CONFIG);
+package photodb.web;
 
-requirejs(['app/js/application'], function (application) {
-    'use strict';
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    $(window.document).ready(function () {
-        // all the action is in app
-        var app = application.start();
-        app.getRouter().showLogin({
-            error: true
-        });
-    });
-});
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
+public class SessionListener implements HttpSessionListener {
+    private static final Logger LOG = LoggerFactory.getLogger(SessionListener.class);
+
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        final HttpSession session = se.getSession();
+        LOG.info("PhotoDB sessionCreated -> Id: {} MaxInactiveInterval: {} seconds",
+                session.getId(), session.getMaxInactiveInterval());
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        LOG.info("PhotoDB sessionDestroyed -> Id: {}", se.getSession().getId());
+    }
+}

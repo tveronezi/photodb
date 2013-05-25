@@ -19,8 +19,8 @@
 (function () {
     'use strict';
 
-    var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (templates) {
+    var deps = ['app/js/model/files', 'app/js/templates', 'app/js/i18n', 'lib/backbone'];
+    define(deps, function (filesModel, templates) {
 
         var FileDetailsView = Backbone.View.extend({
             el: function () {
@@ -97,11 +97,15 @@
             }
         });
 
-        return Backbone.View.extend({
+        var View = Backbone.View.extend({
             tagName: 'div',
             className: 'photos',
 
             render: function () {
+                if (this.options.isRendered) {
+                    return;
+                }
+
                 var self = this;
 
                 self.$el.empty();
@@ -127,6 +131,7 @@
                     self.showFile(fileModel);
                 });
 
+                this.options.isRendered = true;
                 return this;
             },
             showDetails: function (data) {
@@ -157,6 +162,9 @@
             }
         });
 
+        return new View({
+            model: filesModel
+        });
     });
 }());
 

@@ -16,19 +16,17 @@
  *  limitations under the License.
  */
 
-if (window.document.location.href + '/' === window.document.location.origin + window.ux.ROOT_URL) {
-    window.location = window.document.location.href + '/';
-}
-
 (function () {
     'use strict';
 
-    var deps = ['app/js/views', 'app/js/models', 'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery'];
-    define(deps, function (views, models, underscore) {
+    var deps = [
+        'app/js/view/container', 'app/js/view/files', 'app/js/view/about', 'app/js/view/login',
+        'app/js/model/files', 'app/js/model/file',
+        'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap'
+    ];
+    define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, underscore) {
 
         function start() {
-            var menuModel = models.newInstance('menu');
-            var filesList = models.newInstance('files');
             filesList.fetch({
                 success: function (collection, response, options) {
                     underscore.each(response.photoDto, function (dto) {
@@ -37,86 +35,46 @@ if (window.document.location.href + '/' === window.document.location.origin + wi
                 }
             });
 
-            var containerView = views.newInstance('container', {
-                menuModel: menuModel
-            });
-            var filesView = views.newInstance('files', {
-                model: filesList
-            }).render();
-            var aboutView = views.newInstance('about').render();
-            var loginView = views.newInstance('login');
-
             //Starting the backbone router.
             var Router = Backbone.Router.extend({
                 routes: {
                     '': 'showFiles',
                     'files': 'showFiles',
-                    'about': 'showAbout',
-                    'login': 'showLogin'
-                },
-
-                showLogin: function () {
-                    loginView.render();
+                    'about': 'showAbout'
                 },
 
                 showFiles: function () {
                     containerView.render();
-                    menuModel.set({
-                        'files': 'active',
-                        'about': ''
-                    });
                     containerView.showView(filesView);
                 },
 
                 showAbout: function () {
                     containerView.render();
-                    menuModel.set({
-                        'files': '',
-                        'about': 'active'
-                    });
                     containerView.showView(aboutView);
                 }
             });
             var router = new Router();
 
-            function renderLogin(opts) {
-                loginView.errorPage = false;
-                loginView.newUserRequested = false;
-                underscore.each(opts, function (value, key) {
-                    loginView[key] = value;
-                });
-                loginView.render();
-            }
-
             loginView.on('login-action', function (data) {
                 $.ajax({
                     type: 'POST',
-                    'url': 'j_security_check',
+                    'url': window.ux.ROOT_URL + 'rest/user/authenticate',
                     data: data,
                     success: function (result, status, xhr) {
-                        if (result === 'login-error') {
-                            renderLogin({
-                                errorPage: true
-                            });
-
-                        } else {
-                            window.location.reload();
-                        }
+                        containerView.setSignMode('signout');
                     },
                     error: function (xhr, status, err) {
-                        window.location.reload();
+                        // TODO
                     }
                 });
             });
             loginView.on('create-user-action', function (data) {
                 $.ajax({
                     type: 'POST',
-                    url: window.ux.ROOT_URL + 'rest/user',
+                    url: window.ux.ROOT_URL + 'rest/user/new',
                     data: data,
                     success: function (result, status, xhr) {
-                        renderLogin({
-                            newUserRequested: true
-                        });
+                        // TODO
                     }
                 });
             });
@@ -127,13 +85,24 @@ if (window.document.location.href + '/' === window.document.location.origin + wi
                 });
             });
 
+            containerView.on('signout', function (data) {
+                $.ajax({
+                    type: 'POST',
+                    url: window.ux.ROOT_URL + 'rest/user/signout',
+                    data: data,
+                    success: function (result, status, xhr) {
+                        containerView.setSignMode('signin');
+                    }
+                });
+            });
+
             filesView.on('delete-action', function (data) {
                 filesList.remove(data.model);
                 data.model.destroy();
             });
 
             function saveFile(file) {
-                var newFile = models.newInstance('file', {
+                var newFile = new FileModel({
                     'name': file.name,
                     'contentType': file.contentType,
                     'content': file.content,

@@ -22,7 +22,10 @@
     var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
     define(deps, function (templates) {
 
-        return Backbone.View.extend({
+        var View = Backbone.View.extend({
+            tagName: 'div',
+            className: 'about',
+
             events: {
                 'click a': function (evt) {
                     // TRICK: to avoid full page reload.
@@ -32,16 +35,22 @@
                 }
             },
             render: function () {
+                if (this.options.isRendered) {
+                    return;
+                }
+
                 var self = this;
                 self.$el.empty();
 
                 var html = templates.getValue('about');
                 self.$el.html(html);
 
+                this.options.isRendered = true;
                 return this;
             }
         });
 
+        return new View({});
     });
 }());
 

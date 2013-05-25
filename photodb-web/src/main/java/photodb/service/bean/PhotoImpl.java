@@ -22,6 +22,7 @@ import photodb.data.entity.Photo;
 import photodb.data.entity.User;
 import photodb.service.ApplicationException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.List;
@@ -41,6 +42,7 @@ public class PhotoImpl {
         photo.setPublicData(publicData);
     }
 
+    @RolesAllowed({"photo-user"})
     public Photo savePhoto(Long id, String fileName, String content, String contentType, Boolean publicData) {
         Photo photo;
         if (id == null) {
@@ -68,7 +70,6 @@ public class PhotoImpl {
     }
 
     public Photo getPhoto(Long uid) {
-        // TODO No security yet. Just get the photo if that's yours.
         final Photo photo = this.baseEAO.find(Photo.class, uid);
         if (photo == null) {
             return null;
@@ -79,6 +80,7 @@ public class PhotoImpl {
         return photo;
     }
 
+    @RolesAllowed({"photo-user"})
     public void deletePhoto(Long uid) {
         final Photo photo = this.baseEAO.find(Photo.class, uid);
         if (photo == null) {

@@ -77,7 +77,6 @@ public class Photos {
         return dtoBuilder.build(photo);
     }
 
-
     @GET
     public List<PhotoDto> list() throws IOException {
         final List<Photo> photos = photoService.getPhotos();

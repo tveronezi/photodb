@@ -59,10 +59,6 @@ var APP_CONFIG = {
             deps: ['lib/underscore', 'app/js/i18n']
         },
 
-        'app/js/views': {
-            deps: ['lib/bootstrap', 'lib/underscore']
-        },
-
         'app/js/models': {
             deps: ['lib/underscore']
         }

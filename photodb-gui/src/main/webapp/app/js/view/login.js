@@ -22,14 +22,15 @@
     var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
     define(deps, function (templates) {
 
-        return Backbone.View.extend({
-            el: 'body',
+        var View = Backbone.View.extend({
             events: {
-                'click .ux-login': function () {
+                'click .ux-login': function (evt) {
+                    evt.preventDefault();
                     var self = this;
                     self.trigger('login-action', self.getValues());
                 },
-                'click .ux-create-user': function () {
+                'click .ux-create-user': function (evt) {
+                    evt.preventDefault();
                     var self = this;
                     self.trigger('create-user-action', self.getValues());
                 }
@@ -44,6 +45,10 @@
                 };
             },
             render: function () {
+                if (this.options.isRendered) {
+                    return;
+                }
+
                 var self = this;
                 self.$el.empty();
 
@@ -53,9 +58,12 @@
                 });
                 self.$el.html(html);
 
+                this.options.isRendered = true;
                 return this;
             }
         });
+
+        return new View({});
 
     });
 }());

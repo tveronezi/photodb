@@ -28,7 +28,6 @@
         // Save the path to the application. Case the application is not the root context, we should now that.
         // The "c:url" is able to figure it out since forever.
         window.ux = window.ux || {};
-        window.ux.USER_NAME = "<%=(request.getUserPrincipal() == null ? "" : request.getUserPrincipal().getName())%>";
         window.ux.SESSION_ID = "<%=request.getSession().getId()%>";
         window.ux.ROOT_URL = "<c:url value='/'/>".replace(';jsessionid=' + window.ux.SESSION_ID, '');
     </script>

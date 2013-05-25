@@ -22,11 +22,12 @@
     var deps = ['app/js/model/file', 'lib/backbone'];
     define(deps, function (File) {
 
-        return Backbone.Collection.extend({
+        var Model = Backbone.Collection.extend({
             url: window.ux.ROOT_URL + 'rest/photos',
             model: File
         });
 
+        return new Model();
     });
 }());
 

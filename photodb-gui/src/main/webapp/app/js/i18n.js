@@ -36,9 +36,10 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'bad.user.password': 'Bad user/password.',
         'please.try.again': 'Please, try again.',
         'please.sign.in': 'Please sign in',
-        'email.address': 'Email address',
+        'user.account': 'Email address or Account',
         'password': 'Password',
         'sign.in': 'Sign in',
+        'sign.out': 'Sign out',
         'new.user': 'Create new user',
         'new.user.requested': 'New user requested',
         'new.user.requested.instructions': 'Please follow the instructions sent to the provided email account'

@@ -16,15 +16,28 @@
  *  limitations under the License.
  */
 
-require.config(APP_CONFIG);
+package photodb.data.dto;
 
-requirejs(['app/js/application'], function (application) {
-    'use strict';
+import java.io.Serializable;
 
-    $(window.document).ready(function () {
-        // all the action is in app
-        var app = application.start();
-        app.getRouter().showLogin();
-    });
-});
+public class AuthenticationDto implements Serializable {
 
+    private String user;
+    private String password;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}

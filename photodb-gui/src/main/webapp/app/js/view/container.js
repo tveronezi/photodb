@@ -19,75 +19,82 @@
 (function () {
     'use strict';
 
-    var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (templates) {
+    var deps = ['app/js/templates', 'app/js/view/login', 'app/js/i18n', 'lib/backbone'];
+    define(deps, function (templates, loginView) {
 
-        var Menu = Backbone.View.extend({
-            tagName: 'ul',
-            className: 'nav',
-
-            events: {
-                'click a': function (evt) {
-                    // TRICK: to avoid full page reload.
-                    evt.preventDefault();
-                    var href = $(evt.currentTarget).attr('href');
-                    this.trigger('navigate', {
-                        href: href
-                    });
-                }
-            },
-
-            render: function () {
-                this.$el.empty();
-                var html = templates.getValue('menu', {
-                    'files-cls': this.model.get('files'),
-                    'about-cls': this.model.get('about')
-                });
-                this.$el.html(html);
-                return this;
-            },
-
-            initialize: function () {
-                this.listenTo(this.model, 'change', this.render);
-            }
-        });
-
-        return Backbone.View.extend({
+        var View = Backbone.View.extend({
             el: 'body',
+
             showView: function (view) {
                 var contentarea = this.$('.ux-contentarea');
                 contentarea.empty();
+                view.render();
                 contentarea.append(view.el);
+
+                this.$('.ux-app-menu-item').removeClass('active');
+                var myMenuItem = this.$('li.ux-app-menu-item.ux-' + view.className);
+                myMenuItem.addClass('active');
             },
+
+            events: {
+                'click .ux-app-menu-item a': function (evt) {
+                    // TRICK to avoid full page reload.
+                    evt.preventDefault();
+
+                    var myLink = $(evt.target);
+                    this.$('.ux-app-menu-item').removeClass('active');
+                    var myMenu = myLink.parent();
+                    myMenu.addClass('active');
+
+                    var href = myLink.attr('href');
+                    this.trigger('navigate', {
+                        href: href
+                    });
+                },
+                'click a.ux-signout': function (evt) {
+                    // TRICK to avoid full page reload.
+                    evt.preventDefault();
+                    this.trigger('signout');
+                }
+            },
+
             render: function () {
                 if (this.options.isRendered) {
-                    return this;
+                    return;
                 }
 
                 var html = templates.getValue('container', {
-                    userName: window.ux.USER_NAME
+                    userName: ''
                 });
                 this.$el.html(html);
 
-                var menuContainer = this.$('.ux-menu');
-                menuContainer.append(this.options.menu.render().$el);
+                loginView.render();
+                this.options.signin = $(templates.getValue('signin', {}));
+                this.options.signin.children('div.ux-sigin-form').append(loginView.el);
 
-                // TRICK: render this view only once.
+                this.options.signout = $(templates.getValue('signout', {}));
+
+                this.setSignMode('signin');
+
+                // render it only once
                 this.options.isRendered = true;
                 return this;
             },
-            initialize: function () {
-                var menu = new Menu({
-                    model: this.options.menuModel
+
+            setSignMode: function(mode) {
+                this.options.signin.detach();
+                this.options.signout.detach();
+
+                loginView.$('.ux-user-credentials').each(function(index, el) {
+                    el.reset();
                 });
-                var self = this;
-                self.options.menu = menu;
-                self.listenTo(menu, 'navigate', function (data) {
-                    self.trigger('navigate', data);
-                });
+
+                // mode is 'signin' or 'signout'
+                this.$('ul.ux-login-menu').append(this.options[mode]);
             }
         });
 
+        return new View({});
     });
 }());
 

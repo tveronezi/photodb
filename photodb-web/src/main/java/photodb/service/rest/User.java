@@ -18,13 +18,18 @@
 
 package photodb.service.rest;
 
+import photodb.data.dto.AuthenticationDto;
 import photodb.service.bean.UserImpl;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 @Path("/user")
 @Produces("application/json")
@@ -34,8 +39,33 @@ public class User {
     private UserImpl userService;
 
     @POST
+    @Path("/new")
     public void requestNewUser(@FormParam("j_username") String user, @FormParam("j_password") String password) {
         this.userService.requestUser(user, user, password);
     }
 
+    @POST
+    @Path("/authenticate")
+    public void authenticate(@FormParam("j_username") String user, @FormParam("j_password") String password,
+                             @Context HttpServletRequest request) throws ServletException {
+        request.login(user, password);
+        final AuthenticationDto authenticationDto = new AuthenticationDto();
+        authenticationDto.setUser(user);
+        authenticationDto.setPassword(password);
+
+        final HttpSession session = request.getSession();
+        session.setAttribute("authenticationDto", authenticationDto);
+    }
+
+    @POST
+    @Path("/signout")
+    public void signout(@Context HttpServletRequest request) {
+        try {
+            request.logout();
+        } catch (ServletException e) {
+            // no-op
+        }
+        final HttpSession session = request.getSession();
+        session.removeAttribute("authenticationDto");
+    }
 }

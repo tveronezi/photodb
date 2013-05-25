@@ -21,12 +21,13 @@
 
     var files = [
         'container',
-        'menu',
         'files',
         'file',
         'file-details',
         'about',
-        'login'
+        'login',
+        'signin',
+        'signout'
     ];
 
     function loop(values, callback) {
