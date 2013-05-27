@@ -57,6 +57,9 @@ public class UserImpl {
     }
 
     public User getUser() {
+        if (!this.ctx.isCallerInRole("photo-user")) {
+            return null;
+        }
         final String userName = this.ctx.getCallerPrincipal().getName();
         User user = getUser(userName);
         if (user == null) {

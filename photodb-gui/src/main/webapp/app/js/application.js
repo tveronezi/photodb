@@ -32,12 +32,13 @@
                 filesList.fetch({
                     success: function (collection, response, options) {
                         underscore.each(response.photoDto, function (dto) {
-                            filesList.add(dto);
+                            if(!filesList.get(dto.id)) {
+                                filesList.add(dto);
+                            }
                         });
                     }
                 });
             }
-
             fetchFiles();
 
             //Starting the backbone router.
@@ -60,16 +61,38 @@
             });
             var router = new Router();
 
+            function setLoggedUser(userName) {
+                if(!userName || userName === '') {
+                    return;
+                }
+                containerView.setSignMode('signout');
+                containerView.setUserName(userName);
+                filesView.showDropZone();
+                fetchFiles();
+            }
+
+            $.ajax({
+                type: 'GET',
+                'url': window.ux.ROOT_URL + 'rest/user/info',
+                data: {},
+                success: function (result, status, xhr) {
+                    if(result && result.userInfo) {
+                        setLoggedUser(result.userInfo.name);
+                    }
+
+                },
+                error: function (xhr, status, err) {
+                    // TODO
+                }
+            });
+
             loginView.on('login-action', function (data) {
                 $.ajax({
                     type: 'POST',
                     'url': window.ux.ROOT_URL + 'rest/user/authenticate',
                     data: data,
                     success: function (result, status, xhr) {
-                        containerView.setSignMode('signout');
-                        containerView.setUserName(data.j_username);
-                        filesView.showDropZone();
-                        fetchFiles();
+                        setLoggedUser(data.j_username);
                     },
                     error: function (xhr, status, err) {
                         // TODO

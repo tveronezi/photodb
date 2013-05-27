@@ -19,7 +19,9 @@
 package photodb.cdi;
 
 import photodb.data.dto.PhotoDto;
+import photodb.data.dto.UserInfo;
 import photodb.data.entity.Photo;
+import photodb.data.entity.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -56,6 +58,16 @@ public class DtoBuilder {
                 result.add(dto);
             }
         }
+        return result;
+    }
+
+    public UserInfo build(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        final UserInfo result = new UserInfo();
+        result.setName(user.getName());
         return result;
     }
 }
