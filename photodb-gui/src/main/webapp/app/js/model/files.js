@@ -22,13 +22,14 @@
     var deps = ['app/js/model/file', 'lib/backbone'];
     define(deps, function (File) {
 
-        var ModelCls = Backbone.Collection.extend({
+        var FilesList = Backbone.Collection.extend({
+            model: File,
             url: window.ux.ROOT_URL + 'rest/photos',
-            model: File
+            parse: function(response) {
+                return response.photoDto;
+            }
         });
-        var list = new ModelCls();
-        list.reset([]);
-        return list;
+        return  new FilesList();
 
     });
 }());

@@ -29,17 +29,8 @@
 
         function start() {
             function fetchFiles() {
-                filesList.fetch({
-                    success: function (collection, response, options) {
-                        underscore.each(response.photoDto, function (dto) {
-                            if(!filesList.get(dto.id)) {
-                                filesList.add(dto);
-                            }
-                        });
-                    }
-                });
+                filesList.fetch();
             }
-            fetchFiles();
 
             //Starting the backbone router.
             var Router = Backbone.Router.extend({
@@ -62,7 +53,7 @@
             var router = new Router();
 
             function setLoggedUser(userName) {
-                if(!userName || userName === '') {
+                if (!userName || userName === '') {
                     return;
                 }
                 containerView.setSignMode('signout');
@@ -76,7 +67,7 @@
                 'url': window.ux.ROOT_URL + 'rest/user/info',
                 data: {},
                 success: function (result, status, xhr) {
-                    if(result && result.userInfo) {
+                    if (result && result.userInfo) {
                         setLoggedUser(result.userInfo.name);
                     }
 

@@ -38,7 +38,7 @@ var APP_CONFIG = {
 
         'lib/json2': 'app/lib/json2/json2-2012-10-08',
 
-        'lib/backbone': 'app/lib/backbone/backbone_0-9-10'
+        'lib/backbone': 'app/lib/backbone/backbone_1-0-0-min'
     },
     shim: {
         // bootstrap depends on jquery, therefore we need to load jquery first

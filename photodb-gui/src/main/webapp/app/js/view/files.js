@@ -20,7 +20,7 @@
     'use strict';
 
     var deps = ['app/js/model/files', 'app/js/templates', 'lib/underscore', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (filesModel, templates, underscore) {
+    define(deps, function (filesList, templates, underscore) {
 
         var FileDetailsView = Backbone.View.extend({
             el: function () {
@@ -104,7 +104,6 @@
         var View = Backbone.View.extend({
             tagName: 'div',
             className: 'photos',
-            fileViews: [],
 
             render: function () {
                 if (this.options.isRendered) {
@@ -169,13 +168,11 @@
 
             initialize: function () {
                 var self = this;
-                self.listenTo(this.model, 'add', self.showFile);
+                self.listenTo(filesList, 'add', self.showFile);
             }
         });
 
-        return new View({
-            model: filesModel
-        });
+        return new View();
     });
 }());
 
