@@ -20,7 +20,7 @@
     'use strict';
 
     var deps = ['app/js/templates', 'app/js/view/login', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (templates, loginView) {
+    define(deps, function (templates, loginView, i18n) {
 
         var View = Backbone.View.extend({
             el: 'body',
@@ -81,16 +81,26 @@
                 return this;
             },
 
-            setSignMode: function(mode) {
+            setSignMode: function (mode) {
                 this.options.signin.detach();
                 this.options.signout.detach();
 
-                loginView.$('.ux-user-credentials').each(function(index, el) {
+                loginView.$('.ux-user-credentials').each(function (index, el) {
                     el.reset();
                 });
 
                 // mode is 'signin' or 'signout'
                 this.$('ul.ux-login-menu').append(this.options[mode]);
+            },
+
+            setUserName: function (userName) {
+                if (!userName || userName.trim() === '') {
+                    this.$('span.user-name').html(i18n.get('visitor'));
+
+                } else {
+                    this.$('span.user-name').html(userName);
+                }
+
             }
         });
 

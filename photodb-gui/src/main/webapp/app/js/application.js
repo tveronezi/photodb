@@ -62,6 +62,8 @@
                     data: data,
                     success: function (result, status, xhr) {
                         containerView.setSignMode('signout');
+                        containerView.setUserName(data.j_username);
+                        filesView.showDropZone();
                     },
                     error: function (xhr, status, err) {
                         // TODO
@@ -91,7 +93,7 @@
                     url: window.ux.ROOT_URL + 'rest/user/signout',
                     data: data,
                     success: function (result, status, xhr) {
-                        containerView.setSignMode('signin');
+                        window.location.reload();
                     }
                 });
             });

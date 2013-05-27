@@ -26,6 +26,7 @@
             el: function () {
                 return $('<div class="modal" tabindex="-1" role="dialog"></div>');
             },
+
             events: {
                 'click .close-modal': function () {
                     var self = this;
@@ -38,6 +39,7 @@
                     });
                 }
             },
+
             render: function () {
                 var self = this;
 
@@ -53,6 +55,7 @@
 
                 return self;
             },
+
             initialize: function () {
                 var self = this;
                 self.listenTo(this.model, 'destroy', function () {
@@ -89,6 +92,7 @@
 
                 return self;
             },
+
             initialize: function () {
                 var self = this;
                 self.listenTo(this.model, 'destroy', function () {
@@ -112,13 +116,13 @@
                 var html = templates.getValue('files');
                 self.$el.html(html);
 
-                var dropZone = self.$('.drop-area')[0];
-                dropZone.addEventListener('dragover', function (evt) {
+                var dropZone = $(self.$('.drop-area')[0]);
+                dropZone.on('dragover', function (evt) {
                     evt.stopPropagation();
                     evt.preventDefault();
                     evt.dataTransfer.dropEffect = 'copy';
                 }, false);
-                dropZone.addEventListener('drop', function (evt) {
+                dropZone.on('drop', function (evt) {
                     evt.stopPropagation();
                     evt.preventDefault();
                     var files = evt.dataTransfer.files;
@@ -127,6 +131,9 @@
                     });
                 }, false);
 
+                dropZone.detach();
+                this.options.dropZone = dropZone;
+
                 self.model.forEach(function (fileModel) {
                     self.showFile(fileModel);
                 });
@@ -134,6 +141,11 @@
                 this.options.isRendered = true;
                 return this;
             },
+
+            showDropZone: function() {
+                this.$el.prepend(this.options.dropZone);
+            },
+
             showDetails: function (data) {
                 var self = this;
                 var detailsView = new FileDetailsView({
@@ -145,6 +157,7 @@
                 self.$('.details-area').append(detailsView.el);
                 detailsView.$el.modal({});
             },
+
             showFile: function (fileModel) {
                 var self = this;
                 var fileView = new FileView({
@@ -156,6 +169,7 @@
                 });
                 self.$('.photos-area').prepend(fileView.el);
             },
+
             initialize: function () {
                 var self = this;
                 self.listenTo(this.model, 'add', self.showFile);
