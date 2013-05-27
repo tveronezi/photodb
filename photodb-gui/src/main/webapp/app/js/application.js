@@ -31,6 +31,7 @@
             function fetchFiles() {
                 filesList.fetch();
             }
+            fetchFiles();
 
             //Starting the backbone router.
             var Router = Backbone.Router.extend({
