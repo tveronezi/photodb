@@ -25,6 +25,7 @@
         'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap'
     ];
     define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, underscore) {
+        $.ajaxSetup({ cache: false });
 
         function start() {
             function fetchFiles() {
