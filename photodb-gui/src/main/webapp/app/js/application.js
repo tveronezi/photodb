@@ -27,13 +27,17 @@
     define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, underscore) {
 
         function start() {
-            filesList.fetch({
-                success: function (collection, response, options) {
-                    underscore.each(response.photoDto, function (dto) {
-                        filesList.add(dto);
-                    });
-                }
-            });
+            function fetchFiles() {
+                filesList.fetch({
+                    success: function (collection, response, options) {
+                        underscore.each(response.photoDto, function (dto) {
+                            filesList.add(dto);
+                        });
+                    }
+                });
+            }
+
+            fetchFiles();
 
             //Starting the backbone router.
             var Router = Backbone.Router.extend({
@@ -64,6 +68,7 @@
                         containerView.setSignMode('signout');
                         containerView.setUserName(data.j_username);
                         filesView.showDropZone();
+                        fetchFiles();
                     },
                     error: function (xhr, status, err) {
                         // TODO

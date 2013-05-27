@@ -19,8 +19,8 @@
 (function () {
     'use strict';
 
-    var deps = ['app/js/model/files', 'app/js/templates', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (filesModel, templates) {
+    var deps = ['app/js/model/files', 'app/js/templates', 'lib/underscore', 'app/js/i18n', 'lib/backbone'];
+    define(deps, function (filesModel, templates, underscore) {
 
         var FileDetailsView = Backbone.View.extend({
             el: function () {
@@ -104,6 +104,7 @@
         var View = Backbone.View.extend({
             tagName: 'div',
             className: 'photos',
+            fileViews: [],
 
             render: function () {
                 if (this.options.isRendered) {
@@ -116,13 +117,13 @@
                 var html = templates.getValue('files');
                 self.$el.html(html);
 
-                var dropZone = $(self.$('.drop-area')[0]);
-                dropZone.on('dragover', function (evt) {
+                var dropZone = self.$('.drop-area')[0];
+                dropZone.addEventListener('dragover', function (evt) {
                     evt.stopPropagation();
                     evt.preventDefault();
                     evt.dataTransfer.dropEffect = 'copy';
                 }, false);
-                dropZone.on('drop', function (evt) {
+                dropZone.addEventListener('drop', function (evt) {
                     evt.stopPropagation();
                     evt.preventDefault();
                     var files = evt.dataTransfer.files;
@@ -131,13 +132,9 @@
                     });
                 }, false);
 
-                dropZone.detach();
-                this.options.dropZone = dropZone;
-
-                self.model.forEach(function (fileModel) {
-                    self.showFile(fileModel);
-                });
-
+                var dropZoneEl = $(dropZone);
+                dropZoneEl.detach();
+                this.options.dropZone = dropZoneEl;
                 this.options.isRendered = true;
                 return this;
             },
