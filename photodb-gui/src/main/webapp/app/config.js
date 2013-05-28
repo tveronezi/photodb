@@ -26,7 +26,7 @@ var APP_CONFIG = {
         'lib/less': 'app/lib/less/less-1.3.0.min',
 
         // http://jquery.com/
-        'lib/jquery': 'app/lib/jquery/jquery-1.7.2.min',
+        'lib/jquery': 'app/lib/jquery/jquery-2.0.1',
 
         // http://twitter.github.com/bootstrap/
         'lib/bootstrap': 'app/lib/bootstrap/2.1.1/js/bootstrap.min',
