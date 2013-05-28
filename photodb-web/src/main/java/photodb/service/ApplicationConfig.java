@@ -18,6 +18,7 @@
 
 package photodb.service;
 
+import photodb.service.rest.KeepAlive;
 import photodb.service.rest.Photos;
 import photodb.service.rest.User;
 
@@ -32,6 +33,7 @@ public class ApplicationConfig extends Application {
         final Set<Class<?>> clsSet = new HashSet<Class<?>>();
         clsSet.add(Photos.class);
         clsSet.add(User.class);
+        clsSet.add(KeepAlive.class);
         return clsSet;
     }
 }

@@ -22,7 +22,8 @@
     var deps = [
         'app/js/view/container', 'app/js/view/files', 'app/js/view/about', 'app/js/view/login',
         'app/js/model/files', 'app/js/model/file',
-        'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap'
+        'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap',
+        'app/js/keep-alive'
     ];
     define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, underscore) {
         $.ajaxSetup({ cache: false });

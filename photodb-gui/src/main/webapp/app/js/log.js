@@ -26,15 +26,14 @@ define([], function () {
         window.console = {};
     }
 
-    if (!window.console.error) {
-        window.console.error = noOp;
+    function createIfNull(functionName) {
+        if (!window.console[functionName]) {
+            window.console[functionName] = noOp;
+        }
     }
 
-    if (!window.console.warn) {
-        window.console.warn = noOp;
-    }
-
-    if (!window.console.log) {
-        window.console.log = noOp;
-    }
+    createIfNull('error');
+    createIfNull('warn');
+    createIfNull('log');
+    createIfNull('info');
 });
