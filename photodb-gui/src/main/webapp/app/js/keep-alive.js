@@ -23,29 +23,28 @@ define(['app/js/log', 'lib/jquery'], function () {
     var DELAY = 1000 * 60 * 4; // 4 minutes
     var timeoutKey = null;
 
-    function cancelPrevious() {
+    function scheduleNext() {
         if (timeoutKey !== null) {
             clearInterval(timeoutKey);
             window.console.log('keep-alive callback canceled.', timeoutKey);
             timeoutKey = null;
         }
+        timeoutKey = setTimeout(timeoutCallback, DELAY);
+        window.console.log('keep-alive callback created.', timeoutKey);
     }
 
     function timeoutCallback() {
-        cancelPrevious();
         $.ajax({
             type: 'GET',
             'url': window.ux.ROOT_URL + 'rest/keep-alive',
             global: false,
             data: {},
             success: function () {
-                cancelPrevious();
-                timeoutKey = setTimeout(timeoutCallback, DELAY);
-                window.console.log('keep-alive callback created.', timeoutKey);
+                scheduleNext();
             },
             error: function () {
                 window.console.error('keep-alive callback error.');
-                setTimeout(function() {
+                setTimeout(function () {
                     window.location.reload();
                 }, 10000)
             }
@@ -53,7 +52,7 @@ define(['app/js/log', 'lib/jquery'], function () {
     }
 
     $(document).bind("ajaxSend", function () {
-        timeoutCallback()
+        scheduleNext()
     });
 
 });
