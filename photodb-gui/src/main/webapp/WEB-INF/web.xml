@@ -31,15 +31,6 @@
         <listener-class>photodb.web.SessionListener</listener-class>
     </listener>
 
-    <filter>
-        <filter-name>AuthenticationFilter</filter-name>
-        <filter-class>photodb.web.AuthenticationFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>AuthenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <!-- The trick is to put all your static files under the same directory and map the "default" servlet to it -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>

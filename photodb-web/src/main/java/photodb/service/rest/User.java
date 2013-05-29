@@ -19,7 +19,6 @@
 package photodb.service.rest;
 
 import photodb.cdi.DtoBuilder;
-import photodb.data.dto.AuthenticationDto;
 import photodb.data.dto.UserInfo;
 import photodb.service.bean.UserImpl;
 
@@ -52,12 +51,6 @@ public class User {
     public void authenticate(@FormParam("j_username") String user, @FormParam("j_password") String password,
                              @Context HttpServletRequest request) throws ServletException {
         request.login(user, password);
-        final AuthenticationDto authenticationDto = new AuthenticationDto();
-        authenticationDto.setUser(user);
-        authenticationDto.setPassword(password);
-
-        final HttpSession session = request.getSession();
-        session.setAttribute("authenticationDto", authenticationDto);
     }
 
     @POST
