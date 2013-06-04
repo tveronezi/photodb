@@ -34,6 +34,7 @@
                     window.open(href);
                 }
             },
+
             render: function () {
                 if (this.options.isRendered) {
                     return;
