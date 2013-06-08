@@ -20,18 +20,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>photodb</groupId>
+            <groupId>buildnplay</groupId>
         <artifactId>photodb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>photodb</groupId>
     <artifactId>photodb-gui</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>photodb-gui</name>
     <dependencies>
         <dependency>
-            <groupId>photodb</groupId>
+            <groupId>buildnplay</groupId>
             <artifactId>photodb-web</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

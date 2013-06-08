@@ -20,11 +20,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>photodb</groupId>
+        <groupId>buildnplay</groupId>
         <artifactId>photodb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>photodb</groupId>
     <artifactId>photodb-resources</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
