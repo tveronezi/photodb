@@ -52,7 +52,7 @@ define(['app/js/log', 'lib/jquery'], function () {
     }
 
     $(document).bind("ajaxSend", function () {
-        scheduleNext()
+        scheduleNext();
     });
 
 });
