@@ -21,9 +21,9 @@ package photodb.service.bean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import photodb.data.entity.User;
+import photodb.service.ApplicationException;
 
 import javax.annotation.Resource;
-import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -70,19 +70,17 @@ public class UserImpl {
         return user;
     }
 
-    @Asynchronous
-    public void requestUser(String userName, String userAccount, String userPassword) {
+    public void requestUser(String userName, String userAccount, String userPassword) throws ArithmeticException {
         try {
             sendRequest(userName, userAccount, userPassword);
         } catch (Exception e) {
             LOG.error("Impossible to request a new user", e);
+            throw new ApplicationException(e);
         }
     }
 
     private void sendRequest(String userName, String userAccount, String userPassword) throws JMSException {
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Sending new user request");
-        }
+        LOG.info("Sending new user request");
 
         Connection connection = null;
         javax.jms.Session session = null;
@@ -117,9 +115,7 @@ public class UserImpl {
             }
         }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info("The new user request was successful");
-        }
+        LOG.info("The new user request was successful");
     }
 
 }
