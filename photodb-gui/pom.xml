@@ -77,7 +77,6 @@
                 <configuration>
                     <failOnError>true</failOnError>
                     <options>
-                        <todo>true</todo>
                         <vars>true</vars>
                         <predef>define,require,requirejs,window,Backbone,_,$,Handlebars,APP_CONFIG</predef>
                         <indent>4</indent>

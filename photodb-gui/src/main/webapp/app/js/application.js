@@ -78,7 +78,7 @@
 
                 },
                 error: function (xhr, status, err) {
-                    // TODO
+                    growl.showNotification('error', i18n.get('user.info.error', {}));
                 }
             });
 
