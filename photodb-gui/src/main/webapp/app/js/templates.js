@@ -27,7 +27,9 @@
         'about',
         'login',
         'signin',
-        'signout'
+        'signout',
+        'growl',
+        'growl-container'
     ];
 
     function loop(values, callback) {

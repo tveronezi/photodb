@@ -24,18 +24,13 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
     var messages = {
         'application.name': 'photodb',
         'application.welcome': 'Hi {{userName}}! Welcome to {{appName}}!',
-        'html.support.error': 'This browser does not fully support HTML5. Try again with another browser.',
-        'drag.photos.hint': 'Drag photos to your browser.',
         'photo.upload': 'Uploading file {{fileName}}',
-        'photo.delete.tip': 'Files selected. Hit the "delete" key to remove them.',
         'my.photos': 'My Photos',
         'drop.files.area': 'Drop your files here',
         'application.about': 'About',
         'close': 'Close',
         'delete': 'Delete',
         'bad.user.password': 'Bad user/password.',
-        'please.try.again': 'Please, try again.',
-        'please.sign.in': 'Please sign in',
         'user.account': 'Email address or Account',
         'password': 'Password',
         'sign.in': 'Sign in',
@@ -43,7 +38,8 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'new.user': 'Create new user',
         'new.user.requested': 'New user requested',
         'new.user.requested.instructions': 'Please follow the instructions sent to the provided email account',
-        'visitor': 'Visitor'
+        'visitor': 'Visitor',
+        '404': 'Resource not found! {{resource}}'
 
     };
 

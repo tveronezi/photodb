@@ -21,11 +21,13 @@
 
     var deps = [
         'app/js/view/container', 'app/js/view/files', 'app/js/view/about', 'app/js/view/login',
-        'app/js/model/files', 'app/js/model/file',
-        'lib/underscore', 'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap',
+        'app/js/model/files', 'app/js/model/file', 'app/js/view/growl',
+        'lib/underscore',
+        'app/js/i18n',
+        'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap',
         'app/js/keep-alive'
     ];
-    define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, underscore) {
+    define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, growl, underscore, i18n) {
         $.ajaxSetup({ cache: false });
 
         function start() {
@@ -81,15 +83,26 @@
             });
 
             loginView.on('login-action', function (data) {
+                var authenticationPath = window.ux.ROOT_URL + 'rest/user/authenticate';
                 $.ajax({
                     type: 'POST',
-                    'url': window.ux.ROOT_URL + 'rest/user/authenticate',
+                    'url': authenticationPath,
                     data: data,
                     success: function (result, status, xhr) {
                         setLoggedUser(data.j_username);
+                        growl.showNotification('success', i18n.get('application.welcome', {
+                            userName: data.j_username,
+                            appName: i18n.get('application.name')
+                        }));
                     },
                     error: function (xhr, status, err) {
-                        // TODO
+                        if (String(xhr.status) === '404') {
+                            growl.showNotification('error', i18n.get('404', {
+                                resource: authenticationPath
+                            }));
+                        } else {
+                            growl.showNotification('error', i18n.get('bad.user.password', {}));
+                        }
                     }
                 });
             });
