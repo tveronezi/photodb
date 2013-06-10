@@ -112,7 +112,10 @@
                     url: window.ux.ROOT_URL + 'rest/user/new',
                     data: data,
                     success: function (result, status, xhr) {
-                        // TODO
+                        growl.showNotification('success', i18n.get('new.user.requested', {}));
+                        growl.showNotification('success', i18n.get('new.user.requested.instructions', {
+                            email: data.j_username
+                        }));
                     }
                 });
             });

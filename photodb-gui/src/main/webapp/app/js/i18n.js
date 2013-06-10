@@ -37,7 +37,7 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'sign.out': 'Sign out',
         'new.user': 'Create new user',
         'new.user.requested': 'New user requested',
-        'new.user.requested.instructions': 'Please follow the instructions sent to the provided email account',
+        'new.user.requested.instructions': 'Please follow the instructions sent to {{email}}',
         'visitor': 'Visitor',
         '404': 'Resource not found! {{resource}}'
 
