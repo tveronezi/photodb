@@ -52,15 +52,15 @@
 
             container.containerEl.append(alert[0]);
             alert.fadeIn();
-
-            var faceOut = underscore.debounce(function () {
+            var faceOutCallback = function() {
                 alert.fadeOut(null, function () {
                     try {
                         alert.remove();
-                    } catch (e) { /* noop */
+                    } catch (ignore) { /* noop */
                     }
                 });
-            }, 5000);
+            };
+            var faceOut = underscore.debounce(faceOutCallback, 5000);
             faceOut();
         }
 

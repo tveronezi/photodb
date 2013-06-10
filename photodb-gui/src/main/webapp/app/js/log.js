@@ -20,6 +20,7 @@ define([], function () {
     'use strict';
 
     var noOp = function () {
+        return ''; // no-op
     };
 
     if (!window.console) {
