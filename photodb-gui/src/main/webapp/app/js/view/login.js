@@ -26,13 +26,13 @@
             events: {
                 'click .ux-login': function (evt) {
                     evt.preventDefault();
-                    var self = this;
-                    self.trigger('login-action', self.getValues());
+                    var me = this;
+                    me.trigger('login-action', me.getValues());
                 },
                 'click .ux-create-user': function (evt) {
                     evt.preventDefault();
-                    var self = this;
-                    self.trigger('create-user-action', self.getValues());
+                    var me = this;
+                    me.trigger('create-user-action', me.getValues());
                 }
             },
             getValues: function () {
@@ -49,14 +49,14 @@
                     return;
                 }
 
-                var self = this;
-                self.$el.empty();
+                var me = this;
+                me.$el.empty();
 
                 var html = templates.getValue('login', {
                     error: this.errorPage,
                     newUser: this.newUserRequested
                 });
-                self.$el.html(html);
+                me.$el.html(html);
 
                 this.options.isRendered = true;
                 return this;

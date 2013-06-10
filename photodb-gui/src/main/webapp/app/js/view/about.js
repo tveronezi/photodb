@@ -40,11 +40,11 @@
                     return;
                 }
 
-                var self = this;
-                self.$el.empty();
+                var me = this;
+                me.$el.empty();
 
                 var html = templates.getValue('about');
-                self.$el.html(html);
+                me.$el.html(html);
 
                 this.options.isRendered = true;
                 return this;

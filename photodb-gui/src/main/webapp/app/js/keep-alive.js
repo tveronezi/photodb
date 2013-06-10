@@ -25,34 +25,34 @@ define(['app/js/log', 'lib/jquery'], function () {
 
     function scheduleNext() {
         if (timeoutKey !== null) {
-            clearInterval(timeoutKey);
+            window.clearInterval(timeoutKey);
             window.console.log('keep-alive callback canceled.', timeoutKey);
             timeoutKey = null;
         }
-        timeoutKey = setTimeout(timeoutCallback, DELAY);
+        function timeoutCallback() {
+            $.ajax({
+                type: 'GET',
+                'url': window.ux.ROOT_URL + 'rest/keep-alive',
+                global: false,
+                data: {},
+                success: function () {
+                    scheduleNext();
+                },
+                error: function () {
+                    window.console.error('keep-alive callback error.');
+                    window.setTimeout(function () {
+                        window.location.reload();
+                    }, 10000);
+                }
+            });
+        }
+
+        timeoutKey = window.setTimeout(timeoutCallback, DELAY);
         window.console.log('keep-alive callback created.', timeoutKey);
     }
 
-    function timeoutCallback() {
-        $.ajax({
-            type: 'GET',
-            'url': window.ux.ROOT_URL + 'rest/keep-alive',
-            global: false,
-            data: {},
-            success: function () {
-                scheduleNext();
-            },
-            error: function () {
-                window.console.error('keep-alive callback error.');
-                setTimeout(function () {
-                    window.location.reload();
-                }, 10000)
-            }
-        });
-    }
-
-    $(document).bind("ajaxSend", function () {
+    $(window.document).bind("ajaxSend", function () {
         scheduleNext();
     });
-
+    scheduleNext();
 });

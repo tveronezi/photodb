@@ -32,6 +32,7 @@
             function fetchFiles() {
                 filesList.fetch();
             }
+
             fetchFiles();
 
             //Starting the backbone router.

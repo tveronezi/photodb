@@ -77,6 +77,7 @@
                 <configuration>
                     <failOnError>true</failOnError>
                     <options>
+                        <todo>true</todo>
                         <vars>true</vars>
                         <predef>define,require,requirejs,window,Backbone,_,$,Handlebars,APP_CONFIG</predef>
                         <indent>4</indent>
@@ -85,6 +86,14 @@
                         <sourceFolder>${basedir}/src/main/webapp/app/js</sourceFolder>
                     </sourceFolders>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>lint</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

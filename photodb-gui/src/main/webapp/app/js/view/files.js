@@ -29,40 +29,40 @@
 
             events: {
                 'click .close-modal': function () {
-                    var self = this;
-                    self.$el.modal('hide');
+                    var me = this;
+                    me.$el.modal('hide');
                 },
                 'click .delete-action': function () {
-                    var self = this;
-                    self.trigger('delete-action', {
-                        model: self.model
+                    var me = this;
+                    me.trigger('delete-action', {
+                        model: me.model
                     });
                 }
             },
 
             render: function () {
-                var self = this;
+                var me = this;
 
-                self.$el.empty();
+                me.$el.empty();
                 var html = templates.getValue('file-details', {
-                    content: self.model.get('content'),
-                    name: self.model.get('name')
+                    content: me.model.get('content'),
+                    name: me.model.get('name')
                 });
-                self.$el.html(html);
-                self.$el.bind('hidden', function () {
-                    self.remove();
+                me.$el.html(html);
+                me.$el.bind('hidden', function () {
+                    me.remove();
                 });
 
-                return self;
+                return me;
             },
 
             initialize: function () {
-                var self = this;
-                self.listenTo(this.model, 'destroy', function () {
-                    self.$el.modal('hide');
+                var me = this;
+                me.listenTo(this.model, 'destroy', function () {
+                    me.$el.modal('hide');
                 });
-                self.listenTo(this.model, 'change', function () {
-                    self.render();
+                me.listenTo(this.model, 'change', function () {
+                    me.render();
                 });
             }
         });
@@ -73,30 +73,30 @@
 
             events: {
                 'click': function () {
-                    var self = this;
-                    self.trigger('photo-clicked', {
-                        model: self.model
+                    var me = this;
+                    me.trigger('photo-clicked', {
+                        model: me.model
                     });
                 }
             },
 
             render: function () {
-                var self = this;
+                var me = this;
 
-                self.$el.empty();
+                me.$el.empty();
                 var html = templates.getValue('file', {
-                    content: self.model.get('content'),
-                    name: self.model.get('name')
+                    content: me.model.get('content'),
+                    name: me.model.get('name')
                 });
-                self.$el.html(html);
+                me.$el.html(html);
 
-                return self;
+                return me;
             },
 
             initialize: function () {
-                var self = this;
-                self.listenTo(this.model, 'destroy', function () {
-                    self.remove();
+                var me = this;
+                me.listenTo(this.model, 'destroy', function () {
+                    me.remove();
                 });
             }
         });
@@ -110,13 +110,13 @@
                     return;
                 }
 
-                var self = this;
+                var me = this;
 
-                self.$el.empty();
+                me.$el.empty();
                 var html = templates.getValue('files');
-                self.$el.html(html);
+                me.$el.html(html);
 
-                var dropZone = self.$('.drop-area')[0];
+                var dropZone = me.$('.drop-area')[0];
                 dropZone.addEventListener('dragover', function (evt) {
                     evt.stopPropagation();
                     evt.preventDefault();
@@ -126,7 +126,7 @@
                     evt.stopPropagation();
                     evt.preventDefault();
                     var files = evt.dataTransfer.files;
-                    self.trigger('file-drop', {
+                    me.trigger('file-drop', {
                         files: files
                     });
                 }, false);
@@ -138,37 +138,37 @@
                 return this;
             },
 
-            showDropZone: function() {
+            showDropZone: function () {
                 this.$el.prepend(this.options.dropZone);
             },
 
             showDetails: function (data) {
-                var self = this;
+                var me = this;
                 var detailsView = new FileDetailsView({
                     model: data.model
                 }).render();
-                self.listenTo(detailsView, 'delete-action', function (data) {
-                    self.trigger('delete-action', data);
+                me.listenTo(detailsView, 'delete-action', function (data) {
+                    me.trigger('delete-action', data);
                 });
-                self.$('.details-area').append(detailsView.el);
+                me.$('.details-area').append(detailsView.el);
                 detailsView.$el.modal({});
             },
 
             showFile: function (fileModel) {
-                var self = this;
+                var me = this;
                 var fileView = new FileView({
                     model: fileModel
                 }).render();
-                self.listenTo(fileView, 'photo-clicked', function (data) {
-                    self.trigger('show-photo-details', data);
-                    self.showDetails(data);
+                me.listenTo(fileView, 'photo-clicked', function (data) {
+                    me.trigger('show-photo-details', data);
+                    me.showDetails(data);
                 });
-                self.$('.photos-area').prepend(fileView.el);
+                me.$('.photos-area').prepend(fileView.el);
             },
 
             initialize: function () {
-                var self = this;
-                self.listenTo(filesList, 'add', self.showFile);
+                var me = this;
+                me.listenTo(filesList, 'add', me.showFile);
             }
         });
 

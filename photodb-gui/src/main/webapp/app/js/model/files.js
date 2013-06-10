@@ -25,11 +25,11 @@
         var FilesList = Backbone.Collection.extend({
             model: File,
             url: window.ux.ROOT_URL + 'rest/photos',
-            parse: function(response) {
+            parse: function (response) {
                 return response.photoDto;
             }
         });
-        return  new FilesList();
+        return new FilesList();
 
     });
 }());

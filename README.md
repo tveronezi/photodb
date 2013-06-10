@@ -23,4 +23,4 @@ If you use a Unix-like OS with Makefile support, you can run the application by 
 * make restart-tomee #It starts TomEE without a new build of your application
 * make tail #It tails the catalina.out file
 * make run-jasmine
-* make run-lint
+* make run-lint #Please note that lint will run during the "mvn install" phase
