@@ -19,8 +19,8 @@
 (function () {
     'use strict';
 
-    var deps = ['app/js/templates', 'app/js/view/login', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (templates, loginView, i18n) {
+    var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
+    define(deps, function (templates, i18n) {
 
         var View = Backbone.View.extend({
             el: 'body',
@@ -38,7 +38,6 @@
 
             events: {
                 'click .ux-app-menu-item a': function (evt) {
-                    // TRICK to avoid full page reload.
                     evt.preventDefault();
 
                     var myLink = $(evt.target);
@@ -50,57 +49,41 @@
                     this.trigger('navigate', {
                         href: href
                     });
-                },
-                'click a.ux-signout': function (evt) {
-                    // TRICK to avoid full page reload.
-                    evt.preventDefault();
-                    this.trigger('signout');
                 }
             },
 
             render: function () {
-                if (this.options.isRendered) {
+                var me = this;
+                if (me.options.isRendered) {
                     return;
                 }
-
-                var html = templates.getValue('container', {
-                    userName: ''
+                me.$el.html(templates.getValue('container', {}));
+                me.options.signin = $(templates.getValue('signin', {}));
+                me.options.signin.on('click', function(evt) {
+                    evt.preventDefault();
+                    me.trigger('signin');
                 });
-                this.$el.html(html);
 
-                loginView.render();
-                this.options.signin = $(templates.getValue('signin', {}));
-                this.options.signin.children('div.ux-sigin-form').append(loginView.el);
+                me.options.signout = $(templates.getValue('signout', {}));
+                me.options.signout.on('click', function(evt) {
+                    evt.preventDefault();
+                    me.trigger('signout');
+                });
 
-                this.options.signout = $(templates.getValue('signout', {}));
-
-                this.setSignMode('signin');
+                me.setSignMode('signin');
 
                 // render it only once
-                this.options.isRendered = true;
-                return this;
+                me.options.isRendered = true;
+                return me;
             },
 
             setSignMode: function (mode) {
-                this.options.signin.detach();
-                this.options.signout.detach();
-
-                loginView.$('.ux-user-credentials').each(function (index, el) {
-                    el.reset();
-                });
+                var me = this;
+                me.options.signin.detach();
+                me.options.signout.detach();
 
                 // mode is 'signin' or 'signout'
-                this.$('ul.ux-login-menu').append(this.options[mode]);
-            },
-
-            setUserName: function (userName) {
-                if (!userName || userName.trim() === '') {
-                    this.$('span.user-name').html(i18n.get('visitor'));
-
-                } else {
-                    this.$('span.user-name').html(userName);
-                }
-
+                me.$('ul.ux-login-menu').append(this.options[mode]);
             }
         });
 

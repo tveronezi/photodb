@@ -23,9 +23,8 @@
     define(deps, function (filesList, templates, underscore) {
 
         var FileDetailsView = Backbone.View.extend({
-            el: function () {
-                return $('<div class="modal" tabindex="-1" role="dialog"></div>');
-            },
+            tag: 'div',
+            className: 'modal fade',
 
             events: {
                 'click .close-modal': function () {
@@ -42,17 +41,14 @@
 
             render: function () {
                 var me = this;
-
-                me.$el.empty();
-                var html = templates.getValue('file-details', {
+                me.$el.html(templates.getValue('file-details', {
                     content: me.model.get('content'),
                     name: me.model.get('name')
+                }));
+                $(window.document.body).append(me.$el);
+                me.$el.modal({
+                    show: true
                 });
-                me.$el.html(html);
-                me.$el.bind('hidden', function () {
-                    me.remove();
-                });
-
                 return me;
             },
 
@@ -113,33 +109,14 @@
                 var me = this;
 
                 me.$el.empty();
-                var html = templates.getValue('files');
-                me.$el.html(html);
-
-                var dropZone = me.$('.drop-area')[0];
-                dropZone.addEventListener('dragover', function (evt) {
-                    evt.stopPropagation();
-                    evt.preventDefault();
-                    evt.dataTransfer.dropEffect = 'copy';
-                }, false);
-                dropZone.addEventListener('drop', function (evt) {
-                    evt.stopPropagation();
-                    evt.preventDefault();
-                    var files = evt.dataTransfer.files;
-                    me.trigger('file-drop', {
-                        files: files
+                me.$el.html(templates.getValue('files'));
+                me.$('.ux-upload-file-input').each(function (index, input) {
+                    $(input).on('change', function (ev) {
+                        me.trigger('file-drop', ev.currentTarget);
                     });
-                }, false);
-
-                var dropZoneEl = $(dropZone);
-                dropZoneEl.detach();
-                this.options.dropZone = dropZoneEl;
+                });
                 this.options.isRendered = true;
                 return this;
-            },
-
-            showDropZone: function () {
-                this.$el.prepend(this.options.dropZone);
             },
 
             showDetails: function (data) {

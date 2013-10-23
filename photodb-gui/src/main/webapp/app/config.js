@@ -23,22 +23,22 @@ var APP_CONFIG = {
         'text': 'app/lib/require/text',
 
         // http://lesscss.org/
-        'lib/less': 'app/lib/less/less-1.3.0.min',
+        'lib/less': 'app/lib/less/less.min',
 
         // http://jquery.com/
-        'lib/jquery': 'app/lib/jquery/jquery-2.0.1',
+        'lib/jquery': 'app/lib/jquery/jquery.min',
 
         // http://twitter.github.com/bootstrap/
-        'lib/bootstrap': 'app/lib/bootstrap/2.1.1/js/bootstrap.min',
+        'lib/bootstrap': 'app/lib/bootstrap/js/bootstrap.min',
 
         // http://handlebarsjs.com/
-        'lib/handlebars': 'app/lib/handlebars/handlebars-1.0.rc.1',
+        'lib/handlebars': 'app/lib/handlebars/handlebars',
 
-        'lib/underscore': 'app/lib/underscore/underscore-1-4-3',
+        'lib/underscore': 'app/lib/underscorejs/underscore-min',
 
-        'lib/json2': 'app/lib/json2/json2-2012-10-08',
+        'lib/json2': 'app/lib/json2/json2',
 
-        'lib/backbone': 'app/lib/backbone/backbone_1-0-0-min'
+        'lib/backbone': 'app/lib/backbone/backbone-min'
     },
     shim: {
         // bootstrap depends on jquery, therefore we need to load jquery first

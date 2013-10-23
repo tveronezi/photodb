@@ -22,16 +22,16 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
 
     var missing = Handlebars.compile('[!{{key}}!]');
     var messages = {
-        'application.name': 'photodb',
+        'application.name': 'PhotoDB',
         'application.welcome': 'Hi {{userName}}! Welcome to {{appName}}!',
         'photo.upload': 'Uploading file {{fileName}}',
         'my.photos': 'My Photos',
-        'drop.files.area': 'Drop your files here',
+        'upload': 'Upload',
         'application.about': 'About',
         'close': 'Close',
         'delete': 'Delete',
         'bad.user.password': 'Bad user/password.',
-        'user.account': 'Email address or Account',
+        'user.account': 'Email/Account',
         'password': 'Password',
         'sign.in': 'Sign in',
         'sign.out': 'Sign out',
@@ -39,7 +39,6 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'new.user.requested': 'New user requested',
         'new.user.requested.instructions': 'Please follow the instructions sent to {{email}}',
         'user.info.error': 'Unable to load user info.',
-        'visitor': 'Visitor',
         '404': 'Resource not found! {{resource}}'
 
     };

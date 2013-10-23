@@ -21,8 +21,9 @@
 
     var deps = ['app/js/templates', 'app/js/i18n', 'lib/backbone'];
     define(deps, function (templates) {
-
-        var View = Backbone.View.extend({
+        return Backbone.View.extend({
+            tag: 'div',
+            className: 'modal fade',
             events: {
                 'click .ux-login': function (evt) {
                     evt.preventDefault();
@@ -45,26 +46,22 @@
                 };
             },
             render: function () {
-                if (this.options.isRendered) {
+                var me = this;
+                if (me.options.isRendered) {
                     return;
                 }
-
-                var me = this;
-                me.$el.empty();
-
-                var html = templates.getValue('login', {
+                me.$el.html(templates.getValue('login', {
                     error: this.errorPage,
                     newUser: this.newUserRequested
+                }));
+                $(window.document.body).append(me.$el);
+                me.options.isRendered = true;
+                me.$el.modal({
+                    show: true
                 });
-                me.$el.html(html);
-
-                this.options.isRendered = true;
-                return this;
+                return me;
             }
         });
-
-        return new View({});
-
     });
 }());
 

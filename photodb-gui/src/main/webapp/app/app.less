@@ -29,7 +29,17 @@ body {
   }
 }
 
+@defaultOffset: 5px;
+@menuHeight: 50px;
+
 .app {
+  overflow: hidden;
+  position: absolute;
+  bottom: @defaultOffset;
+  left: @defaultOffset;
+  right: @defaultOffset;
+  top: @defaultOffset;
+
   .masthead {
     .user-name {
       color: #999999;
@@ -37,18 +47,23 @@ body {
     }
   }
 
-  .photos {
-    .drop-area {
-      padding: 25px;
-      border: 2px dashed #bbb;
-      text-align: center;
-      font: 20pt bold;
-      -webkit-border-radius: 5px;
-      border-radius: 5px;
-      color: #bbb;
-    }
+  .ux-contentarea {
+    position: absolute;
+    right: @defaultOffset;
+    left: @defaultOffset;
+    top: (@defaultOffset + @menuHeight);
+    bottom: @defaultOffset;
+  }
 
+  .photos {
     .photos-area {
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: 0;
+      bottom: @menuHeight;
+      overflow: auto;
+
       .photo { // Credits to http://www.hongkiat.com/blog/css3-image-captions/
         border: 5px solid #fff;
         cursor: pointer;
@@ -104,6 +119,30 @@ body {
           }
         }
       }
+    }
+
+    .ux-bottom-navbar {
+      position: absolute;
+      right: (-1 * @defaultOffset);
+      left: (-1 * @defaultOffset);
+      bottom: (-1 * @defaultOffset);
+      height: @menuHeight;
+    }
+
+    .ux-upload-file-field {
+      position: absolute;
+      left: @defaultOffset;
+      bottom: (@defaultOffset + 5);
+      width: 70px;
+      overflow: hidden;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .ux-upload-file-button {
+      position: absolute;
+      left: @defaultOffset;
+      bottom: @defaultOffset;
     }
   }
 

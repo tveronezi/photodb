@@ -27,7 +27,7 @@
         'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap',
         'app/js/keep-alive'
     ];
-    define(deps, function (containerView, filesView, aboutView, loginView, filesList, FileModel, growl, underscore, i18n) {
+    define(deps, function (containerView, filesView, aboutView, LoginView, filesList, FileModel, growl, underscore, i18n) {
         $.ajaxSetup({ cache: false });
 
         function start() {
@@ -57,13 +57,20 @@
             });
             var router = new Router();
 
+            function setUserName(userName) {
+                if (!userName || userName.trim() === '') {
+                    window.document.title = i18n.get('application.name');
+                } else {
+                    window.document.title = i18n.get('application.name') + ' [' + userName + ']';
+                }
+            }
+
             function setLoggedUser(userName) {
                 if (!userName || userName === '') {
                     return;
                 }
                 containerView.setSignMode('signout');
-                containerView.setUserName(userName);
-                filesView.showDropZone();
+                setUserName(userName);
                 fetchFiles();
             }
 
@@ -82,48 +89,52 @@
                 }
             });
 
-            loginView.on('login-action', function (data) {
-                var authenticationPath = window.ux.ROOT_URL + 'rest/user/authenticate';
-                $.ajax({
-                    type: 'POST',
-                    'url': authenticationPath,
-                    data: data,
-                    success: function (result, status, xhr) {
-                        setLoggedUser(data.j_username);
-                        growl.showNotification('success', i18n.get('application.welcome', {
-                            userName: data.j_username,
-                            appName: i18n.get('application.name')
-                        }));
-                    },
-                    error: function (xhr, status, err) {
-                        if (String(xhr.status) === '404') {
-                            growl.showNotification('error', i18n.get('404', {
-                                resource: authenticationPath
-                            }));
-                        } else {
-                            growl.showNotification('error', i18n.get('bad.user.password', {}));
-                        }
-                    }
-                });
-            });
-            loginView.on('create-user-action', function (data) {
-                $.ajax({
-                    type: 'POST',
-                    url: window.ux.ROOT_URL + 'rest/user/new',
-                    data: data,
-                    success: function (result, status, xhr) {
-                        growl.showNotification('success', i18n.get('new.user.requested', {}));
-                        growl.showNotification('success', i18n.get('new.user.requested.instructions', {
-                            email: data.j_username
-                        }));
-                    }
-                });
-            });
-
             containerView.on('navigate', function (data) {
                 router.navigate(data.href, {
                     trigger: true
                 });
+            });
+
+            containerView.on('signin', function (data) {
+                var loginView = new LoginView({});
+                loginView.on('login-action', function (data) {
+                    var authenticationPath = window.ux.ROOT_URL + 'rest/user/authenticate';
+                    $.ajax({
+                        type: 'POST',
+                        'url': authenticationPath,
+                        data: data,
+                        success: function (result, status, xhr) {
+                            setLoggedUser(data.j_username);
+                            growl.showNotification('success', i18n.get('application.welcome', {
+                                userName: data.j_username,
+                                appName: i18n.get('application.name')
+                            }));
+                        },
+                        error: function (xhr, status, err) {
+                            if (String(xhr.status) === '404') {
+                                growl.showNotification('error', i18n.get('404', {
+                                    resource: authenticationPath
+                                }));
+                            } else {
+                                growl.showNotification('error', i18n.get('bad.user.password', {}));
+                            }
+                        }
+                    });
+                });
+                loginView.on('create-user-action', function (data) {
+                    $.ajax({
+                        type: 'POST',
+                        url: window.ux.ROOT_URL + 'rest/user/new',
+                        data: data,
+                        success: function (result, status, xhr) {
+                            growl.showNotification('success', i18n.get('new.user.requested', {}));
+                            growl.showNotification('success', i18n.get('new.user.requested.instructions', {
+                                email: data.j_username
+                            }));
+                        }
+                    });
+                });
+                loginView.render();
             });
 
             containerView.on('signout', function (data) {
@@ -185,6 +196,8 @@
                 pushState: true,
                 root: window.ux.ROOT_URL // This value is set by <c:url>
             });
+
+            setUserName('');
 
             return {
                 getRouter: function () {

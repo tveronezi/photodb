@@ -1,28 +1,14 @@
-<div class="container app">
+<div class="app">
     <div class="masthead">
-        <h3 class="muted">photodb <span class="user-name">{{i18n "visitor"}}</span></h3>
-
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-                    <ul class="nav">
-                        <li class="ux-app-menu-item ux-photos"><a href="files">{{i18n "my.photos"}}</a></li>
-                        <li class="ux-app-menu-item ux-about"><a href="about">{{i18n "application.about"}}</a></li>
-                    </ul>
-                    <ul class="ux-login-menu nav pull-right">
-                        <li class="divider-vertical"></li>
-                    </ul>
-                </div>
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="ux-app-menu-item ux-photos"><a href="files">{{i18n "my.photos"}}</a></li>
+                    <li class="ux-app-menu-item ux-about"><a href="about">{{i18n "application.about"}}</a></li>
+                </ul>
+                <ul class="ux-login-menu nav navbar-nav navbar-right"></ul>
             </div>
-        </div>
+        </nav>
     </div>
-    <hr>
-    <div class="row-fluid">
-        <div class="ux-contentarea span12">
-        </div>
-    </div>
-    <hr>
-    <div class="footer">
-        <p class="pull-left">Apache TomEE <a href="http://tomee.apache.org/">http://tomee.apache.org/</a></p>
-    </div>
+    <div class="ux-contentarea"></div>
 </div>

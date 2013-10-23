@@ -1,11 +1,17 @@
-<div class="modal-header">
-    <button type="button" class="close close-modal">×</button>
-    <h3>{{name}}</h3>
-</div>
-<div class="modal-body">
-    <img src="{{content}}">
-</div>
-<div class="modal-footer">
-    <button class="btn close-modal">{{i18n "close"}}</button>
-    <button class="btn btn-danger delete-action"><i class="icon-trash icon-white"></i> {{i18n "delete"}}</button>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">{{name}}</h4>
+        </div>
+        <div class="modal-body">
+            <img src="{{content}}">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default close-modal" data-dismiss="modal">{{i18n "close"}}</button>
+            <button type="button" class="btn btn-danger delete-action" data-dismiss="modal">
+                <i class="icon-trash icon-white"></i> {{i18n "delete"}}
+            </button>
+        </div>
+    </div>
 </div>
