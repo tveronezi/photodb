@@ -55,10 +55,11 @@ public class User {
 
     @POST
     @Path("/signout")
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public void signout(@Context HttpServletRequest request) {
         try {
             request.logout();
-        } catch (ServletException e) {
+        } catch (ServletException ignore) {
             // no-op
         }
         final HttpSession session = request.getSession();

@@ -83,7 +83,7 @@ public class UserImpl {
         LOG.info("Sending new user request");
 
         Connection connection = null;
-        javax.jms.Session session = null;
+        Session session = null;
 
         try {
             connection = this.factory.createConnection();
