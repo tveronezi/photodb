@@ -20,13 +20,18 @@ package photodb.service.rest;
 
 
 import photodb.cdi.DtoBuilder;
+import photodb.cdi.ImageManager;
 import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
 import photodb.service.bean.PhotoImpl;
 
 import javax.ejb.EJB;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,7 +43,24 @@ public class Photos {
     private PhotoImpl photoService;
 
     @Inject
+    private ImageManager imageManager;
+
+    @Inject
     private DtoBuilder dtoBuilder;
+
+    @GET
+    @Path("/raw/{id}")
+    @Produces("image/png")
+    public Response getRaw(@PathParam("id") Long id) throws IOException {
+        final Photo photo = photoService.getPhoto(id);
+        final BufferedImage img = imageManager.getFromBase64(photo.getContent());
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(img, "png", baos);
+        baos.flush();
+        final byte[] imageInByte = baos.toByteArray();
+        baos.close();
+        return Response.ok(imageInByte).build();
+    }
 
     @GET
     @Path("/{id}")

@@ -160,8 +160,11 @@
                     'content': file.content,
                     'publicData': false
                 });
-                filesList.add(newFile);
-                newFile.save();
+                newFile.save({}, {
+                    success: function (model) {
+                        filesList.add(model);
+                    }
+                });
             }
 
             filesView.on('file-drop', function (data) {

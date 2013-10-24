@@ -33,7 +33,6 @@ body {
 @menuHeight: 50px;
 
 .app {
-  overflow: hidden;
   position: absolute;
   bottom: @defaultOffset;
   left: @defaultOffset;
@@ -49,20 +48,44 @@ body {
 
   .ux-contentarea {
     position: absolute;
-    right: @defaultOffset;
-    left: @defaultOffset;
-    top: (@defaultOffset + @menuHeight);
-    bottom: @defaultOffset;
+    right: 0;
+    left: 0;
+    top: (@menuHeight + @defaultOffset);
+    bottom: 0;
   }
 
   .photos {
+    .ux-detail {
+      position: absolute;
+      bottom: @menuHeight;
+      left: 0;
+      right: 0;
+      top: 0;
+      margin: 0;
+
+      .ux-detail-content {
+        padding: 0;
+        position: absolute;
+        bottom: (40px + @defaultOffset);
+        left: @defaultOffset;
+        right: @defaultOffset;
+        top: (41px + @defaultOffset);
+        overflow: auto;
+      }
+
+      .ux-detail-buttons {
+        position: absolute;
+        bottom: @defaultOffset;
+        right: @defaultOffset;
+      }
+    }
+
     .photos-area {
       position: absolute;
       right: 0;
       left: 0;
       top: 0;
       bottom: @menuHeight;
-      overflow: auto;
 
       .photo { // Credits to http://www.hongkiat.com/blog/css3-image-captions/
         border: 5px solid #fff;
@@ -123,10 +146,14 @@ body {
 
     .ux-bottom-navbar {
       position: absolute;
-      right: (-1 * @defaultOffset);
-      left: (-1 * @defaultOffset);
-      bottom: (-1 * @defaultOffset);
+      right: 0;
+      left: 0;
+      bottom: 0;
       height: @menuHeight;
+
+      .navbar {
+        margin: 0;
+      }
     }
 
     .ux-upload-file-field {

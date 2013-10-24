@@ -30,6 +30,12 @@
                     'photoDto': this.attributes
                 };
             },
+            parse: function (response) {
+                if (response.photoDto) {
+                    return response.photoDto;
+                }
+                return response;
+            },
             defaults: {
                 'name': '',
                 'contentType': '',

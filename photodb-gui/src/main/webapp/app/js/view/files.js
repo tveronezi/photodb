@@ -20,18 +20,20 @@
     'use strict';
 
     var deps = ['app/js/model/files', 'app/js/templates', 'lib/underscore', 'app/js/i18n', 'lib/backbone'];
-    define(deps, function (filesList, templates, underscore) {
+    define(deps, function (filesList, templates) {
 
         var FileDetailsView = Backbone.View.extend({
             tag: 'div',
-            className: 'modal fade',
+            className: 'panel panel-default ux-detail',
 
             events: {
-                'click .close-modal': function () {
+                'click .ux-close-action': function () {
                     var me = this;
-                    me.$el.modal('hide');
+                    me.trigger('close-action', {
+                        model: me.model
+                    });
                 },
-                'click .delete-action': function () {
+                'click .ux-delete-action': function () {
                     var me = this;
                     me.trigger('delete-action', {
                         model: me.model
@@ -41,23 +43,20 @@
 
             render: function () {
                 var me = this;
+                me.$el.empty();
                 me.$el.html(templates.getValue('file-details', {
-                    content: me.model.get('content'),
+                    content: window.ux.ROOT_URL + 'rest/photos/raw/' + me.model.get('id'),
                     name: me.model.get('name')
                 }));
-                $(window.document.body).append(me.$el);
-                me.$el.modal({
-                    show: true
-                });
                 return me;
             },
 
             initialize: function () {
                 var me = this;
-                me.listenTo(this.model, 'destroy', function () {
-                    me.$el.modal('hide');
+                me.listenTo(me.model, 'destroy', function () {
+                    me.remove();
                 });
-                me.listenTo(this.model, 'change', function () {
+                me.listenTo(me.model, 'change', function () {
                     me.render();
                 });
             }
@@ -78,57 +77,66 @@
 
             render: function () {
                 var me = this;
-
-                me.$el.empty();
-                var html = templates.getValue('file', {
+                me.$el.html(templates.getValue('file', {
                     content: me.model.get('content'),
                     name: me.model.get('name')
-                });
-                me.$el.html(html);
-
+                }));
                 return me;
             },
 
             initialize: function () {
                 var me = this;
-                me.listenTo(this.model, 'destroy', function () {
+                me.listenTo(me.model, 'destroy', function () {
                     me.remove();
                 });
             }
         });
 
-        var View = Backbone.View.extend({
+        var Container = Backbone.View.extend({
             tagName: 'div',
             className: 'photos',
+            options: {isRendered: false},
 
             render: function () {
-                if (this.options.isRendered) {
-                    return;
-                }
-
                 var me = this;
-
-                me.$el.empty();
+                if (me.options.isRendered) {
+                    return me;
+                }
                 me.$el.html(templates.getValue('files'));
                 me.$('.ux-upload-file-input').each(function (index, input) {
                     $(input).on('change', function (ev) {
                         me.trigger('file-drop', ev.currentTarget);
                     });
                 });
-                this.options.isRendered = true;
-                return this;
+                me.options.isRendered = true;
+                return me;
             },
 
             showDetails: function (data) {
                 var me = this;
-                var detailsView = new FileDetailsView({
+                me.options.photosArea = $(me.$('.photos-area')[0]);
+                me.options.photosArea.detach();
+                var detail = new FileDetailsView({
                     model: data.model
                 }).render();
-                me.listenTo(detailsView, 'delete-action', function (data) {
-                    me.trigger('delete-action', data);
+                me.$el.prepend(detail.el);
+
+                var removeDetail = function () {
+                    detail.remove();
+                    me.$el.prepend(me.options.photosArea);
+                    me.options.photosArea = null;
+                };
+
+                detail.on('destroy', function () {
+                    removeDetail();
                 });
-                me.$('.details-area').append(detailsView.el);
-                detailsView.$el.modal({});
+                me.listenTo(detail, 'delete-action', function (data) {
+                    me.trigger('delete-action', data);
+                    removeDetail();
+                });
+                me.listenTo(detail, 'close-action', function (data) {
+                    removeDetail();
+                });
             },
 
             showFile: function (fileModel) {
@@ -149,8 +157,6 @@
             }
         });
 
-        return new View();
+        return new Container();
     });
 }());
-
-

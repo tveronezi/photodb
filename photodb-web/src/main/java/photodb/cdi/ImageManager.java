@@ -79,7 +79,7 @@ public class ImageManager {
         return createResizedCopy(original, width, height, true);
     }
 
-    private BufferedImage getFromBase64(final String base64) throws IOException {
+    public BufferedImage getFromBase64(final String base64) throws IOException {
         final byte[] decoded = Base64.decodeBase64(base64.replaceAll("^data:.*;base64,", ""));
         final InputStream input = new ByteArrayInputStream(decoded);
         return ImageIO.read(input);
