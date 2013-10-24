@@ -52,12 +52,16 @@ body {
     left: 0;
     top: (@menuHeight + @defaultOffset);
     bottom: 0;
+
+    .about {
+      margin: 20px;
+    }
   }
 
   .photos {
     .ux-detail {
       position: absolute;
-      bottom: @menuHeight;
+      bottom: (@menuHeight + @defaultOffset);
       left: 0;
       right: 0;
       top: 0;
