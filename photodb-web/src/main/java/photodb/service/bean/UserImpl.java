@@ -70,7 +70,7 @@ public class UserImpl {
         return user;
     }
 
-    public void requestUser(String userName, String userAccount, String userPassword) throws ArithmeticException {
+    public void requestUser(String userName, String userAccount, String userPassword) {
         try {
             sendRequest(userName, userAccount, userPassword);
         } catch (Exception e) {

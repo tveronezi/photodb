@@ -50,8 +50,7 @@ public class PhotoImpl {
             setValues(photo, fileName, content, contentType, publicData);
 
             // Set photo owner
-            final User user = this.user.getUser();
-            photo.setUser(user);
+            photo.setUser(this.user.getUser());
 
             // Create the photo object
             photo = this.baseEAO.create(photo);

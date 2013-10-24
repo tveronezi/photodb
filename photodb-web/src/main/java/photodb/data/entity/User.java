@@ -40,14 +40,19 @@ public class User extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         User user = (User) o;
-
-        if (name != null ? !name.equals(user.name) : user.name != null) return false;
-
+        if (name != null ? !name.equals(user.name) : user.name != null) {
+            return false;
+        }
         return true;
     }
 

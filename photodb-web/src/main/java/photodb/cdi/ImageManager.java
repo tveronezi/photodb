@@ -60,17 +60,24 @@ public class ImageManager {
         values.b = Math.round(values.b * scale);
     }
 
+    private Values buildValues(float a, float b) {
+        Values values = new Values();
+        values.a = a;
+        values.b = b;
+        return values;
+    }
+
     private BufferedImage getResizedImage(final BufferedImage original) {
         int width = original.getWidth();
         int height = original.getHeight();
 
-        Values values = new Values(width, height);
+        Values values = buildValues(width, height);
         calculateScale(MAX_SIZE, values);
 
         width = Math.round(values.a);
         height = Math.round(values.b);
 
-        values = new Values(height, width);
+        values = buildValues(height, width);
         calculateScale(MAX_SIZE, values);
 
         width = Math.round(values.b);
@@ -107,12 +114,7 @@ public class ImageManager {
     }
 
     private class Values {
-        public float a;
-        public float b;
-
-        private Values(float a, float b) {
-            this.a = a;
-            this.b = b;
-        }
+        float a;
+        float b;
     }
 }
