@@ -20,7 +20,6 @@ package photodb.service.rest;
 
 
 import photodb.cdi.DtoBuilder;
-import photodb.cdi.ImageManager;
 import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
 import photodb.service.bean.PhotoImpl;
@@ -43,7 +42,7 @@ public class Photos {
     private PhotoImpl photoService;
 
     @Inject
-    private ImageManager imageManager;
+    private photodb.cdi.ImageManager imageManager;
 
     @Inject
     private DtoBuilder dtoBuilder;
