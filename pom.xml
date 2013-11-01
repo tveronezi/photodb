@@ -42,11 +42,6 @@
     </profile>
     <profile>
       <id>solution</id>
-      <activation>
-        <property>
-          <name>java.security.auth.login.config</name>
-        </property>
-      </activation>
       <properties>
         <tomee.config.dir>${project.basedir}/src/main/tomee/network/conf</tomee.config.dir>
         <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/network/conf/login.config</tomee.args>
