@@ -41,7 +41,7 @@
       </activation>
     </profile>
     <profile>
-      <id>network</id>
+      <id>solution</id>
       <activation>
         <property>
           <name>java.security.auth.login.config</name>
