@@ -24,4 +24,18 @@
     UserName sa
     Password
   </Resource>
+
+  <Resource id="MyJmsResourceAdapter" type="ActiveMQResourceAdapter">
+    # Do not start the embedded ActiveMQ broker
+    BrokerXmlConfig =
+    ServerUrl = tcp://localhost:61616
+  </Resource>
+
+  <Resource id="MyJmsConnectionFactory" type="javax.jms.ConnectionFactory">
+    ResourceAdapter = MyJmsResourceAdapter
+  </Resource>
+
+  <Container id="MyJmsMdbContainer" ctype="MESSAGE">
+    ResourceAdapter = MyJmsResourceAdapter
+  </Container>
 </tomee>
