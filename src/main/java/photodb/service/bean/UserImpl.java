@@ -24,9 +24,9 @@ import photodb.data.entity.User;
 import photodb.service.ApplicationException;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.jms.*;
 
 @Stateless
@@ -40,7 +40,7 @@ public class UserImpl {
     @Resource(name = "CreateUpdateUserQueue")
     private Queue requestUserQueue;
 
-    @EJB
+    @Inject
     private BaseEAO baseEAO;
 
     @Resource

@@ -29,6 +29,30 @@
     <junit.version>4.10</junit.version>
     <arquillian.version>1.0.3.Final</arquillian.version>
   </properties>
+  <profiles>
+    <profile>
+      <id>standalone</id>
+      <properties>
+        <tomee.config.dir>${project.basedir}/src/main/tomee/standalone/conf</tomee.config.dir>
+        <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/standalone/conf/login.config</tomee.args>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>network</id>
+      <activation>
+        <property>
+          <name>java.security.auth.login.config</name>
+        </property>
+      </activation>
+      <properties>
+        <tomee.config.dir>${project.basedir}/src/main/tomee/network/conf</tomee.config.dir>
+        <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/network/conf/login.config</tomee.args>
+      </properties>
+    </profile>
+  </profiles>
   <repositories>
     <repository>
       <id>apache.snapshots</id>
@@ -217,11 +241,15 @@
         <artifactId>tomee-maven-plugin</artifactId>
         <version>${tomee.version}</version>
         <configuration>
-          <tomeeClassifier>plus</tomeeClassifier>
-          <args>-Xmx512m -XX:PermSize=256m</args>
           <context>photodb</context>
-          <!--<debug>true</debug>-->
-          <!--<debugPort>8005</debugPort>-->
+          <config>${tomee.config.dir}</config>
+          <args>${tomee.args}</args>
+          <tomeeClassifier>plus</tomeeClassifier>
+          <debugPort>5005</debugPort>
+          <tomeeAjpPort>8009</tomeeAjpPort>
+          <tomeeHttpPort>8080</tomeeHttpPort>
+          <tomeeShutdownPort>8005</tomeeShutdownPort>
+          <debug>false</debug>
         </configuration>
       </plugin>
     </plugins>

@@ -27,7 +27,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-@Stateless(name = "photodb-BaseEAOImpl")
+@Stateless
 public class BaseEAO {
 
     @PersistenceContext(unitName = "photoPU")

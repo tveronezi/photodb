@@ -23,16 +23,16 @@ import photodb.data.entity.User;
 import photodb.service.ApplicationException;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.List;
 
 @Stateless
 public class PhotoImpl {
-    @EJB
+    @Inject
     private BaseEAO baseEAO;
 
-    @EJB
+    @Inject
     private UserImpl user;
 
     private void setValues(Photo photo, String fileName, String content, String contentType, Boolean publicData) {

@@ -19,8 +19,8 @@
 package photodb.service.rest;
 
 import photodb.data.dto.UserInfo;
+import photodb.service.bean.UserImpl;
 
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +35,8 @@ public class User {
     @Inject
     private photodb.cdi.DtoBuilder dtoBuilder;
 
-    @EJB
-    private photodb.service.bean.UserImpl userService;
+    @Inject
+    private UserImpl userService;
 
     @POST
     @Path("/new")

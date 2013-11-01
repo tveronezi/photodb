@@ -20,11 +20,11 @@ package photodb.service.rest;
 
 
 import photodb.cdi.DtoBuilder;
+import photodb.cdi.ImageManager;
 import photodb.data.dto.PhotoDto;
 import photodb.data.entity.Photo;
 import photodb.service.bean.PhotoImpl;
 
-import javax.ejb.EJB;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -38,11 +38,11 @@ import java.util.List;
 @Produces("application/json")
 public class Photos {
 
-    @EJB
+    @Inject
     private PhotoImpl photoService;
 
     @Inject
-    private photodb.cdi.ImageManager imageManager;
+    private ImageManager imageManager;
 
     @Inject
     private DtoBuilder dtoBuilder;
