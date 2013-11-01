@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-var request = 'http://localhost:8080/faceid/rest/authentication/';
+var request = 'http://localhost:8081/faceid/rest/authentication/';
 var urlParameters = 'account=' + user + '&password=' + password;
 
 function loop(values, callback) {
