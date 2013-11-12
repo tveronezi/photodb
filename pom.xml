@@ -28,18 +28,10 @@
     <javaee.api>6.0-5</javaee.api>
     <junit.version>4.10</junit.version>
     <arquillian.version>1.0.3.Final</arquillian.version>
+    <tomee.config.dir>${project.basedir}/src/main/tomee/standalone/conf</tomee.config.dir>
+    <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/standalone/conf/login.config</tomee.args>
   </properties>
   <profiles>
-    <profile>
-      <id>standalone</id>
-      <properties>
-        <tomee.config.dir>${project.basedir}/src/main/tomee/standalone/conf</tomee.config.dir>
-        <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/standalone/conf/login.config</tomee.args>
-      </properties>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
     <profile>
       <id>solution</id>
       <properties>
