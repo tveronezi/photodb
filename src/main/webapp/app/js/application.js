@@ -85,7 +85,7 @@
 
                 },
                 error: function (xhr, status, err) {
-                    growl.showNotification('error', i18n.get('user.info.error', {}));
+                    growl.showNotification('danger', i18n.get('user.info.error', {}));
                 }
             });
 
@@ -112,11 +112,11 @@
                         },
                         error: function (xhr, status, err) {
                             if (String(xhr.status) === '404') {
-                                growl.showNotification('error', i18n.get('404', {
+                                growl.showNotification('danger', i18n.get('404', {
                                     resource: authenticationPath
                                 }));
                             } else {
-                                growl.showNotification('error', i18n.get('bad.user.password', {}));
+                                growl.showNotification('danger', i18n.get('bad.user.password', {}));
                             }
                         }
                     });
