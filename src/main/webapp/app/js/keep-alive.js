@@ -17,13 +17,14 @@
  "use strict";
  */
 
-define(['app/js/log', 'lib/jquery'], function () {
+define(['lib/underscore', 'app/js/log', 'lib/jquery'], function (underscore) {
     'use strict';
 
     var DELAY = 1000 * 60 * 4; // 4 minutes
     var timeoutKey = null;
+    var callbacks = [];
 
-    function scheduleNext() {
+    function scheduleNext(now) {
         if (timeoutKey !== null) {
             window.clearInterval(timeoutKey);
             window.console.log('keep-alive callback canceled.', timeoutKey);
@@ -35,24 +36,44 @@ define(['app/js/log', 'lib/jquery'], function () {
                 'url': window.ux.ROOT_URL + 'rest/keep-alive',
                 global: false,
                 data: {},
-                success: function () {
+                success: function (resp) {
+                    var result = {
+                        success: true,
+                        data: resp.sessionDataDto
+                    };
                     scheduleNext();
+                    underscore.each(callbacks, function (cb) {
+                        cb(result);
+                    });
                 },
                 error: function () {
-                    window.console.error('keep-alive callback error.');
-                    window.setTimeout(function () {
-                        window.location.reload();
-                    }, 10000);
+                    var result = {
+                        success: false
+                    };
+                    underscore.each(callbacks, function (cb) {
+                        cb(result);
+                    });
                 }
             });
         }
 
-        timeoutKey = window.setTimeout(timeoutCallback, DELAY);
+        if (now) {
+            timeoutCallback();
+        } else {
+            timeoutKey = window.setTimeout(timeoutCallback, DELAY);
+        }
         window.console.log('keep-alive callback created.', timeoutKey);
     }
 
-    $(window.document).bind("ajaxSend", function () {
-        scheduleNext();
-    });
-    scheduleNext();
+    return {
+        start: function () {
+            $(window.document).bind("ajaxSend", function () {
+                scheduleNext();
+            });
+            scheduleNext(true);
+        },
+        onPing: function (callback) {
+            callbacks.push(callback);
+        }
+    };
 });

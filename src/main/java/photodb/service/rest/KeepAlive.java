@@ -18,35 +18,49 @@
 
 package photodb.service.rest;
 
+import photodb.cdi.DtoBuilder;
+import photodb.data.dto.SessionDataDto;
+import photodb.data.dto.UserInfo;
+import photodb.service.bean.UserImpl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import java.security.Principal;
 
 @Path("/keep-alive")
 @Produces("application/json")
 public class KeepAlive {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KeepAlive.class);
+    @Inject
+    private DtoBuilder dtoBuilder;
+
+    @Inject
+    private UserImpl userService;
 
     @GET
-    public void ping(@Context HttpServletRequest request) {
+    @Produces("application/json")
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    public SessionDataDto ping(@Context HttpServletRequest request) {
         final HttpSession session = request.getSession();
-        final Principal principal = request.getUserPrincipal();
+        final UserInfo info = this.dtoBuilder.build(this.userService.getUser());
         final String userName;
-        if (principal == null) {
+        final boolean logged;
+        if (info == null) {
             userName = "guest";
+            logged = false;
         } else {
-            userName = principal.getName();
+            userName = info.getName();
+            logged = true;
         }
-        LOG.info("'keepAlive' event triggered. sessionID: '{}'; user: '{}'.", session.getId(), userName);
+        final SessionDataDto result = new SessionDataDto();
+        result.setSessionId(session.getId());
+        result.setUserName(userName);
+        result.setLogged(logged);
+        return result;
     }
 
 }

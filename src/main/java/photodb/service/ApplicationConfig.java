@@ -29,6 +29,7 @@ import java.util.Set;
 
 @ApplicationPath("/rest")
 public class ApplicationConfig extends Application {
+
     public Set<Class<?>> getClasses() {
         final Set<Class<?>> clsSet = new HashSet<Class<?>>();
         clsSet.add(Photos.class);
@@ -36,4 +37,5 @@ public class ApplicationConfig extends Application {
         clsSet.add(KeepAlive.class);
         return clsSet;
     }
+
 }

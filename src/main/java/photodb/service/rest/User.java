@@ -18,22 +18,21 @@
 
 package photodb.service.rest;
 
-import photodb.data.dto.UserInfo;
 import photodb.service.bean.UserImpl;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 @Path("/user")
 @Produces("application/json")
 public class User {
-
-    @Inject
-    private photodb.cdi.DtoBuilder dtoBuilder;
 
     @Inject
     private UserImpl userService;
@@ -64,13 +63,4 @@ public class User {
         session.removeAttribute("authenticationDto");
     }
 
-    @GET
-    @Path("/info")
-    public UserInfo getUserInfo() {
-        try {
-            return this.dtoBuilder.build(this.userService.getUser());
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }

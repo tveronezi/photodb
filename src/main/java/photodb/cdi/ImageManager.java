@@ -33,6 +33,7 @@ import java.io.InputStream;
 
 @ApplicationScoped
 public class ImageManager {
+
     private static final Logger LOG = LoggerFactory.getLogger(ImageManager.class);
     private static final int MAX_SIZE = 200;
 
@@ -117,4 +118,5 @@ public class ImageManager {
         float a;
         float b;
     }
+
 }

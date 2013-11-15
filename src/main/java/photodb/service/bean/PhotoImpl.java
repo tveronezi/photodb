@@ -29,6 +29,7 @@ import java.util.List;
 
 @Stateless
 public class PhotoImpl {
+
     @Inject
     private BaseEAO baseEAO;
 
@@ -90,4 +91,5 @@ public class PhotoImpl {
         }
         this.baseEAO.delete(photo);
     }
+
 }

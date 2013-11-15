@@ -25,17 +25,38 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
-public class UserInfo {
+public class SessionDataDto {
 
     @XmlElement
-    private String name;
+    private String userName;
 
-    public String getName() {
-        return name;
+    @XmlElement
+    private String sessionId;
+
+    @XmlElement
+    private boolean logged;
+
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public boolean isLogged() {
+        return logged;
+    }
+
+    public void setLogged(boolean logged) {
+        this.logged = logged;
+    }
 }

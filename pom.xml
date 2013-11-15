@@ -29,6 +29,7 @@
     <junit.version>4.10</junit.version>
     <arquillian.version>1.0.3.Final</arquillian.version>
     <tomee.config.dir>${project.basedir}/src/main/tomee/standalone/conf</tomee.config.dir>
+    <debug.it>false</debug.it>
     <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/standalone/conf/login.config</tomee.args>
   </properties>
   <profiles>
@@ -37,6 +38,12 @@
       <properties>
         <tomee.config.dir>${project.basedir}/src/main/tomee/network/conf</tomee.config.dir>
         <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/network/conf/login.config</tomee.args>
+      </properties>
+    </profile>
+    <profile>
+      <id>debug</id>
+      <properties>
+        <debug.it>true</debug.it>
       </properties>
     </profile>
   </profiles>
@@ -236,7 +243,10 @@
           <tomeeAjpPort>8009</tomeeAjpPort>
           <tomeeHttpPort>8080</tomeeHttpPort>
           <tomeeShutdownPort>8005</tomeeShutdownPort>
-          <debug>false</debug>
+          <debug>${debug.it}</debug>
+          <webapps>
+            <webapp>org.apache.openejb:tomee-webaccess:${tomee.version}?name=webaccess</webapp>
+          </webapps>
         </configuration>
       </plugin>
     </plugins>

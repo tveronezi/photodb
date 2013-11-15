@@ -24,10 +24,10 @@
         'app/js/model/files', 'app/js/model/file', 'app/js/view/growl',
         'lib/underscore',
         'app/js/i18n',
-        'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap',
-        'app/js/keep-alive'
+        'app/js/keep-alive',
+        'lib/less', 'lib/backbone', 'lib/jquery', 'lib/bootstrap'
     ];
-    define(deps, function (containerView, filesView, aboutView, LoginView, filesList, FileModel, growl, underscore, i18n) {
+    define(deps, function (containerView, filesView, aboutView, LoginView, filesList, FileModel, growl, underscore, i18n, ping) {
         $.ajaxSetup({ cache: false });
 
         function start() {
@@ -37,25 +37,32 @@
 
             fetchFiles();
 
+            var sessionData = {
+                sessionId: window.ux.SESSION_ID
+            };
+
             //Starting the backbone router.
             var Router = Backbone.Router.extend({
                 routes: {
-                    '': 'showFiles',
-                    'files': 'showFiles',
-                    'about': 'showAbout'
-                },
-
-                showFiles: function () {
-                    containerView.render();
-                    containerView.showView(filesView);
-                },
-
-                showAbout: function () {
-                    containerView.render();
-                    containerView.showView(aboutView);
+                    '': 'home',
+                    'files': 'files',
+                    'about': 'about'
                 }
             });
             var router = new Router();
+            router.on("route:home", function () {
+                router.navigate('files', {
+                    trigger: true
+                });
+            });
+            router.on("route:files", function () {
+                containerView.render();
+                containerView.showView(filesView);
+            });
+            router.on("route:about", function () {
+                containerView.render();
+                containerView.showView(aboutView);
+            });
 
             function setUserName(userName) {
                 if (!userName || userName.trim() === '') {
@@ -65,29 +72,31 @@
                 }
             }
 
-            function setLoggedUser(userName) {
-                if (!userName || userName === '') {
-                    return;
+            function setLoggedUser(result) {
+                if (!result.success) {
+                    return false;
                 }
-                containerView.setSignMode('signout');
-                setUserName(userName);
-                fetchFiles();
-            }
-
-            $.ajax({
-                type: 'GET',
-                'url': window.ux.ROOT_URL + 'rest/user/info',
-                data: {},
-                success: function (result, status, xhr) {
-                    if (result && result.userInfo) {
-                        setLoggedUser(result.userInfo.name);
+                var data = result.data;
+                if (sessionData.sessionId !== data.sessionId) {
+                    return false;
+                }
+                if (!data.logged && sessionData.logged) {
+                    return false;
+                }
+                if (data.logged) {
+                    if (!sessionData.logged) {
+                        containerView.setSignMode('signout');
+                        fetchFiles();
+                        growl.showNotification('success', i18n.get('application.welcome', {
+                            userName: data.j_username,
+                            appName: i18n.get('application.name')
+                        }));
+                        sessionData = data;
                     }
-
-                },
-                error: function (xhr, status, err) {
-                    growl.showNotification('danger', i18n.get('user.info.error', {}));
                 }
-            });
+                setUserName(data.userName);
+                return true;
+            }
 
             containerView.on('navigate', function (data) {
                 router.navigate(data.href, {
@@ -104,11 +113,7 @@
                         'url': authenticationPath,
                         data: data,
                         success: function (result, status, xhr) {
-                            setLoggedUser(data.j_username);
-                            growl.showNotification('success', i18n.get('application.welcome', {
-                                userName: data.j_username,
-                                appName: i18n.get('application.name')
-                            }));
+                            window.location.reload();
                         },
                         error: function (xhr, status, err) {
                             if (String(xhr.status) === '404') {
@@ -201,6 +206,12 @@
             });
 
             setUserName('');
+            ping.onPing(function (result) {
+                if (!setLoggedUser(result)) {
+                    window.location.reload(true);
+                }
+            });
+            ping.start();
 
             return {
                 getRouter: function () {

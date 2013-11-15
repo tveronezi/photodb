@@ -38,7 +38,6 @@ define(['lib/underscore', 'lib/handlebars', 'app/js/log'], function (underscore)
         'new.user': 'Create new user',
         'new.user.requested': 'New user requested',
         'new.user.requested.instructions': 'Please follow the instructions sent to {{email}}',
-        'user.info.error': 'Unable to load user info.',
         '404': 'Resource not found! {{resource}}'
 
     };

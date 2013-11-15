@@ -63,6 +63,7 @@ public class Photos {
 
     @GET
     @Path("/{id}")
+    @Produces("application/json")
     public PhotoDto get(@PathParam("id") Long id) {
         final Photo photo = photoService.getPhoto(id);
         return dtoBuilder.build(photo);
@@ -70,6 +71,7 @@ public class Photos {
 
     @DELETE
     @Path("/{id}")
+    @Produces("application/json")
     public Boolean delete(@PathParam("id") Long id) {
         photoService.deletePhoto(id);
         return Boolean.TRUE;
@@ -77,12 +79,14 @@ public class Photos {
 
     @PUT
     @Consumes("application/json")
+    @Produces("application/json")
     public PhotoDto put(PhotoDto dto) {
         return save(dto);
     }
 
     @POST
     @Consumes("application/json")
+    @Produces("application/json")
     public PhotoDto post(PhotoDto dto) {
         return save(dto);
     }
@@ -99,8 +103,10 @@ public class Photos {
     }
 
     @GET
+    @Produces("application/json")
     public List<PhotoDto> list() throws IOException {
         final List<Photo> photos = photoService.getPhotos();
         return dtoBuilder.build(photos);
     }
+
 }

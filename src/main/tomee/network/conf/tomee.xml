@@ -20,7 +20,7 @@
 <tomee>
   <Resource id="HSQLDB Database" type="DataSource">
     JdbcDriver org.hsqldb.jdbcDriver
-    JdbcUrl jdbc:hsqldb:mem:hsqldb
+    JdbcUrl jdbc:hsqldb:file:target/db/buildnplaydb
     UserName sa
     Password
   </Resource>

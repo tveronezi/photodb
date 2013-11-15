@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 public class PhotoDto {
+
     @XmlElement
     private Long id;
 
@@ -80,4 +81,5 @@ public class PhotoDto {
     public void setPublicData(Boolean publicData) {
         this.publicData = publicData;
     }
+
 }

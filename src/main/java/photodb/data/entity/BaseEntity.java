@@ -56,4 +56,5 @@ public class BaseEntity {
     public int hashCode() {
         return uid != null ? uid.hashCode() : 0;
     }
+
 }
