@@ -21,8 +21,6 @@
 
     <persistence-unit name="photoPU">
         <jta-data-source>photoJTA</jta-data-source>
-        <non-jta-data-source>photoNONJTA</non-jta-data-source>
-
         <properties>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
         </properties>

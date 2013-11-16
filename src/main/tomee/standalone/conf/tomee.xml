@@ -18,7 +18,7 @@
     under the License.
 -->
 <tomee>
-  <Resource id="HSQLDB Database" type="DataSource">
+  <Resource id="photoJTA" type="DataSource">
     JdbcDriver org.hsqldb.jdbcDriver
     JdbcUrl jdbc:hsqldb:file:target/db/photodb
     UserName sa
