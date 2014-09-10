@@ -21,9 +21,9 @@
 <head>
     <meta charset="utf-8">
     <title>PhotoDB</title>
-    <link href="<c:url value='/app/lib/bootstrap/css/bootstrap.css'/>" rel="stylesheet">
+    <link href="<c:url value='/webjars/bootstrap/3.2.0/css/bootstrap.css'/>" rel="stylesheet">
     <link href="<c:url value='/app/app.less'/>" rel="stylesheet/less" type="text/css">
-    <script src="<c:url value='/app/lib/require/require.js'/>"></script>
+    <script src="<c:url value='/webjars/requirejs/2.1.14-3/require.js'/>"></script>
     <script type="text/javascript">
         // Save the path to the application. Case the application is not the root context, we should now that.
         // The "c:url" is able to figure it out since forever.

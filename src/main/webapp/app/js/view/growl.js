@@ -25,6 +25,7 @@
 
         var GrowlContainerView = Backbone.View.extend({
             el: 'body',
+            options: {isRendered: false},
             render: function () {
                 if (this.options.isRendered) {
                     return;

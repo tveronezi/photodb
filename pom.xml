@@ -23,8 +23,8 @@
   <name>photodb</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tomee.version>1.6.0</tomee.version>
-    <openejb.version>4.6.0</openejb.version>
+    <tomee.version>1.7.0</tomee.version>
+    <openejb.version>4.7.0</openejb.version>
     <javaee.api>6.0-5</javaee.api>
     <junit.version>4.10</junit.version>
     <arquillian.version>1.0.3.Final</arquillian.version>
@@ -38,12 +38,6 @@
       <properties>
         <tomee.config.dir>${project.basedir}/src/main/tomee/network/conf</tomee.config.dir>
         <tomee.args>-Xmx512m -XX:PermSize=256m -Djava.security.auth.login.config=${project.basedir}/src/main/tomee/network/conf/login.config</tomee.args>
-      </properties>
-    </profile>
-    <profile>
-      <id>debug</id>
-      <properties>
-        <debug.it>true</debug.it>
       </properties>
     </profile>
   </profiles>
@@ -111,52 +105,49 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-backbone</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>backbonejs</artifactId>
+      <version>1.1.2-2</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-bootstrap</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>3.2.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-jquery</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>jquery</artifactId>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-handlebars</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>handlebars</artifactId>
+      <version>2.0.0-alpha.2</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-json2</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>json2</artifactId>
+      <version>20110223</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-lessjs</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>less</artifactId>
+      <version>1.7.5</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-requirejs</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>requirejs</artifactId>
+      <version>2.1.14-3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb.staticweb</groupId>
-      <artifactId>static-tomee-underscorejs</artifactId>
-      <version>${tomee.version}</version>
-      <scope>runtime</scope>
+      <groupId>org.webjars</groupId>
+      <artifactId>requirejs-text</artifactId>
+      <version>2.0.10-1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>underscorejs</artifactId>
+      <version>1.6.0-3</version>
     </dependency>
   </dependencies>
   <build>
@@ -164,12 +155,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.14.1</version>
+        <version>2.17</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.10</version>
+        <version>2.12.1</version>
         <configuration>
           <enableRulesSummary>false</enableRulesSummary>
           <configLocation>src/main/config/checkstyle.xml</configLocation>
@@ -251,7 +242,6 @@
           <tomeeAjpPort>8009</tomeeAjpPort>
           <tomeeHttpPort>8080</tomeeHttpPort>
           <tomeeShutdownPort>8005</tomeeShutdownPort>
-          <debug>${debug.it}</debug>
           <webapps>
             <webapp>org.apache.openejb:tomee-webaccess:${tomee.version}?name=webaccess</webapp>
           </webapps>

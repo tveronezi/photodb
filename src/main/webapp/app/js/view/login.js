@@ -24,6 +24,7 @@
         return Backbone.View.extend({
             tag: 'div',
             className: 'modal fade',
+            options: {isRendered: false},
             events: {
                 'click .ux-login': function (evt) {
                     evt.preventDefault();

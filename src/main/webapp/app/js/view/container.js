@@ -24,6 +24,7 @@
 
         var View = Backbone.View.extend({
             el: 'body',
+            options: {isRendered: false},
 
             showView: function (view) {
                 var contentarea = this.$('.ux-contentarea');

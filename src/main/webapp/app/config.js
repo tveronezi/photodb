@@ -20,25 +20,25 @@ var APP_CONFIG = {
     baseUrl: window.ux.ROOT_URL,
     paths: {
         // https://github.com/requirejs/text
-        'text': 'app/lib/require/text',
+        'text': 'webjars/requirejs-text/2.0.10/text',
 
         // http://lesscss.org/
-        'lib/less': 'app/lib/less/less.min',
+        'lib/less': 'webjars/less/1.7.5/less.min',
 
         // http://jquery.com/
-        'lib/jquery': 'app/lib/jquery/jquery.min',
+        'lib/jquery': 'webjars/jquery/2.1.1/jquery.min',
 
         // http://twitter.github.com/bootstrap/
-        'lib/bootstrap': 'app/lib/bootstrap/js/bootstrap.min',
+        'lib/bootstrap': 'webjars/bootstrap/3.2.0/js/bootstrap.min',
 
         // http://handlebarsjs.com/
-        'lib/handlebars': 'app/lib/handlebars/handlebars',
+        'lib/handlebars': 'webjars/handlebars/2.0.0-alpha.2/handlebars.min',
 
-        'lib/underscore': 'app/lib/underscorejs/underscore-min',
+        'lib/underscore': 'webjars/underscorejs/1.6.0/underscore-min',
 
-        'lib/json2': 'app/lib/json2/json2',
+        'lib/json2': 'webjars/json2/20110223/json2.min',
 
-        'lib/backbone': 'app/lib/backbone/backbone-min'
+        'lib/backbone': 'webjars/backbonejs/1.1.2/backbone-min'
     },
     shim: {
         // bootstrap depends on jquery, therefore we need to load jquery first

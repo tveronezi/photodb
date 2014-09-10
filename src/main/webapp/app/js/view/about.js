@@ -25,6 +25,7 @@
         var View = Backbone.View.extend({
             tagName: 'div',
             className: 'about',
+            options: {isRendered: false},
 
             events: {
                 'click a': function (evt) {
